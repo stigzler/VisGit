@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics;
 
-namespace VisGit.ViewModels
+namespace VisGitCore.ViewModels
 {
-    internal partial class MainViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
         #region PROPERTIES =========================================================================================
 
@@ -23,7 +24,8 @@ namespace VisGit.ViewModels
         [RelayCommand]
         private void InitialiseView()
         {
-            //UserAuthenicated = true;
+            Debug.WriteLine("View Initializing");
+            UserAuthenicated = true;
         }
 
         #endregion End: Commands

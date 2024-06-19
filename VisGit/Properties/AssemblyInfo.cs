@@ -16,6 +16,8 @@ using VisGit;
 
 // My additions
 [assembly: ProvideCodeBase(AssemblyName = "Microsoft.Xaml.Behaviors")]
+[assembly: ProvideCodeBase(AssemblyName = "CommunityToolkit.Mvvm")]
+[assembly: ProvideCodeBase(AssemblyName = "VisGit.Core")]
 
 namespace System.Runtime.CompilerServices
 {
