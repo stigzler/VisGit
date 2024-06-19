@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+                    xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+                    xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+                    xmlns:mwt1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
+
+    <!-- Stores all UiImages plus a design-time version due to MS bug with monikers -->
+    <!-- See for details: https://stackoverflow.com/questions/78297622/wpf-moniker-images-not-showing-in-design-view -->
+
+    <imaging:CrispImage x:Key="UiLogInUserImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
+    <Image              x:Key="UILogInUserImageDT" Width="16" Height="16" Source="../LoginUser.png" />
+
+    <imaging:CrispImage x:Key="UiIssueImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DisableAllBreakpoints}" />
+    <Image              x:Key="UiIssueImageDT" Width="16" Height="16" Source="../DisableAllBreakpoints.png" />
+
+    <imaging:CrispImage x:Key="UiMilestoneImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SendSignalAction}" />
+    <Image              x:Key="UiMilestoneImageDT" Width="16" Height="16" Source="../SendSignalAction.png" />
+
+    <imaging:CrispImage x:Key="UiLabelImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SmartTag}" />
+    <Image              x:Key="UiLabelImageDT" Width="16" Height="16" Source="../SmartTag.png" />
+</ResourceDictionary>
