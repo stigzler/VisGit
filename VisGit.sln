@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGit", "VisGit\VisGit.csproj", "{B8902418-5BFB-4A7F-A83F-EDB85080D933}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGitCore", "VisGitCore\VisGitCore.csproj", "{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{B8902418-5BFB-4A7F-A83F-EDB85080D933}.Release|arm64.Build.0 = Release|arm64
 		{B8902418-5BFB-4A7F-A83F-EDB85080D933}.Release|x86.ActiveCfg = Release|x86
 		{B8902418-5BFB-4A7F-A83F-EDB85080D933}.Release|x86.Build.0 = Release|x86
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|arm64.ActiveCfg = Debug|arm64
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|arm64.Build.0 = Debug|arm64
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|x86.ActiveCfg = Debug|x86
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Debug|x86.Build.0 = Debug|x86
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|arm64.ActiveCfg = Release|arm64
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|arm64.Build.0 = Release|arm64
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|x86.ActiveCfg = Release|x86
+		{7F95C16E-F9AC-4D30-A67E-25EDB1275CE6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
