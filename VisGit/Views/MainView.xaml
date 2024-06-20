@@ -12,7 +12,7 @@
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             toolkit:Themes.UseVsTheme="True"
             mc:Ignorable="d"
-            xmlns:viewmodels="clr-namespace:VisGit.ViewModels"
+            xmlns:viewmodels="clr-namespace:VisGit.Core.ViewModels;assembly=VisGit.Core"
             d:DesignHeight="209"
             d:DesignWidth="1481"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
@@ -20,11 +20,12 @@
             Name="VisGit">
     <!-- ^ remove xmlns:viewmodels to remove CommToolkitBug -->
 
-    <!--xmlns:viewmodels="clr-namespace:VisGit.Core.ViewModels;assembly=VisGit.Core"-->
+    <!-- xmlns:viewmodels="clr-namespace:VisGit.ViewModels" -->
+    <!-- xmlns:viewmodels="clr-namespace:VisGit.Core.ViewModels;assembly=VisGit.Core" -->
 
-    <!--<UserControl.DataContext>
+    <UserControl.DataContext>
         <viewmodels:MainViewModel />
-    </UserControl.DataContext>-->
+    </UserControl.DataContext>
 
     <UserControl.Resources>
         <ResourceDictionary>
