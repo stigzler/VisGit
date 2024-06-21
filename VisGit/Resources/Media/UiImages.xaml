@@ -10,15 +10,15 @@
     <!-- Stores all UiImages plus a design-time version due to MS bug with monikers -->
     <!-- See for details: https://stackoverflow.com/questions/78297622/wpf-moniker-images-not-showing-in-design-view -->
 
-    <imaging:CrispImage x:Key="UiLogInUserImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
-    <Image              x:Key="UILogInUserImageDT" Width="16" Height="16" Source="../LoginUser.png" />
+    <imaging:CrispImage x:Key="UiLogInUserImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
+    <Image              x:Key="UILogInUserImageDT" x:Shared="false" Width="16" Height="16" Source="Images/LoginUser.png" />
 
-    <imaging:CrispImage x:Key="UiIssueImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DisableAllBreakpoints}" />
-    <Image              x:Key="UiIssueImageDT" Width="16" Height="16" Source="../DisableAllBreakpoints.png" />
+    <imaging:CrispImage x:Key="UiIssueImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DisableAllBreakpoints}" />
+    <Image              x:Key="UiIssueImageDT" x:Shared="false" Width="16" Height="16" Source="Images/DisableAllBreakpoints.png" />
 
-    <imaging:CrispImage x:Key="UiMilestoneImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SendSignalAction}" />
-    <Image              x:Key="UiMilestoneImageDT" Width="16" Height="16" Source="../SendSignalAction.png" />
+    <imaging:CrispImage x:Key="UiMilestoneImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SendSignalAction}" />
+    <Image              x:Key="UiMilestoneImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SendSignalAction.png" />
 
-    <imaging:CrispImage x:Key="UiLabelImage" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SmartTag}" />
-    <Image              x:Key="UiLabelImageDT" Width="16" Height="16" Source="../SmartTag.png" />
+    <imaging:CrispImage x:Key="UiLabelImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SmartTag}" />
+    <Image              x:Key="UiLabelImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SmartTag.png" />
 </ResourceDictionary>

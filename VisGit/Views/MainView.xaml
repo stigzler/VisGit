@@ -11,13 +11,13 @@
             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             toolkit:Themes.UseVsTheme="True"
-            mc:Ignorable="d"
+            xmlns:controls="clr-namespace:VisGit.Controls"
             xmlns:viewmodels="clr-namespace:VisGit.Core.ViewModels;assembly=VisGit.Core"
-            d:DesignHeight="209"
-            d:DesignWidth="1481"
+            mc:Ignorable="d"
+            d:DesignHeight="209" d:DesignWidth="800"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
-            Name="VisGit">
+            Name="VisGit" Initialized="VisGit_Initialized">
 
     <UserControl.DataContext>
         <viewmodels:MainViewModel />
@@ -32,14 +32,60 @@
                 <ResourceDictionary Source="../Resources/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
                 <!-- MEDIA -->
-                <ResourceDictionary Source="../Resources/Media/UiImages.xaml" />
+                <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Initialised">
+        <i:EventTrigger EventName="Initialized" SourceObject="{Binding ElementName=VisGit}">
             <i:InvokeCommandAction Command="{Binding InitialiseViewCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
+
+    <DockPanel x:Name="MainDP" LastChildFill="True">
+
+        <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
+            <ToolBarTray x:Name="TopTBT" Style="{StaticResource ToolBarTrayStyle}">
+
+                <!-- UNAUTHENTICATED TOOLBAR  -->
+                <controls:ToolBar x:Name="UnauthenticatedTBar" Style="{StaticResource ToolBarStyle}"
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true">
+
+                    <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
+                            d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding InitialiseViewCommand}" />
+                </controls:ToolBar>
+
+                <!-- AUTHENTICATED TOOLBAR -->
+
+                <controls:ToolBar x:Name="AuthenticatedTBar" Style="{StaticResource ToolBarStyle}"
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true">
+
+                    <Button x:Name="Authenticate" Content="{StaticResource UiIssueImage}" d:Background="Transparent"
+                                                   d:Content="{StaticResource UiIssueImageDT}" />
+
+                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104">
+                        <ComboBoxItem>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl   Content="{StaticResource UiIssueImage}" d:Content="{StaticResource UiIssueImageDT}" />
+                                <TextBlock Text="Issues" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl Content="{DynamicResource UiLabelImage}" d:Content="{DynamicResource UiLabelImageDT}" />
+                                <TextBlock Text="Labels" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl Content="{DynamicResource UiMilestoneImage}" d:Content="{DynamicResource UiMilestoneImageDT}" />
+                                <TextBlock Text="Milestones" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </ComboBoxItem>
+                    </ComboBox>
+                </controls:ToolBar>
+            </ToolBarTray>
+        </DockPanel>
+    </DockPanel>
 </UserControl>
