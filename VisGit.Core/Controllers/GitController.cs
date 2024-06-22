@@ -17,9 +17,9 @@ namespace VisGit.Core.Controllers
             this.gitService = gitService;
         }
 
-        internal async Task<bool> AuthenticateUserAsync()
+        internal async Task<bool> AuthenticateUserAsync(string personalAccessToken)
         {
-            if (await gitService.AuthenticateUserAsync() == null) return true;
+            if (await gitService.AuthenticateUserAsync(personalAccessToken) == null) return true;
             else return false;
         }
 

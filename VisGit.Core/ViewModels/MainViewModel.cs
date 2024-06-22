@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using VisGit.Core.Controllers;
 using VisGit.Core.Services;
 using System.Diagnostics;
+using VisGit.Core.Interfaces;
 
 namespace VisGit.Core.ViewModels
 {
@@ -22,37 +23,26 @@ namespace VisGit.Core.ViewModels
 
         #region Operational Vars =========================================================================================
 
-        private UserSettings userSettings;
-        private GitService gitClient;
+        public IUserSettings UserSettings;
+
+        private GitService gitClient = new GitService();
         private GitController gitController;
 
         #endregion End: Operational Vars
 
-        #region Property Changed Methods =========================================================================================
-
-        partial void OnVisualStudioStatusTextChanged(string value)
-        {
-            _ = VS.StatusBar.ShowMessageAsync("VisGit: " + value);
-        }
-
-        #endregion End: Property Changed Methods
-
         #region Commands =========================================================================================
 
         [RelayCommand]
-        private async Task InitialiseViewAsync()
+        private void InitialiseView()
         {
-            userSettings = await UserSettings.CreateAsync();
-            gitClient = new GitService(userSettings);
             gitController = new GitController(gitClient);
-
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
 
         [RelayCommand]
         private async Task AuthenticateUserAsync()
         {
-            UserAuthenicated = await gitController.AuthenticateUserAsync();
+            UserAuthenicated = await gitController.AuthenticateUserAsync(UserSettings.PersonalAccessToken);
             if (UserAuthenicated) UpdateVsStatusText("Login Successful");
             else UpdateVsStatusText("Login error. Check connection and PAT.");
         }

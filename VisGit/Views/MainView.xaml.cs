@@ -1,15 +1,22 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using VisGit.Core.Data;
 using VisGit.Core.ViewModels;
 
 namespace VisGit.Views
 {
     public partial class MainView : UserControl
     {
+        private MainViewModel viewModel;
+
         public MainView()
         {
             CouldNotLoadFileOrAssemblyHack();
+
             InitializeComponent();
+
+            viewModel = (MainViewModel)this.DataContext;
+            viewModel.UserSettings = new UserSettings();
         }
 
         private void CouldNotLoadFileOrAssemblyHack()

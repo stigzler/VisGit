@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace VisGit.Core.Services
 {
-    internal class Encyption
+    public class Encryption
     {
         private static byte[] entropy = Encoding.Unicode.GetBytes("vYowIchyZq11qDTvpm6KJ1yq1MFlIU4j");
 
