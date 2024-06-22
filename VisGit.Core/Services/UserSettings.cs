@@ -4,7 +4,7 @@ using Community.VisualStudio.Toolkit;
 
 namespace VisGit.Core.Services
 {
-    internal partial class OptionsProvider
+    public partial class OptionsProvider
     {
         // Register the options with this attribute on your package class:
         // [ProvideOptionPage(typeof(OptionsProvider.UserSettingsOptions), "VisGit.Services", "UserSettings", 0, 0, true, SupportsProfiles = true)]
@@ -28,10 +28,10 @@ namespace VisGit.Core.Services
             set => personalAccessToken = Encyption.DpapiEncryptString(Encyption.DpapiToSecureString(value));
         }
 
-        [Category("Github Settings")]
-        [DisplayName("Auto-login")]
-        [Description("Logs-in on startup")]
-        [DefaultValue(false)]
-        public bool AutoLogin { get; set; } = false;
+        //[Category("Github Settings")]
+        //[DisplayName("Auto-login")]
+        //[Description("Logs-in on startup")]
+        //[DefaultValue(false)]
+        //public bool AutoLogin { get; set; } = false;
     }
 }

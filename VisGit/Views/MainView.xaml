@@ -53,7 +53,7 @@
                                    VerticalAlignment="Center" ToolBarTray.IsLocked="true">
 
                     <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
-                            d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding InitialiseViewCommand}" />
+                            d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}" />
                 </controls:ToolBar>
 
                 <!-- AUTHENTICATED TOOLBAR -->

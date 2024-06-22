@@ -14,12 +14,9 @@ namespace VisGit.Views
 
         private void CouldNotLoadFileOrAssemblyHack()
         {
+            // this solves MS bug:
+            // https://stackoverflow.com/questions/78644729/visual-studio-extension-using-external-library-produces-could-not-load-file-or
             var assemblyLoadFix = new VisGit.Core.ViewModels.MainViewModel();
-        }
-
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            VS.MessageBox.Show("VisGit", "Button clicked");
         }
 
         private void VisGit_Initialized(object sender, EventArgs e)

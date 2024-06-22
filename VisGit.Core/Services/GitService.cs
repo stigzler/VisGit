@@ -19,11 +19,10 @@ namespace VisGit.Core.Services
 
         internal async Task<Exception> AuthenticateUserAsync()
         {
-            var tokenAuth = new Credentials(userSettings.PersonalAccessToken);
-            gitHubClient.Credentials = tokenAuth;
-
             try
             {
+                var tokenAuth = new Credentials(userSettings.PersonalAccessToken);
+                gitHubClient.Credentials = tokenAuth;
                 var authTest = await gitHubClient.RateLimit.GetRateLimits(); // have to be authorised to access this. Thus, provides a test.
                 return null;
             }

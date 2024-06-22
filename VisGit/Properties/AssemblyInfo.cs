@@ -18,6 +18,7 @@ using VisGit;
 [assembly: ProvideCodeBase(AssemblyName = "Microsoft.Xaml.Behaviors")]
 [assembly: ProvideCodeBase(AssemblyName = "CommunityToolkit.Mvvm")]
 [assembly: ProvideCodeBase(AssemblyName = "VisGit.Core")]
+[assembly: ProvideCodeBase(AssemblyName = "Octokit")]
 
 namespace System.Runtime.CompilerServices
 {
