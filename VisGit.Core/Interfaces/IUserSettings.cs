@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace VisGit.Core.Interfaces
 {
-    public interface IUserSettings
+    public class IUserSettings
     {
-        string PersonalAccessToken { get; }
+        private string PersonalAccessToken { get; set; }
     }
 }

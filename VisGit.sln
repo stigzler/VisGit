@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGit", "VisGit\VisGit.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGit.Core", "VisGit.Core\VisGit.Core.csproj", "{54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Docs", "Docs\Docs.shproj", "{FD05501B-D283-49CD-9751-88FF06394E99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,5 +52,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84F9F4E9-0F73-4A02-A307-C25F653ED0E3}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Docs\Docs.projitems*{fd05501b-d283-49cd-9751-88ff06394e99}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

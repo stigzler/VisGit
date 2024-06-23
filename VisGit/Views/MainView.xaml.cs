@@ -16,7 +16,11 @@ namespace VisGit.Views
             InitializeComponent();
 
             viewModel = (MainViewModel)this.DataContext;
-            viewModel.UserSettings = new UserSettings();
+
+            //var dave = OptionsPage.Instance;
+
+            //viewModel.UserSettings = new UserSettings();
+            //viewModel.UserSettings.PersonalAccessToken = dave.PersonalAccessToken;
         }
 
         private void CouldNotLoadFileOrAssemblyHack()

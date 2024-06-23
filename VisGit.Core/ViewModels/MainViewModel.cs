@@ -1,11 +1,12 @@
 ﻿using Community.VisualStudio.Toolkit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using VisGit.Core.Controllers;
-using VisGit.Core.Services;
-using System.Diagnostics;
 using VisGit.Core.Interfaces;
+using VisGit.Core.Services;
 
 namespace VisGit.Core.ViewModels
 {
@@ -21,9 +22,20 @@ namespace VisGit.Core.ViewModels
 
         #endregion End: Properties
 
+        #region Property Changed Methods =========================================================================================
+
+        partial void OnVisualStudioStatusTextChanged(string value)
+        {
+            _ = VS.StatusBar.ShowMessageAsync(value);
+        }
+
+        #endregion End: Property Changed Methods
+
         #region Operational Vars =========================================================================================
 
-        public IUserSettings UserSettings;
+        //public IUserSettings UserSettings;
+
+        public string personalAccessToken = string.Empty;
 
         private GitService gitClient = new GitService();
         private GitController gitController;
@@ -42,7 +54,10 @@ namespace VisGit.Core.ViewModels
         [RelayCommand]
         private async Task AuthenticateUserAsync()
         {
-            UserAuthenicated = await gitController.AuthenticateUserAsync(UserSettings.PersonalAccessToken);
+            UserAuthenicated = await gitController.AuthenticateUserAsync(
+                Encryption.DpapiToInsecureString(
+                    Encryption.DpapiDecryptString(Properties.Settings.Default.PersonalAccessTokenEncrypted)));
+
             if (UserAuthenicated) UpdateVsStatusText("Login Successful");
             else UpdateVsStatusText("Login error. Check connection and PAT.");
         }

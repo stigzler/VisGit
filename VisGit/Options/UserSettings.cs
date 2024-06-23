@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VisGit.Core.Interfaces;
 
 namespace VisGit.Core.Data
 {
-    internal class UserSettings : VisGit.Core.Interfaces.IUserSettings
+    internal class UserSettings : IUserSettings
     {
-        private OptionsPage optionsPage;
+        //private OptionsPage optionsPage;
 
-        public string PersonalAccessToken { get => optionsPage.PersonalAccessToken; }
+        public string PersonalAccessToken { get; set; }
 
         public UserSettings()
         {
-            optionsPage = OptionsPage.Instance;
+            //optionsPage = OptionsPage.Instance;
         }
     }
 }

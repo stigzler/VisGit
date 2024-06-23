@@ -13,6 +13,11 @@ namespace VisGit
         { }
     }
 
+    /// <summary>
+    /// HACK: Having to leverage Properties.Settings in VisGit.Core due to no end of issues
+    /// splitting VMs into separate lib (due to mvvm toolkit peculiarities) and also VSIX environ
+    /// making leveraging Interfaces weird.
+    /// </summary>
     public class OptionsPage : BaseOptionModel<OptionsPage>
     {
         private string personalAccessToken = "{UNSET}";
@@ -25,7 +30,27 @@ namespace VisGit
         public string PersonalAccessToken
         {
             get => Encryption.DpapiToInsecureString(Encryption.DpapiDecryptString(personalAccessToken));
-            set => personalAccessToken = Encryption.DpapiEncryptString(Encryption.DpapiToSecureString(value));
+            set
+            {
+                personalAccessToken = Encryption.DpapiEncryptString(Encryption.DpapiToSecureString(value));
+                Core.Properties.Settings.Default.PersonalAccessTokenEncrypted = personalAccessToken;
+                Core.Properties.Settings.Default.Save();
+            }
+        }
+
+        private string _testSetting;
+
+        [Category("Github Settings")]
+        [DisplayName("Test")]
+        public string TestSetting
+        {
+            get { return _testSetting; }
+            set
+            {
+                _testSetting = value;
+                Core.Properties.Settings.Default.TestSetting = _testSetting;
+                Core.Properties.Settings.Default.Save();
+            }
         }
     }
 }
