@@ -34,6 +34,11 @@ namespace VisGit.Core.Services
             return await gitHubClient.Repository.GetAllForCurrent();
         }
 
+        internal async Task<IReadOnlyList<Milestone>> GetAllMilestonesForRepositoryAsync(long repositoryId)
+        {
+            return await gitHubClient.Issue.Milestone.GetAllForRepository(repositoryId, new MilestoneRequest { State = ItemStateFilter.All });
+        }
+
         internal void Logout()
         {
             gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");

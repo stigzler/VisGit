@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 
 namespace VisGit.Core.ViewModels
 {
-    public class RepositoryViewModel : ObservableObject
+    public partial class RepositoryViewModel : BaseViewModel
     {
         #region Properties =========================================================================================
 
         // Fields
+        [ObservableProperty]
         private Repository _gitRepository;
 
+        [ObservableProperty]
         private string _name;
-        private string _id;
-        private DateTime _createdDate;
 
         // Public Members
-        public Repository GitRepository { get => _gitRepository; set => SetProperty(ref _gitRepository, value); }
+        //public Repository GitRepository { get => _gitRepository; set => SetProperty(ref _gitRepository, value); }
 
-        public string Name { get => _name; set => SetProperty(ref _name, value); }
-        public string Id { get => _gitRepository.Id.ToString(); }
-        public string CreatedAt { get => _gitRepository.CreatedAt.ToString(); }
+        // public string Name { get => _name; set => SetProperty(ref _name, value); }
+        //public string Id { get => _gitRepository.Id.ToString(); }
+        //public string CreatedAt { get => _gitRepository.CreatedAt.ToString(); }
 
         #endregion Properties =========================================================================================
 

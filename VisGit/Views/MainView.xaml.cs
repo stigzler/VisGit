@@ -7,20 +7,11 @@ namespace VisGit.Views
 {
     public partial class MainView : UserControl
     {
-        private MainViewModel viewModel;
-
         public MainView()
         {
             CouldNotLoadFileOrAssemblyHack();
 
             InitializeComponent();
-
-            viewModel = (MainViewModel)this.DataContext;
-
-            //var dave = OptionsPage.Instance;
-
-            //viewModel.UserSettings = new UserSettings();
-            //viewModel.UserSettings.PersonalAccessToken = dave.PersonalAccessToken;
         }
 
         private void CouldNotLoadFileOrAssemblyHack()

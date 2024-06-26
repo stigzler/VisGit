@@ -2,15 +2,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using VisGit.Core.Controllers;
-using VisGit.Core.Interfaces;
 using VisGit.Core.Services;
 
 namespace VisGit.Core.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class MainViewModel : BaseViewModel
     {
         #region Properties =========================================================================================
 
@@ -20,6 +20,17 @@ namespace VisGit.Core.ViewModels
         [ObservableProperty]
         private string _visualStudioStatusText = string.Empty;
 
+        // Repository objects
+        [ObservableProperty]
+        private ObservableCollection<RepositoryViewModel> _userRepositoryVMs;
+
+        [ObservableProperty]
+        private RepositoryViewModel _selectedRespositoryVM;
+
+        // Milestone objects
+        [ObservableProperty]
+        private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
+
         #endregion End: Properties
 
         #region Property Changed Methods =========================================================================================
@@ -27,6 +38,11 @@ namespace VisGit.Core.ViewModels
         partial void OnVisualStudioStatusTextChanged(string value)
         {
             _ = VS.StatusBar.ShowMessageAsync(value);
+        }
+
+        partial void OnSelectedRespositoryVMChanged(RepositoryViewModel value)
+        {
+            _ = GetAllMilestonesForRepoAsync(value.GitRepository.Id);
         }
 
         #endregion End: Property Changed Methods
@@ -49,6 +65,7 @@ namespace VisGit.Core.ViewModels
         {
             gitController = new GitController(gitClient);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            UserRepositoryVMs = new ObservableCollection<RepositoryViewModel>();
         }
 
         [RelayCommand]
@@ -60,6 +77,9 @@ namespace VisGit.Core.ViewModels
 
             if (UserAuthenicated) UpdateVsStatusText("Login Successful");
             else UpdateVsStatusText("Login error. Check connection and PAT.");
+
+            // Now get all repos for user
+            await GetUserRespositoriesAsync();
         }
 
         #endregion End: Commands
@@ -75,6 +95,18 @@ namespace VisGit.Core.ViewModels
         {
             Debug.WriteLine($"TASK EXCEPTION: {e.Exception.Message}");
             //SingleLineFeedback = e.Exception.Message;
+        }
+
+        private async Task GetUserRespositoriesAsync()
+        {
+            UserRepositoryVMs.Clear();
+            UserRepositoryVMs = await gitController.GetAllRepositoriesAsync();
+        }
+
+        private async Task GetAllMilestonesForRepoAsync(long repositoryId)
+        {
+            RepositoryMilestonesVMs.Clear();
+            RepositoryMilestonesVMs = await gitController.GetAllMilestonesForRepoAsync(repositoryId);
         }
 
         #endregion End: Private Methods

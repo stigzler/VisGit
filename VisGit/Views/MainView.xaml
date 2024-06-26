@@ -33,6 +33,8 @@
                 <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
+                <!-- OTHER -->
+                <ResourceDictionary  Source="../Resources/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -50,7 +52,9 @@
 
                 <!-- UNAUTHENTICATED TOOLBAR  -->
                 <controls:ToolBar x:Name="UnauthenticatedTBar" Style="{StaticResource ToolBarStyle}"
-                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true">
+                                    VerticalAlignment="Center" ToolBarTray.IsLocked="true"
+                                    Visibility="{Binding UserAuthenicated, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                    d:Visibility="Visible">
 
                     <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
                             d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}" />
@@ -59,12 +63,16 @@
                 <!-- AUTHENTICATED TOOLBAR -->
 
                 <controls:ToolBar x:Name="AuthenticatedTBar" Style="{StaticResource ToolBarStyle}"
-                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true">
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true"
+                                  Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  d:Visibility="Visible">
 
-                    <Button x:Name="Authenticate" Content="{StaticResource UiIssueImage}" d:Background="Transparent"
-                                                   d:Content="{StaticResource UiIssueImageDT}" />
+                    <ComboBox x:Name="RepositoryCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0"
+                              ItemsSource="{Binding UserRepositoryVMs}" DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedRespositoryVM, Mode=TwoWay}">
+                    </ComboBox>
 
-                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104">
+                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0">
                         <ComboBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl   Content="{StaticResource UiIssueImage}" d:Content="{StaticResource UiIssueImageDT}" />
