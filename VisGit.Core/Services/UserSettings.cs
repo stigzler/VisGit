@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Community.VisualStudio.Toolkit;
 
@@ -15,10 +16,17 @@ namespace VisGitCore.Services
 
     public class UserSettings : BaseOptionModel<UserSettings>
     {
-        [Category("My category")]
-        [DisplayName("My Option")]
-        [Description("An informative description.")]
-        [DefaultValue(true)]
-        public bool MyOption { get; set; } = true;
+        private string personalAccessToken = "{UNSET}";
+
+        [Category("Github Settings")]
+        [DisplayName("Personal Access Token")]
+        [Description("Your GitHub Personal Access Token. Get one via Github > Settings > Developer Settings > Personal Access Tokens > Fine-grained tokens")]
+        [DefaultValue("{UNSET}")]
+        [PasswordPropertyText(true)]
+        public string PersonalAccessToken
+        {
+            get => Encryption.DpapiToInsecureString(Encryption.DpapiDecryptString(personalAccessToken));
+            set => personalAccessToken = Encryption.DpapiEncryptString(Encryption.DpapiToSecureString(value));
+        }
     }
 }

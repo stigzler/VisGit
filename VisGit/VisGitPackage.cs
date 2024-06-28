@@ -12,7 +12,7 @@ namespace VisGit
     [ProvideToolWindow(typeof(MainToolWindow.Pane), Style = VsDockStyle.Tabbed, Window = WindowGuids.SolutionExplorer)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.VisGitString)]
-    [ProvideOptionPage(typeof(VisGitCore.Services.OptionsProvider.UserSettingsOptions), "VisGitCore.Services", "UserSettings",
+    [ProvideOptionPage(typeof(VisGitCore.Services.OptionsProvider.UserSettingsOptions), "VisGit", "UserSettings",
         0, 0, true, SupportsProfiles = true)]
     public sealed class VisGitPackage : ToolkitPackage
     {

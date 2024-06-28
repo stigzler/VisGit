@@ -53,6 +53,8 @@ namespace VisGitCore.ViewModels
 
         public string personalAccessToken = string.Empty;
 
+        private UserSettings userSettings;
+
         private GitService gitClient = new GitService();
         private GitController gitController;
 
@@ -61,19 +63,21 @@ namespace VisGitCore.ViewModels
         #region Commands =========================================================================================
 
         [RelayCommand]
-        private void InitialiseView()
+        private async Task InitialiseViewAsync()
         {
+            userSettings = await UserSettings.CreateAsync();
+
             gitController = new GitController(gitClient);
+
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
             UserRepositoryVMs = new ObservableCollection<RepositoryViewModel>();
         }
 
         [RelayCommand]
         private async Task AuthenticateUserAsync()
         {
-            UserAuthenicated = await gitController.AuthenticateUserAsync(
-                Encryption.DpapiToInsecureString(
-                    Encryption.DpapiDecryptString(Properties.Settings.Default.PersonalAccessTokenEncrypted)));
+            UserAuthenicated = await gitController.AuthenticateUserAsync(userSettings.PersonalAccessToken);
 
             if (!UserAuthenicated)
             {
