@@ -3,10 +3,10 @@ using Octokit;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using VisGit.Core.Services;
-using VisGit.Core.ViewModels;
+using VisGitCore.Services;
+using VisGitCore.ViewModels;
 
-namespace VisGit.Core.Controllers
+namespace VisGitCore.Controllers
 {
     internal class GitController
     {

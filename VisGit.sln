@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGit", "VisGit\VisGit.csp
 		{54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A} = {54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGit.Core", "VisGit.Core\VisGit.Core.csproj", "{54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGitCore", "VisGit.Core\VisGitCore.csproj", "{54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

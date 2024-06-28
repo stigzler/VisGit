@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
-using VisGit.Core.Controllers;
-using VisGit.Core.Services;
+using VisGitCore.Controllers;
+using VisGitCore.Services;
 using System.Diagnostics;
 
-namespace VisGit.Core.ViewModels
+using VisGitCore.Services;
+
+namespace VisGitCore.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
@@ -52,6 +54,7 @@ namespace VisGit.Core.ViewModels
         [RelayCommand]
         private async Task AuthenticateUserAsync()
         {
+            Debug.WriteLine(Services.UserSettings.Instance.TestString);
             UserAuthenicated = await gitController.AuthenticateUserAsync();
             if (UserAuthenicated) UpdateVsStatusText("Login Successful");
             else UpdateVsStatusText("Login error. Check connection and PAT.");

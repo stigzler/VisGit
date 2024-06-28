@@ -8,8 +8,8 @@
     <ProjectGuid>{54FEA1BA-85CF-4ADA-8A10-CA63F6707E1A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VisGit.Core</RootNamespace>
-    <AssemblyName>VisGit.Core</AssemblyName>
+    <RootNamespace>VisGitCore</RootNamespace>
+    <AssemblyName>VisGitCore</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

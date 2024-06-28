@@ -1,13 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Octokit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace VisGit.Core.ViewModels
+namespace VisGitCore.ViewModels
 {
     public class RepositoryViewModel : ObservableObject
     {

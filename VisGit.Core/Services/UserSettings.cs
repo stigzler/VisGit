@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Community.VisualStudio.Toolkit;
+using VisGitCore.Services;
 
-namespace VisGit.Core.Services
+namespace VisGitCore.Services
 {
     public partial class OptionsProvider
     {
@@ -27,6 +28,8 @@ namespace VisGit.Core.Services
             get => Encyption.DpapiToInsecureString(Encyption.DpapiDecryptString(personalAccessToken));
             set => personalAccessToken = Encyption.DpapiEncryptString(Encyption.DpapiToSecureString(value));
         }
+
+        public string TestString { get; set; } = "{unset}";
 
         //[Category("Github Settings")]
         //[DisplayName("Auto-login")]
