@@ -1,6 +1,7 @@
 ﻿using Community.VisualStudio.Toolkit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.VisualStudio.RpcContracts.FileSystem;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -14,11 +15,15 @@ namespace VisGitCore.ViewModels
     {
         #region Properties =========================================================================================
 
+        // UI Properties
         [ObservableProperty]
         private bool _userAuthenicated = false;
 
         [ObservableProperty]
         private string _visualStudioStatusText = string.Empty;
+
+        [ObservableProperty]
+        private bool _operationInProgress = false;
 
         // Repository objects
         [ObservableProperty]
@@ -65,7 +70,7 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private async Task InitialiseViewAsync()
         {
-            userSettings = await UserSettings.CreateAsync();
+            userSettings = await UserSettings.GetLiveInstanceAsync();
 
             gitController = new GitController(gitClient);
 
@@ -77,23 +82,39 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private async Task AuthenticateUserAsync()
         {
+            StartOperation("Authenticating User");
+
             UserAuthenicated = await gitController.AuthenticateUserAsync(userSettings.PersonalAccessToken);
 
             if (!UserAuthenicated)
             {
-                UpdateVsStatusText("User authentication error. Check connection and PAT.");
+                FinishOperation("User authentication error. Check connection and PAT.");
                 return;
             }
 
-            UpdateVsStatusText("User authentication successful.");
+            UpdateVsStatusText("User authentication successful. Getting Repositories...");
 
             // Now get all repos for user
             await GetUserRespositoriesAsync();
+
+            FinishOperation("User authenticated and Repositories populated.");
         }
 
         #endregion End: Commands
 
         #region Private Methods =========================================================================================
+
+        private void StartOperation(string statusMessage)
+        {
+            UpdateVsStatusText(statusMessage);
+            OperationInProgress = true;
+        }
+
+        private void FinishOperation(string statusMessage)
+        {
+            UpdateVsStatusText(statusMessage);
+            OperationInProgress = false;
+        }
 
         private void UpdateVsStatusText(string message)
         {

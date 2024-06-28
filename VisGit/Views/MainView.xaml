@@ -95,5 +95,10 @@
                 </controls:ToolBar>
             </ToolBarTray>
         </DockPanel>
+
+        <ProgressBar DockPanel.Dock="Top" Height="2" IsIndeterminate="True" Margin="4,0,4,0"
+                     Visibility="{Binding OperationInProgress, Converter={StaticResource BoolToVisibilityConverter}}"
+                     Foreground="#00A2ED" Background="Transparent" BorderBrush="#40808080" />
+        <Frame></Frame>
     </DockPanel>
 </UserControl>

@@ -48,7 +48,6 @@
     <Compile Include="Controls\ToolBar.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
-    <Compile Include="Options\OptionsPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\MyToolWindowCommand.cs" />
     <Compile Include="VisGitPackage.cs" />
