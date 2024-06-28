@@ -7,7 +7,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisGit.Core.ViewModels
+namespace VisGitCore.ViewModels
 {
     public partial class RepositoryViewModel : BaseViewModel
     {

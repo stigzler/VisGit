@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisGit.Core.ViewModels
+namespace VisGitCore.ViewModels
 {
     public class BaseViewModel : ObservableObject
     {

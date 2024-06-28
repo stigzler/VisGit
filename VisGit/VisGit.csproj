@@ -161,9 +161,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VisGit.Core\VisGit.Core.csproj">
+    <ProjectReference Include="..\VisGit.Core\VisGitCore.csproj">
       <Project>{54fea1ba-85cf-4ada-8a10-ca63f6707e1a}</Project>
-      <Name>VisGit.Core</Name>
+      <Name>VisGitCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

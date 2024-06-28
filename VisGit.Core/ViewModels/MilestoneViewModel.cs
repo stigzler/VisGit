@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Octokit;
 
-namespace VisGit.Core.ViewModels
+namespace VisGitCore.ViewModels
 {
     public partial class MilestoneViewModel : BaseViewModel
     {

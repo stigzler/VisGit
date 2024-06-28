@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
-using VisGit.Core.Services;
+using VisGitCore.Services;
 
 namespace VisGit
 {
@@ -33,8 +33,8 @@ namespace VisGit
             set
             {
                 personalAccessToken = Encryption.DpapiEncryptString(Encryption.DpapiToSecureString(value));
-                Core.Properties.Settings.Default.PersonalAccessTokenEncrypted = personalAccessToken;
-                Core.Properties.Settings.Default.Save();
+                VisGitCore.Properties.Settings.Default.PersonalAccessTokenEncrypted = personalAccessToken;
+                VisGitCore.Properties.Settings.Default.Save();
             }
         }
 
@@ -48,8 +48,8 @@ namespace VisGit
             set
             {
                 _testSetting = value;
-                Core.Properties.Settings.Default.TestSetting = _testSetting;
-                Core.Properties.Settings.Default.Save();
+                VisGitCore.Properties.Settings.Default.TestSetting = _testSetting;
+                VisGitCore.Properties.Settings.Default.Save();
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Octokit;
-using VisGit.Core.Data;
+using VisGitCore.Data;
 using System;
 
-namespace VisGit.Core.Services
+namespace VisGitCore.Services
 {
     internal class GitService
     {

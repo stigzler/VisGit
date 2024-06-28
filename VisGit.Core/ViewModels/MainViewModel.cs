@@ -5,10 +5,10 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using VisGit.Core.Controllers;
-using VisGit.Core.Services;
+using VisGitCore.Controllers;
+using VisGitCore.Services;
 
-namespace VisGit.Core.ViewModels
+namespace VisGitCore.ViewModels
 {
     public partial class MainViewModel : BaseViewModel
     {
@@ -75,8 +75,13 @@ namespace VisGit.Core.ViewModels
                 Encryption.DpapiToInsecureString(
                     Encryption.DpapiDecryptString(Properties.Settings.Default.PersonalAccessTokenEncrypted)));
 
-            if (UserAuthenicated) UpdateVsStatusText("Login Successful");
-            else UpdateVsStatusText("Login error. Check connection and PAT.");
+            if (!UserAuthenicated)
+            {
+                UpdateVsStatusText("User authentication error. Check connection and PAT.");
+                return;
+            }
+
+            UpdateVsStatusText("User authentication successful.");
 
             // Now get all repos for user
             await GetUserRespositoriesAsync();
