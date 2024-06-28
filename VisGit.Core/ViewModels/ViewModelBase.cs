@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VisGitCore.ViewModels
 {
-    public class BaseViewModel : ObservableObject
+    public class ViewModelBase : ObservableObject
     {
     }
 }

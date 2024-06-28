@@ -8,7 +8,7 @@ using Octokit;
 
 namespace VisGitCore.ViewModels
 {
-    public partial class MilestoneViewModel : BaseViewModel
+    public partial class MilestoneViewModel : ViewModelBase
     {
         #region PROPERTIES =========================================================================================
 

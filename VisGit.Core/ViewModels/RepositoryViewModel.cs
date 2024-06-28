@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace VisGitCore.ViewModels
 {
-    public partial class RepositoryViewModel : BaseViewModel
+    public partial class RepositoryViewModel : ViewModelBase
     {
         #region Properties =========================================================================================
 

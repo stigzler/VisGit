@@ -13,6 +13,7 @@
             toolkit:Themes.UseVsTheme="True"
             xmlns:controls="clr-namespace:VisGit.Controls"
             xmlns:viewmodels="clr-namespace:VisGitCore.ViewModels;assembly=VisGitCore"
+            xmlns:views="clr-namespace:VisGit.Views"
             mc:Ignorable="d"
             d:DesignHeight="209" d:DesignWidth="800"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
@@ -58,6 +59,9 @@
 
                     <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
                             d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}" />
+
+                    <Button x:Name="TestBT" Content="{DynamicResource UiTestImage}"
+                            d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />
                 </controls:ToolBar>
 
                 <!-- AUTHENTICATED TOOLBAR -->
@@ -72,33 +76,58 @@
                               SelectedItem="{Binding SelectedRespositoryVM, Mode=TwoWay}">
                     </ComboBox>
 
-                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0">
-                        <ComboBoxItem>
+                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0"
+                              SelectedValue="{Binding SelectedGitObject}" ItemsSource="{Binding GitObjects}">
+                        <ComboBox.ItemTemplate>
+                            <ItemContainerTemplate>
+                                <DockPanel LastChildFill="True">
+                                    <imaging:CrispImage DockPanel.Dock="Left" Moniker="{Binding Icon}" />
+                                    <TextBlock Margin="4,0,0,0"><Run Text="{Binding Name}" /></TextBlock>
+                                </DockPanel>
+                            </ItemContainerTemplate>
+                        </ComboBox.ItemTemplate>
+
+                        <!--<ComboBoxItem x:Name="GitObjectSelectorIssues">
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl   Content="{StaticResource UiIssueImage}" d:Content="{StaticResource UiIssueImageDT}" />
                                 <TextBlock Text="Issues" Margin="4,0,0,0" />
                             </StackPanel>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem  x:Name="GitObjectSelectorLabels">
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource UiLabelImage}" d:Content="{DynamicResource UiLabelImageDT}" />
                                 <TextBlock Text="Labels" Margin="4,0,0,0" />
                             </StackPanel>
                         </ComboBoxItem>
-                        <ComboBoxItem>
+                        <ComboBoxItem  x:Name="GitObjectSelectorMilestones">
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource UiMilestoneImage}" d:Content="{DynamicResource UiMilestoneImageDT}" />
                                 <TextBlock Text="Milestones" Margin="4,0,0,0" />
                             </StackPanel>
-                        </ComboBoxItem>
+                        </ComboBoxItem>-->
+                        <!--<i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command=""
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>-->
                     </ComboBox>
                 </controls:ToolBar>
             </ToolBarTray>
         </DockPanel>
 
-        <ProgressBar DockPanel.Dock="Top" Height="2" IsIndeterminate="True" Margin="4,0,4,0"
+        <ProgressBar x:Name="OperationPB" DockPanel.Dock="Bottom" Height="2" IsIndeterminate="True" Margin="4,0,4,0"
                      Visibility="{Binding OperationInProgress, Converter={StaticResource BoolToVisibilityConverter}}"
                      Foreground="#00A2ED" Background="Transparent" BorderBrush="#40808080" />
-        <Frame></Frame>
+
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
+                    <views:HomeView></views:HomeView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:MilestonesViewModel}">
+                    <views:MilestonesView></views:MilestonesView>
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
     </DockPanel>
 </UserControl>

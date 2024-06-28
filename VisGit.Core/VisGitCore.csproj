@@ -49,6 +49,10 @@
   <ItemGroup>
     <Compile Include="Controllers\GitController.cs" />
     <Compile Include="Data\Constants.cs" />
+    <Compile Include="Data\Models\GitObject.cs" />
+    <Compile Include="Data\Models\GitObjectType.cs" />
+    <Compile Include="Enums\ViewRequest.cs" />
+    <Compile Include="Messages\ChangeViewMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -58,7 +62,9 @@
     <Compile Include="Services\Encryption.cs" />
     <Compile Include="Services\GitService.cs" />
     <Compile Include="Services\UserSettings.cs" />
-    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\MilestonesViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MilestoneViewModel.cs" />
     <Compile Include="ViewModels\RepositoryViewModel.cs" />

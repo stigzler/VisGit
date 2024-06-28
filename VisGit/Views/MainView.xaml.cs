@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using VisGitCore.Controllers;
 using VisGitCore.Data;
 using VisGitCore.ViewModels;
 
@@ -9,6 +10,7 @@ namespace VisGit.Views
     {
         public MainView()
         {
+            // Fixes
             CouldNotLoadFileOrAssemblyHack();
 
             InitializeComponent();
@@ -23,6 +25,8 @@ namespace VisGit.Views
 
         private void VisGit_Initialized(object sender, EventArgs e)
         {
+            // App functions
+            MainViewModel mainViewModel = (MainViewModel)this.DataContext;
         }
     }
 }
