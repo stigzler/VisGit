@@ -12,7 +12,7 @@
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             toolkit:Themes.UseVsTheme="True"
             xmlns:controls="clr-namespace:VisGit.Controls"
-            xmlns:viewmodels="clr-namespace:VisGitCore.ViewModels;assembly=VisGit.Core"
+            xmlns:viewmodels="clr-namespace:VisGitCore.ViewModels;assembly=VisGitCore"
             mc:Ignorable="d"
             d:DesignHeight="209" d:DesignWidth="800"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
