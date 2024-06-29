@@ -24,4 +24,13 @@
 
     <imaging:CrispImage x:Key="UiTestImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.RunTest}" />
     <Image              x:Key="UiTestImageDT" x:Shared="false" Width="16" Height="16" Source="Images/RunTest.png" />
+
+    <imaging:CrispImage x:Key="UiCalendarImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Calendar}" />
+    <Image              x:Key="UiCalendarImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Calendar.png" />
+
+    <imaging:CrispImage x:Key="UiTimeImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Time}" />
+    <Image              x:Key="UiTimeImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Time.png" />
+
+    <imaging:CrispImage x:Key="UiSaveImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}" />
+    <Image              x:Key="UiSaveImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Save.png" />
 </ResourceDictionary>

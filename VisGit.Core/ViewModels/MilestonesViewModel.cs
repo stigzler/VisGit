@@ -12,9 +12,10 @@ namespace VisGitCore.ViewModels
         #region Properties =========================================================================================
 
         [ObservableProperty]
-        private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
+        private MainViewModel _mainViewModel;
 
-        public MainViewModel MainViewModel { get; set; }
+        [ObservableProperty]
+        private MilestoneViewModel _selectedMilestoneViewModel;
 
         #endregion End: Properties
 
@@ -23,7 +24,7 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private void NavigateHome()
         {
-            Debug.WriteLine(MainViewModel.ToString());
+            Debug.WriteLine(MainViewModel.RepositoryMilestonesVMs.Count.ToString());
             WeakReferenceMessenger.Default.Send(new ChangeViewMessage(Enums.ViewRequest.Home));
         }
 

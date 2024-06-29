@@ -8,4 +8,6 @@
 
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+    <converters:DueByConverter x:Key="DueByConverter" />
+    <converters:LastUpdatedConverter x:Key="LastUpdatedConverter" />
 </ResourceDictionary>

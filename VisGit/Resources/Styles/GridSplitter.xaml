@@ -6,4 +6,12 @@
                     xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mwt1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
+
+    <!-- GRID SPLITTER -->
+    <Style x:Key="GridSplitterStyle" TargetType="GridSplitter">
+        <Setter Property="BorderBrush" Value="#909090" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
 </ResourceDictionary>

@@ -20,6 +20,18 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private string _title;
 
+        [ObservableProperty]
+        private string _description;
+
+        [ObservableProperty]
+        private DateTimeOffset? _dueOn;
+
+        public string IssuesStatus
+        {
+            get => $"{Services.Math.Percentage(GitMilestone.OpenIssues, GitMilestone.OpenIssues + GitMilestone.ClosedIssues).ToString()}% complete " +
+                $"{GitMilestone.OpenIssues} open {GitMilestone.ClosedIssues} closed";
+        }
+
         #endregion End: PROPERTIES
 
         public MilestoneViewModel()
@@ -34,6 +46,9 @@ namespace VisGitCore.ViewModels
         private void UpdateProperties(Milestone milestone)
         {
             Title = milestone.Title;
+            Description = milestone.Description;
+            DueOn = milestone.DueOn;
+
             GitMilestone = milestone;
         }
     }

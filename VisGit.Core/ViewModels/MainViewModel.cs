@@ -2,12 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.VisualStudio.RpcContracts.FileSystem;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
 using VisGitCore.Enums;
@@ -62,8 +59,8 @@ namespace VisGitCore.ViewModels
 
         // View Models
 
-        private HomeViewModel homeViewModel = new HomeViewModel();
-        private MilestonesViewModel milestonesViewModel = new MilestonesViewModel();
+        private HomeViewModel homeViewModel;
+        private MilestonesViewModel milestonesViewModel;
 
         #endregion End: Operational Vars
 
@@ -116,8 +113,7 @@ namespace VisGitCore.ViewModels
 
             WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this);
 
-            // ViewModels:
-            milestonesViewModel.MainViewModel = this;
+            milestonesViewModel = new MilestonesViewModel(this);
         }
 
         [RelayCommand]
@@ -185,7 +181,7 @@ namespace VisGitCore.ViewModels
             switch (message.Value)
             {
                 case ViewRequest.Home:
-                    CurrentViewModel = new HomeViewModel();
+                    CurrentViewModel = homeViewModel;
                     break;
             }
         }
