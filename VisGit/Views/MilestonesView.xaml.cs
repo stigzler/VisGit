@@ -24,5 +24,14 @@ namespace VisGit.Views
         {
             InitializeComponent();
         }
+
+        private void MiliestonesLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+        }
+
+        private void Calendar_SelectedDatesChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ContextPopup.IsOpen = false;
+        }
     }
 }

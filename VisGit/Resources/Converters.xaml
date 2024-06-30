@@ -10,4 +10,9 @@
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
     <converters:DueByConverter x:Key="DueByConverter" />
     <converters:LastUpdatedConverter x:Key="LastUpdatedConverter" />
+    <converters:OpenStatusToImageConverter x:Key="OpenStatusToImageConverter" />
+    <converters:BoolToOpenClosedConverter x:Key="BoolToOpenClosedConverter" />
+    <converters:DateOffsetToDateConverter x:Key="DateOffsetToDateConverter" />
+    <converters:OpenStatusToOpacityConverter x:Key="OpenStatusToOpacityConverter" />
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
 </ResourceDictionary>

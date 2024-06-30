@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using VisGitCore.Messages;
 
 namespace VisGitCore.ViewModels
@@ -28,8 +29,12 @@ namespace VisGitCore.ViewModels
             WeakReferenceMessenger.Default.Send(new ChangeViewMessage(Enums.ViewRequest.Home));
         }
 
-        private void Initialise(MilestoneViewModel viewModel)
+        [RelayCommand]
+        private async Task DeleteMilestoneAsync()
         {
+            await SelectedMilestoneViewModel.DeleteMilestoneAsync();
+            MainViewModel.RepositoryMilestonesVMs.Remove(SelectedMilestoneViewModel);
+            if (MainViewModel.RepositoryMilestonesVMs.Count > 0) SelectedMilestoneViewModel = MainViewModel.RepositoryMilestonesVMs[0];
         }
 
         #endregion End: Commands

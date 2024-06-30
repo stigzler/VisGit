@@ -64,9 +64,9 @@
                             d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />
                 </controls:ToolBar>
 
-                <!-- AUTHENTICATED TOOLBAR -->
+                <!-- GENERIC AUTHENTICATED TOOLBAR -->
 
-                <controls:ToolBar x:Name="AuthenticatedTBar" Style="{StaticResource ToolBarStyle}"
+                <controls:ToolBar x:Name="GenericTB" Style="{StaticResource ToolBarStyle}"
                                    VerticalAlignment="Center" ToolBarTray.IsLocked="true"
                                   Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
                                   d:Visibility="Visible">
@@ -86,30 +86,28 @@
                                 </DockPanel>
                             </ItemContainerTemplate>
                         </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                        <!--<ComboBoxItem x:Name="GitObjectSelectorIssues">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl   Content="{StaticResource UiIssueImage}" d:Content="{StaticResource UiIssueImageDT}" />
-                                <TextBlock Text="Issues" Margin="4,0,0,0" />
-                            </StackPanel>
-                        </ComboBoxItem>
-                        <ComboBoxItem  x:Name="GitObjectSelectorLabels">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl Content="{DynamicResource UiLabelImage}" d:Content="{DynamicResource UiLabelImageDT}" />
-                                <TextBlock Text="Labels" Margin="4,0,0,0" />
-                            </StackPanel>
-                        </ComboBoxItem>
-                        <ComboBoxItem  x:Name="GitObjectSelectorMilestones">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl Content="{DynamicResource UiMilestoneImage}" d:Content="{DynamicResource UiMilestoneImageDT}" />
-                                <TextBlock Text="Milestones" Margin="4,0,0,0" />
-                            </StackPanel>
-                        </ComboBoxItem>-->
-                        <!--<i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command=""
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>-->
+                    <Button x:Name="AddBT" Content="{DynamicResource UiAddImage}"
+                            d:Content="{DynamicResource UiAddImageDT}" Command="{Binding AddItemCommand}" />
+                </controls:ToolBar>
+
+                <!-- MILESTONES TOOLBAR -->
+                <controls:ToolBar x:Name="MilestonesTB" Style="{StaticResource ToolBarStyle}"
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true"
+                                  Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  d:Visibility="Visible">
+
+                    <ComboBox x:Name="MilestoneFilterCB" Style="{DynamicResource ComboBoxStyle}" Width="85" Margin="2,0,2,0"
+                              ItemsSource="{Binding MilestonesFilters}">
+                        <ComboBox.ItemTemplate>
+                            <ItemContainerTemplate>
+                                <DockPanel LastChildFill="True">
+                                    <imaging:CrispImage DockPanel.Dock="Left" Moniker="{Binding Icon}" />
+                                    <TextBlock Margin="4,0,0,0"><Run Text="{Binding Name}" /></TextBlock>
+                                </DockPanel>
+                            </ItemContainerTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
                 </controls:ToolBar>
             </ToolBarTray>

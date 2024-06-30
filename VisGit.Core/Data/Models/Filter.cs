@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace VisGitCore.Data.Models
 {
-    public partial class GitObject : ObservableObject
+    public partial class Filter : ObservableObject
     {
         #region Properties =========================================================================================
 
@@ -21,22 +21,21 @@ namespace VisGitCore.Data.Models
         private ImageMoniker _icon;
 
         [ObservableProperty]
-        private GitObjectType _type;
+        private FilterType _filterType;
 
         #endregion End: Properties
 
-        public GitObject(string name, ImageMoniker icon, GitObjectType gitObjectType)
+        public Filter(string name, ImageMoniker icon, FilterType filterType)
         {
             Name = name;
             Icon = icon;
-            Type = gitObjectType;
+            FilterType = filterType;
         }
 
-        public static ObservableCollection<GitObject> GitObjects = new ObservableCollection<GitObject>()
-        {
-            new GitObject("Issues", KnownMonikers.DisableAllBreakpoints, GitObjectType.Issue),
-            new GitObject("Labels", KnownMonikers.SmartTag, GitObjectType.Label),
-            new GitObject("Milestones", KnownMonikers.SendSignalAction, GitObjectType.Milestone),
+        public static ObservableCollection<Filter> MilestoneFilters = new ObservableCollection<Filter>()
+        {   new Filter("Open", KnownMonikers.Visible, FilterType.Open),
+            new Filter("Closed", KnownMonikers.CloakOrHide, FilterType.Closed),
+            new Filter("None", KnownMonikers.DeleteFilter, FilterType.None)
         };
     }
 }

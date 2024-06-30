@@ -45,10 +45,26 @@ namespace VisGitCore.Controllers
 
             foreach (Milestone milestone in repositoryMilestones)
             {
-                milestoneViewModels.Add(new MilestoneViewModel(milestone));
+                milestoneViewModels.Add(new MilestoneViewModel(this, milestone, repositoryId));
             }
 
             return milestoneViewModels;
+        }
+
+        internal async Task<Milestone> SaveMilestoneAsync(MilestoneViewModel milestoneViewModel)
+        {
+            return await gitService.SaveMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number,
+                 milestoneViewModel.Title, milestoneViewModel.Description, milestoneViewModel.DueOn, milestoneViewModel.Open);
+        }
+
+        internal async Task DeleteMilestoneAsync(MilestoneViewModel milestoneViewModel)
+        {
+            await gitService.DeleteMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number);
+        }
+
+        internal async Task<Milestone> CreateNewMilestoneAsync(long repositoryId, string title)
+        {
+            return await gitService.CreateNewMilestoneAsync(repositoryId, title);
         }
     }
 }

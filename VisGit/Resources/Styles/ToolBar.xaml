@@ -3,8 +3,7 @@
                     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
                     xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    xmlns:mwt1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-                    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+                    xmlns:mwt1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
 
     <!-- TOOLBAR STYLE -->
 
@@ -16,8 +15,8 @@
     <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-        <Setter Property="Width" Value="22"/>
-        <Setter Property="Height" Value="22"/>
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
         <Setter Property="Focusable" Value="False" />
     </Style>
 
@@ -35,7 +34,4 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-
-
-
 </ResourceDictionary>

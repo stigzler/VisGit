@@ -2,8 +2,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Octokit;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
@@ -31,10 +34,13 @@ namespace VisGitCore.ViewModels
         public ViewModelBase _currentViewModel;
 
         [ObservableProperty]
-        public object _selectedGitObject;
+        private object _selectedGitObject;
 
         [ObservableProperty]
-        public ObservableCollection<GitObject> _gitObjects = GitObject.GitObjects;
+        private ObservableCollection<GitObject> _gitObjects = GitObject.GitObjects;
+
+        [ObservableProperty]
+        internal ObservableCollection<Filter> _milestonesFilters = Filter.MilestoneFilters;
 
         // Repository objects -------------------------------------------------------------
         [ObservableProperty]
@@ -83,10 +89,16 @@ namespace VisGitCore.ViewModels
             {
                 case GitObjectType.Milestone:
                     CurrentViewModel = milestonesViewModel;
+                    if (RepositoryMilestonesVMs.Count > 0) milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];
                     break;
             }
 
             Debug.WriteLine($"Git Object changed: {item.Name}");
+        }
+
+        partial void OnRepositoryMilestonesVMsChanged(ObservableCollection<MilestoneViewModel> oldValue, ObservableCollection<MilestoneViewModel> newValue)
+        {
+            if (RepositoryMilestonesVMs.Count > 0) milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs.First();
         }
 
         #endregion End: Property Changed Methods
@@ -135,6 +147,21 @@ namespace VisGitCore.ViewModels
             await GetUserRespositoriesAsync();
 
             FinishOperation("User authenticated and Repositories populated.");
+        }
+
+        [RelayCommand]
+        private async Task AddItemAsync()
+        {
+            switch (CurrentViewModel)
+            {
+                case MilestonesViewModel:
+                    Debug.WriteLine("Add Milestone!");
+                    string title = "New Milestone created " + DateTime.Now.ToShortDateString();
+                    Milestone newMilestone = await gitController.CreateNewMilestoneAsync(SelectedRespositoryVM.GitRepository.Id, title);
+                    MilestoneViewModel newMilestoneViewModel = new MilestoneViewModel(gitController, newMilestone, SelectedRespositoryVM.GitRepository.Id);
+                    RepositoryMilestonesVMs.Add(newMilestoneViewModel);
+                    break;
+            }
         }
 
         #endregion End: Commands

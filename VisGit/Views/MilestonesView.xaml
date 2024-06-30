@@ -22,6 +22,8 @@
                 <ResourceDictionary Source="../Resources/Styles/GridSplitter.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/Button.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/TextBox.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/Calendar.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ToggleButton.xaml" />
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -29,47 +31,105 @@
     </UserControl.Resources>
 
     <DockPanel LastChildFill="True">
-        <!--<TextBlock DockPanel.Dock="Top" d:Foreground="Gainsboro">Milestones</TextBlock>
-        <Button  DockPanel.Dock="Bottom" Content="Home View" Command="{Binding NavigateHomeCommand}" />-->
+        <!-- <Button  DockPanel.Dock="Bottom" Content="Home View" Command="{Binding NavigateHomeCommand}" /> -->
         <Grid x:Name="MilestonesMainLayout" Margin="2">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="MiliestonesLV" Grid.Column="0" Width="auto"
-                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesVMs}" DisplayMemberPath="Title"
-                      SelectedItem="{Binding SelectedMilestoneViewModel}" BorderThickness="0" />
+                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesVMs}"
+                      SelectedItem="{Binding SelectedMilestoneViewModel}" BorderThickness="0"
+                      d:Background="Transparent" SelectionChanged="MiliestonesLV_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <ContentControl Width="18" Content="{StaticResource UiSaveImage}" HorizontalAlignment="Left"
+                                            d:Content="{StaticResource UiSaveImageDT}" Margin="-4,0,2,0"
+                                            Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            <TextBlock Text="{Binding Title}" Opacity="{Binding Open, Converter={StaticResource OpenStatusToOpacityConverter}}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                          BorderBrush="Transparent" BorderThickness="2"
+                          Background="Gray"
                           Style="{StaticResource GridSplitterStyle}"></GridSplitter>
 
-            <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2">
+            <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2" Background="Transparent"
+                  Visibility="{Binding MainViewModel.RepositoryMilestonesVMs.Count, Converter={StaticResource IntToVisibilityConverter}}">
 
-                <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="4">
+                <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0">
 
                     <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
-                        <Button DockPanel.Dock="Right"    Width="24" Height="24" MinWidth="10" Padding="0"
-                                Content="{DynamicResource UiSaveImage}"
-                                    d:Content="{DynamicResource UiSaveImageDT}"
-                                    Style="{StaticResource ButtonStyle}">
+
+                        <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
+                            Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
+                            Style="{StaticResource ButtonStyle}" Command="{Binding SelectedMilestoneViewModel.SaveMilestoneCommand}"
+                            Visibility="{Binding SelectedMilestoneViewModel.HasChanges,
+                            Converter={StaticResource BoolToVisibilityConverter}}"
+                           ToolTip="Save Changes">
                         </Button>
 
-                        <TextBox x:Name="MilestoneTitleTB" Text="{Binding SelectedMilestoneViewModel.Title}"
-                              FontSize="18" Margin="4" Style="{StaticResource TextBoxStyle}"
+                        <TextBox x:Name="MilestoneTitleTB" VerticalAlignment="Center" Margin="4,0,0,0"
+                                 Text="{Binding SelectedMilestoneViewModel.Title, UpdateSourceTrigger=PropertyChanged}"
+                              FontSize="18" Style="{StaticResource TextBoxStyle}"
                              d:Background="Transparent" d:Foreground="White" d:Text="Milestone Name" />
                     </DockPanel>
 
                     <Separator DockPanel.Dock="Top" Background="Gray"></Separator>
 
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="24">
 
-                        <Button Width="24" Height="24" MinWidth="10" Padding="0" Content="{DynamicResource UiCalendarImage}"
+                        <!-- Below for debug - shows Milestone Number -->
+                        <!--<TextBlock>#</TextBlock>
+                        <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
+
+                        <!--<Button Width="24"  MinWidth="10" Padding="0" Content="{DynamicResource UiCalendarImage}"
                                     d:Content="{DynamicResource UiCalendarImageDT}"
-                                    Style="{StaticResource ButtonStyle}">
-                        </Button>
+                                    Style="{StaticResource ButtonStyle}" ToolTip="Change Due by Date">
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <EventTrigger.Actions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <BooleanAnimationUsingKeyFrames
+                                                     Storyboard.TargetName="ContextPopup"
+                                                     Storyboard.TargetProperty="IsOpen">
+                                                    <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
+                                                </BooleanAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger.Actions>
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>-->
+
+                        <ToggleButton x:Name="DueByBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      Content="{DynamicResource UiCalendarImage}"
+                                    d:Content="{DynamicResource UiCalendarImageDT}" ToolTip="Change Due by Date" />
+
+                        <Popup x:Name="ContextPopup" PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=DueByBT, Path=IsChecked}">
+                            <StackPanel Orientation="Vertical">
+                                <Calendar Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
+                                      Foreground="White" BorderThickness="0"
+                                  CalendarButtonStyle="{DynamicResource CalendarButtonStyle}"
+                                  CalendarItemStyle="{DynamicResource CalendarItemStyle}"
+                                  CalendarDayButtonStyle="{DynamicResource CalendarCalendarDayButtonStyle}"
+                                  Style="{DynamicResource CalendarStyle}"
+                                  SelectedDate="{Binding SelectedMilestoneViewModel.DueOn, Mode=TwoWay,
+                                        Converter={StaticResource DateOffsetToDateConverter}}"
+                                  DisplayDate="{Binding SelectedMilestoneViewModel.DueOn, Mode=OneWay,
+                                        Converter={StaticResource DateOffsetToDateConverter}}"
+                                    SelectedDatesChanged="Calendar_SelectedDatesChanged" />
+                            </StackPanel>
+                        </Popup>
 
                         <TextBlock VerticalAlignment="Center" Text="{Binding SelectedMilestoneViewModel.DueOn,
                                 Converter={StaticResource DueByConverter}}" d:Text="Due on June 23, 2024" d:Foreground="White" />
@@ -78,24 +138,52 @@
 
                         <TextBlock VerticalAlignment="Center" Text="{Binding SelectedMilestoneViewModel.GitMilestone.UpdatedAt,
                                 Converter={StaticResource LastUpdatedConverter}}" d:Text="Last Updated May 5, 2024" d:Foreground="White" />
+
+                        <!--<ContentControl d:Content="{StaticResource UiVisibleImageDT}" Width="24" Margin="6,0,0,0">
+                            <imaging:CrispImage Width="16" Moniker="{Binding SelectedMilestoneViewModel.Open,
+                                Converter={StaticResource OpenStatusToImageConverter}}" />
+                        </ContentControl>-->
+
+                        <ToggleButton Width="24" MinWidth="10" Padding="0" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                            d:Content="{DynamicResource UiVisibleImageDT}" Margin="4,0,0,0"
+                            ToolTip="Toggle Open/Closed" IsChecked="{Binding SelectedMilestoneViewModel.Open, Mode=TwoWay}">
+                            <imaging:CrispImage Moniker="{Binding SelectedMilestoneViewModel.Open,
+                                Converter={StaticResource OpenStatusToImageConverter}}" />
+                        </ToggleButton>
+
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedMilestoneViewModel.Open,
+                                Converter={StaticResource BoolToOpenClosedConverter}}" d:Text="Open" d:Foreground="White" />
+
+                        <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
+                         Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
+                         Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding DeleteMilestoneCommand}">
+                        </Button>
+                        <!--<ContentControl DockPanel.Dock="Right" Width="24" Content="{Binding SelectedMilestoneViewModel.Open,
+                            Converter={StaticResource OpenStatusToImageConverter}}" d:Content="{StaticResource UiVisibleImageDT}" />-->
+
+                        <!--<ContentControl DockPanel.Dock="Right" Width="24" Margin="6,0,0,0"
+                                        Content="{StaticResource UiSaveImage}" d:Content="{StaticResource UiSaveImageDT}"
+                                        Visibility="{Binding SelectedMilestoneViewModel.HasChanges,
+                                        Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible"
+                                        ToolTip="Has changes." />-->
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <TextBlock Text="{Binding SelectedMilestoneViewModel.IssuesStatus}" Margin="4" />
-                        <ProgressBar Value="50" Width="150" Height="2" Margin="2" />
+                        <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,4,2,0" />
+                        <TextBlock Text="{Binding SelectedMilestoneViewModel.IssuesStatus}" Margin="4"
+                                   d:Text="50% complete 1 open 1 closed" d:Foreground="Gainsboro" />
+                        <ProgressBar Value="50" Width="150" Height="2" Margin="4,0,0,0" />
                     </StackPanel>
 
                     <!--<Separator DockPanel.Dock="Top" Background="Gray"></Separator>-->
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="4">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="2">
                         <TextBox x:Name="MilestoneDescriptionTB"
-                                 TextWrapping="wrap" AcceptsReturn="True"
-                            Text="{Binding SelectedMilestoneViewModel.Description}"
+                                 TextWrapping="wrap" AcceptsReturn="True" Padding="2"
+                            Text="{Binding SelectedMilestoneViewModel.Description, UpdateSourceTrigger=PropertyChanged}"
                              Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
                             d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
                     </ScrollViewer>
                 </DockPanel>
-
-                <GridSplitter Grid.Column="1"  Style="{StaticResource GridSplitterStyle}"></GridSplitter>
             </Grid>
         </Grid>
     </DockPanel>

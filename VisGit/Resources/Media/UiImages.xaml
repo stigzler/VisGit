@@ -33,4 +33,16 @@
 
     <imaging:CrispImage x:Key="UiSaveImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}" />
     <Image              x:Key="UiSaveImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Save.png" />
+
+    <imaging:CrispImage x:Key="UiVisibleImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Visible}" />
+    <Image              x:Key="UiVisibleImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Visible.png" />
+
+    <imaging:CrispImage x:Key="UiInvisibleImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CloakOrHide}" />
+    <Image              x:Key="UiInvisibleImageDT" x:Shared="false" Width="16" Height="16" Source="Images/CloakOrHide.png" />
+
+    <imaging:CrispImage x:Key="UiDeleteImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Cancel}" />
+    <Image              x:Key="UiDeleteImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Cancel.png" />
+
+    <imaging:CrispImage x:Key="UiAddImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Add}" />
+    <Image              x:Key="UiAddImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Add.png" />
 </ResourceDictionary>

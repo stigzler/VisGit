@@ -46,10 +46,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controls\ToolBar.cs" />
+    <Compile Include="Converters\BoolToOpenClosedConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DateOffsetToDateConverter.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\LastUpdatedConverter.cs" />
     <Compile Include="Converters\DueByConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\OpenStatusToImageConverter.cs" />
+    <Compile Include="Converters\OpenStatusToOpacityConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\MyToolWindowCommand.cs" />
     <Compile Include="Views\HomeView.xaml.cs">
@@ -71,10 +76,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Media\Images\Add.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\Bug.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Calendar.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Cancel.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\CloakOrHide.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Delete.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\DisableAllBreakpoints.png">
@@ -96,6 +113,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Time.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Visible.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="VisGit.Core.dll">
@@ -126,6 +146,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Media\UiImages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Styles\ToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Styles\Calendar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Octokit;
 using VisGitCore.Data;
 using System;
+using VisGitCore.ViewModels;
 
 namespace VisGitCore.Services
 {
@@ -37,6 +38,37 @@ namespace VisGitCore.Services
         internal async Task<IReadOnlyList<Milestone>> GetAllMilestonesForRepositoryAsync(long repositoryId)
         {
             return await gitHubClient.Issue.Milestone.GetAllForRepository(repositoryId, new MilestoneRequest { State = ItemStateFilter.All });
+        }
+
+        internal async Task<Milestone> SaveMilestoneAsync(long repositoryId, int milestoneNumber, string title, string description,
+            DateTimeOffset? dueOn, bool open)
+        {
+            MilestoneUpdate milestoneUpdate = new MilestoneUpdate();
+            milestoneUpdate.Title = title;
+            milestoneUpdate.Description = description;
+
+            if (dueOn != null)
+            {
+                DateTimeOffset resolvedDueOn = (DateTimeOffset)dueOn;
+                resolvedDueOn = resolvedDueOn.AddDays(1); // hack: controls for date off by one further up tree
+                milestoneUpdate.DueOn = resolvedDueOn;
+            }
+
+            if (open) milestoneUpdate.State = ItemState.Open;
+            else milestoneUpdate.State = ItemState.Closed;
+            return await gitHubClient.Issue.Milestone.Update(repositoryId, milestoneNumber, milestoneUpdate);
+        }
+
+        internal async Task DeleteMilestoneAsync(long repositoryId, int milestoneNumber)
+        {
+            await gitHubClient.Issue.Milestone.Delete(repositoryId, milestoneNumber);
+        }
+
+        internal async Task<Milestone> CreateNewMilestoneAsync(long repositoryId, string title)
+        {
+            //NewMilestone newMilestone = new NewMilestone("New Milestone created " + DateTime.Now.ToShortDateString());
+            NewMilestone newMilestone = new NewMilestone(title);
+            return await gitHubClient.Issue.Milestone.Create(repositoryId, newMilestone);
         }
 
         internal void Logout()
