@@ -41,7 +41,7 @@
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="MiliestonesLV" Grid.Column="0" Width="auto"
-                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesView}"
+                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesVMs}"
                       SelectedItem="{Binding SelectedMilestoneViewModel}" BorderThickness="0"
                       d:Background="Transparent" SelectionChanged="MiliestonesLV_SelectionChanged">
                 <ListView.ItemTemplate>
