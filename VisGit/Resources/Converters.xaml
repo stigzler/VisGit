@@ -15,4 +15,7 @@
     <converters:DateOffsetToDateConverter x:Key="DateOffsetToDateConverter" />
     <converters:OpenStatusToOpacityConverter x:Key="OpenStatusToOpacityConverter" />
     <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+    <converters:SortDirectionToIconConverter x:Key="SortDirectionToIconConverter" />
+    <converters:SortToBoolConverter x:Key="SortToBoolConverter" />
 </ResourceDictionary>

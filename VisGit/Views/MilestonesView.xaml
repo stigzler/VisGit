@@ -41,7 +41,7 @@
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="MiliestonesLV" Grid.Column="0" Width="auto"
-                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesVMs}"
+                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesView}"
                       SelectedItem="{Binding SelectedMilestoneViewModel}" BorderThickness="0"
                       d:Background="Transparent" SelectionChanged="MiliestonesLV_SelectionChanged">
                 <ListView.ItemTemplate>
@@ -62,7 +62,7 @@
                           Style="{StaticResource GridSplitterStyle}"></GridSplitter>
 
             <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2" Background="Transparent"
-                  Visibility="{Binding MainViewModel.RepositoryMilestonesVMs.Count, Converter={StaticResource IntToVisibilityConverter}}">
+                  Visibility="{Binding SelectedMilestoneViewModel, Converter={StaticResource NullToVisibilityConverter}}">
 
                 <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0">
 

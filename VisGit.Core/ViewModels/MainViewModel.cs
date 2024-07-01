@@ -5,9 +5,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using Octokit;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Navigation;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
 using VisGitCore.Enums;
@@ -34,13 +37,13 @@ namespace VisGitCore.ViewModels
         public ViewModelBase _currentViewModel;
 
         [ObservableProperty]
-        private object _selectedGitObject;
-
-        [ObservableProperty]
         private ObservableCollection<GitObject> _gitObjects = GitObject.GitObjects;
 
         [ObservableProperty]
-        internal ObservableCollection<Filter> _milestonesFilters = Filter.MilestoneFilters;
+        private GitObject _selectedGitObject;
+
+        [ObservableProperty]
+        public int _repositoryDropDownWidth;
 
         // Repository objects -------------------------------------------------------------
         [ObservableProperty]
@@ -53,7 +56,29 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
 
-        #endregion End: Properties
+        [ObservableProperty]
+        private ICollectionView _repositoryMilestonesView;
+
+        // Filter
+
+        [ObservableProperty]
+        internal ObservableCollection<Filter> _filters;
+
+        [ObservableProperty]
+        private Filter _selectedFilter;
+
+        // Sort
+
+        [ObservableProperty]
+        private ObservableCollection<Data.Models.Sort> _sorts;
+
+        [ObservableProperty]
+        private Data.Models.Sort _selectedSort;
+
+        [ObservableProperty]
+        private ListSortDirection _sortDirection = ListSortDirection.Ascending;
+
+        #endregion End: Properties ---------------------------------------------------------------------------------------
 
         #region Operational Vars =========================================================================================
 
@@ -62,6 +87,8 @@ namespace VisGitCore.ViewModels
         private GitService gitClient = new GitService();
 
         private GitController gitController;
+
+        // DataViews
 
         // View Models
 
@@ -82,23 +109,75 @@ namespace VisGitCore.ViewModels
             _ = GetAllMilestonesForRepoAsync(value.GitRepository.Id);
         }
 
-        partial void OnSelectedGitObjectChanged(object value)
+        partial void OnSelectedGitObjectChanged(GitObject gitObject)
         {
-            GitObject item = (GitObject)value;
-            switch (item.Type)
+            switch (gitObject.Type)
             {
                 case GitObjectType.Milestone:
                     CurrentViewModel = milestonesViewModel;
-                    if (RepositoryMilestonesVMs.Count > 0) milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];
+                    Filters = Filter.MilestoneFilters;
+                    Sorts = Data.Models.Sort.MilestoneSorts;
+                    if (RepositoryMilestonesVMs.Count > 0)
+                    {
+                        milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];
+                        SelectedFilter = Filters.First();
+                        SelectedSort = Sorts.First();
+                    }
+                    break;
+
+                case GitObjectType.Label:
+                    Filters = Filter.LabelFilters;
+                    Sorts = Data.Models.Sort.LabelSorts;
                     break;
             }
-
-            Debug.WriteLine($"Git Object changed: {item.Name}");
+            if (Filters.Count > 0) SelectedFilter = Filters[0];
         }
 
         partial void OnRepositoryMilestonesVMsChanged(ObservableCollection<MilestoneViewModel> oldValue, ObservableCollection<MilestoneViewModel> newValue)
         {
             if (RepositoryMilestonesVMs.Count > 0) milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs.First();
+        }
+
+        // Todo: refactor this - anonymous types?
+        partial void OnSelectedFilterChanged(Filter oldValue, Filter newValue)
+        {
+            if (newValue == null) return;
+
+            if (SelectedGitObject.Type == GitObjectType.Milestone && RepositoryMilestonesVMs.Count > 0)
+            {
+                if (newValue.FilterType == FilterType.Closed)
+                    RepositoryMilestonesView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == false);
+                else if (newValue.FilterType == FilterType.Open)
+                    RepositoryMilestonesView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == true);
+                else if (newValue.FilterType == FilterType.None)
+                    RepositoryMilestonesView.Filter = null;
+            }
+            else if (SelectedGitObject.Type == GitObjectType.Label && true) // true = in lieu of RepositoryLabelsVMs.Count > 0
+            {
+            }
+        }
+
+        partial void OnSelectedSortChanged(Data.Models.Sort oldValue, Data.Models.Sort newValue)
+        {
+            if (newValue == null) return;
+
+            if (SelectedGitObject.Type == GitObjectType.Milestone && RepositoryMilestonesVMs.Count > 0)
+            {
+                RepositoryMilestonesView.SortDescriptions.Clear();
+
+                if (newValue.SortType == SortType.Alphabetially)
+                    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("Title", SortDirection));
+                if (newValue.SortType == SortType.DueDate)
+                    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("DueOn", SortDirection));
+                if (newValue.SortType == SortType.Open)
+                    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("State", SortDirection));
+                if (newValue.SortType == SortType.RecentlyUpdated)
+                    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("UpdatedAt", SortDirection));
+                if (newValue.SortType == SortType.OpenIssues)
+                    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("OpenIssues", SortDirection));
+
+                RepositoryMilestonesView.Refresh();
+            }
         }
 
         #endregion End: Property Changed Methods
@@ -110,6 +189,7 @@ namespace VisGitCore.ViewModels
         {
             //ViewModelsController.CurrentViewModel = new MilestonesViewModel(ViewModelsController);
             CurrentViewModel = new MilestonesViewModel(this);
+            //RepositoryMilestonesView.SortDescriptions.Add()
         }
 
         [RelayCommand]
@@ -126,6 +206,16 @@ namespace VisGitCore.ViewModels
             WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this);
 
             milestonesViewModel = new MilestonesViewModel(this);
+
+            RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
+
+            UserSettings.Saved += UserSettings_Saved;
+        }
+
+        private void UserSettings_Saved(UserSettings obj)
+        {
+            // Update any UIElements with related settings:
+            RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
         }
 
         [RelayCommand]
@@ -201,6 +291,7 @@ namespace VisGitCore.ViewModels
         {
             RepositoryMilestonesVMs.Clear();
             RepositoryMilestonesVMs = await gitController.GetAllMilestonesForRepoAsync(repositoryId);
+            RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
         }
 
         void IRecipient<ChangeViewMessage>.Receive(ChangeViewMessage message)

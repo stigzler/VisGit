@@ -32,6 +32,7 @@
                 <ResourceDictionary Source="../Resources/Styles/ToolBar.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ToggleButton.xaml" />
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
                 <!-- OTHER -->
@@ -59,22 +60,26 @@
 
                     <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
                             d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}" />
-
-                    <Button x:Name="TestBT" Content="{DynamicResource UiTestImage}"
-                            d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />
                 </controls:ToolBar>
 
                 <!-- GENERIC AUTHENTICATED TOOLBAR -->
 
-                <controls:ToolBar x:Name="GenericTB" Style="{StaticResource ToolBarStyle}"
+                <controls:ToolBar x:Name="RepositoryTB" Style="{StaticResource ToolBarStyle}"
                                    VerticalAlignment="Center" ToolBarTray.IsLocked="true"
                                   Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
                                   d:Visibility="Visible">
 
-                    <ComboBox x:Name="RepositoryCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0"
+                    <ComboBox x:Name="RepositoryCB" Style="{DynamicResource ComboBoxStyle}" Margin="2,0,2,0"
+                              Width="{Binding RepositoryDropDownWidth}" d:Width="100"
                               ItemsSource="{Binding UserRepositoryVMs}" DisplayMemberPath="Name"
                               SelectedItem="{Binding SelectedRespositoryVM, Mode=TwoWay}">
                     </ComboBox>
+                </controls:ToolBar>
+
+                <controls:ToolBar x:Name="RepositoryActionsTB" Style="{StaticResource ToolBarStyle}"
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true"
+                                  Visibility="{Binding SelectedRespositoryVM, Converter={StaticResource NullToVisibilityConverter}}"
+                                  d:Visibility="Visible">
 
                     <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0"
                               SelectedValue="{Binding SelectedGitObject}" ItemsSource="{Binding GitObjects}">
@@ -88,18 +93,10 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <Button x:Name="AddBT" Content="{DynamicResource UiAddImage}"
-                            d:Content="{DynamicResource UiAddImageDT}" Command="{Binding AddItemCommand}" />
-                </controls:ToolBar>
+                    <ContentControl Width="24" Content="{StaticResource UiFilterImage}" d:Content="{StaticResource UiFilterImageDT}" />
 
-                <!-- MILESTONES TOOLBAR -->
-                <controls:ToolBar x:Name="MilestonesTB" Style="{StaticResource ToolBarStyle}"
-                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true"
-                                  Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  d:Visibility="Visible">
-
-                    <ComboBox x:Name="MilestoneFilterCB" Style="{DynamicResource ComboBoxStyle}" Width="85" Margin="2,0,2,0"
-                              ItemsSource="{Binding MilestonesFilters}">
+                    <ComboBox x:Name="FilterCB" Style="{DynamicResource ComboBoxStyle}" Width="85" Margin="2,0,2,0"
+                              ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}">
                         <ComboBox.ItemTemplate>
                             <ItemContainerTemplate>
                                 <DockPanel LastChildFill="True">
@@ -109,6 +106,37 @@
                             </ItemContainerTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+
+                    <ToggleButton Style="{StaticResource ToggleButtonBorderlessStyle}" Width="24"
+                                  d:Content="{DynamicResource UiSortImageDT}" ToolTip="Sort Direction"
+                                  IsChecked="{Binding SortDirection, Mode=TwoWay, Converter={StaticResource SortToBoolConverter}}">
+                        <imaging:CrispImage Moniker="{Binding SortDirection, Converter={StaticResource SortDirectionToIconConverter}}" />
+                    </ToggleButton>
+
+                    <ComboBox x:Name="SortCB" Style="{DynamicResource ComboBoxStyle}" Width="140" Margin="2,0,2,0"
+                             ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSort}">
+                        <ComboBox.ItemTemplate>
+                            <ItemContainerTemplate>
+                                <DockPanel LastChildFill="True">
+                                    <imaging:CrispImage DockPanel.Dock="Left" Moniker="{Binding Icon}" />
+                                    <TextBlock Margin="4,0,0,0"><Run Text="{Binding Name}" /></TextBlock>
+                                </DockPanel>
+                            </ItemContainerTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Button x:Name="AddBT" Content="{DynamicResource UiAddImage}"
+                            d:Content="{DynamicResource UiAddImageDT}" Command="{Binding AddItemCommand}" />
+
+                    <Button x:Name="TestBT" Content="{DynamicResource UiTestImage}"
+                            d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />
+                </controls:ToolBar>
+
+                <!-- MILESTONES TOOLBAR -->
+                <controls:ToolBar x:Name="MilestonesTB" Style="{StaticResource ToolBarStyle}"
+                                   VerticalAlignment="Center" ToolBarTray.IsLocked="true"
+                                  Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  d:Visibility="Visible">
                 </controls:ToolBar>
             </ToolBarTray>
         </DockPanel>

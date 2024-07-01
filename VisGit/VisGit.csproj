@@ -53,8 +53,11 @@
     <Compile Include="Converters\LastUpdatedConverter.cs" />
     <Compile Include="Converters\DueByConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\OpenStatusToImageConverter.cs" />
     <Compile Include="Converters\OpenStatusToOpacityConverter.cs" />
+    <Compile Include="Converters\SortDirectionToIconConverter.cs" />
+    <Compile Include="Converters\SortToBoolConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\MyToolWindowCommand.cs" />
     <Compile Include="Views\HomeView.xaml.cs">
@@ -97,6 +100,9 @@
     <Content Include="Resources\Media\Images\DisableAllBreakpoints.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Filter.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\LoginUser.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -110,6 +116,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\SmartTag.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\SortAscending.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Time.png">

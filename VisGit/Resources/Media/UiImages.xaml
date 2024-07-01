@@ -45,4 +45,10 @@
 
     <imaging:CrispImage x:Key="UiAddImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Add}" />
     <Image              x:Key="UiAddImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Add.png" />
+
+    <imaging:CrispImage x:Key="UiFilterImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Filter}" />
+    <Image              x:Key="UiFilterImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Filter.png" />
+
+    <imaging:CrispImage x:Key="UiSortImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
+    <Image              x:Key="UiSortImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SortAscending.png" />
 </ResourceDictionary>

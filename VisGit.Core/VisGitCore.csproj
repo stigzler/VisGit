@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Controllers\GitController.cs" />
     <Compile Include="Data\Constants.cs" />
+    <Compile Include="Data\Models\SortType.cs" />
+    <Compile Include="Data\Models\Sort.cs" />
     <Compile Include="Data\Models\Filter.cs" />
     <Compile Include="Data\Models\FilterType.cs" />
     <Compile Include="Data\Models\GitObject.cs" />

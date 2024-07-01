@@ -28,5 +28,11 @@ namespace VisGitCore.Services
             get => Encryption.DpapiToInsecureString(Encryption.DpapiDecryptString(personalAccessToken));
             set => personalAccessToken = Encryption.DpapiEncryptString(Encryption.DpapiToSecureString(value));
         }
+
+        [Category("UI Settings")]
+        [DisplayName("Repository DropDown Width")]
+        [Description("The width of the Repository selector drop-down. Adjust to suit your layout.")]
+        [DefaultValue(100)]
+        public int RepositoryDropDownWidth { get; set; } = 100;
     }
 }
