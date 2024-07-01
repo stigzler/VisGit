@@ -41,7 +41,7 @@
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="MiliestonesLV" Grid.Column="0" Width="auto"
-                      ItemsSource="{Binding MainViewModel.RepositoryMilestonesVMs}"
+                      ItemsSource="{Binding RepositoryMilestonesVMs}"
                       SelectedItem="{Binding SelectedMilestoneViewModel}" BorderThickness="0"
                       d:Background="Transparent" SelectionChanged="MiliestonesLV_SelectionChanged">
                 <ListView.ItemTemplate>
@@ -155,9 +155,15 @@
                                 Converter={StaticResource BoolToOpenClosedConverter}}" d:Text="Open" d:Foreground="White" />
 
                         <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
-                         Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
-                         Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding DeleteMilestoneCommand}">
+                             Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
+                             Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding DeleteMilestoneCommand}">
                         </Button>
+
+                        <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
+                            Content="{DynamicResource UiTestImage}" d:Content="{DynamicResource UiTestImageDT}"
+                            Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding RunTestCommand}">
+                        </Button>
+
                         <!--<ContentControl DockPanel.Dock="Right" Width="24" Content="{Binding SelectedMilestoneViewModel.Open,
                             Converter={StaticResource OpenStatusToImageConverter}}" d:Content="{StaticResource UiVisibleImageDT}" />-->
 
@@ -172,7 +178,8 @@
                         <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,4,2,0" />
                         <TextBlock Text="{Binding SelectedMilestoneViewModel.IssuesStatus}" Margin="4"
                                    d:Text="50% complete 1 open 1 closed" d:Foreground="Gainsboro" />
-                        <ProgressBar Value="50" Width="150" Height="2" Margin="4,0,0,0" />
+                        <ProgressBar Value="{Binding SelectedMilestoneViewModel.PercentageComplete, Mode=OneWay}"
+                                     Width="150" Height="5" Background="#20808080" Foreground="#00a2ed" BorderBrush="#80808080" Margin="4,0,0,0" />
                     </StackPanel>
 
                     <!--<Separator DockPanel.Dock="Top" Background="Gray"></Separator>-->

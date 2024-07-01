@@ -35,8 +35,8 @@ namespace VisGitCore.Data.Models
         public static ObservableCollection<Sort> MilestoneSorts = new ObservableCollection<Sort>()
         {
             new Sort("Due By", KnownMonikers.Calendar, SortType.DueDate),
-            new Sort("Open", KnownMonikers.Visible, SortType.Open),
-            new Sort("Alphabetically", KnownMonikers.FilterAlphabetically, SortType.None),
+            //new Sort("Open", KnownMonikers.Visible, SortType.Open),
+            new Sort("Alphabetically", KnownMonikers.FilterAlphabetically, SortType.Alphabetially),
             new Sort("Recently Updated", KnownMonikers.Time, SortType.RecentlyUpdated),
             new Sort("Open Issues", KnownMonikers.DisableAllBreakpoints, SortType.OpenIssues),
             new Sort("None", KnownMonikers.ClearSort, SortType.None),

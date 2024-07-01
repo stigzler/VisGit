@@ -27,14 +27,28 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private bool _open;
 
+        public int Number { get => GitMilestone.Number; }
+        public Octokit.StringEnum<ItemState> State { get => GitMilestone.State; }
+        public DateTimeOffset? UpdatedAt { get => GitMilestone.UpdatedAt; }
+        public int OpenIssues { get => GitMilestone.OpenIssues; }
+
         // View Related ----------------------------------------------------------------
         public string IssuesStatus
         {
-            get => $"{Services.Math.Percentage(GitMilestone.OpenIssues, GitMilestone.OpenIssues + GitMilestone.ClosedIssues).ToString()}% complete " +
-                $"{GitMilestone.OpenIssues} open {GitMilestone.ClosedIssues} closed";
+            get
+            {
+                double percentageComplete = PercentageComplete;
+                return $"{percentageComplete.ToString()}% complete " + $"{GitMilestone.OpenIssues} open {GitMilestone.ClosedIssues} closed";
+            }
         }
 
-        public int Number { get => GitMilestone.Number; }
+        public double PercentageComplete
+        {
+            get
+            {
+                return Services.Math.Percentage(GitMilestone.ClosedIssues, GitMilestone.OpenIssues + GitMilestone.ClosedIssues);
+            }
+        }
 
         // Operational ----------------------------------------------------------------
 
@@ -77,11 +91,6 @@ namespace VisGitCore.ViewModels
             HasChanges = HasDifferences();
         }
 
-        //partial void OnHasChangesChanged(bool oldValue, bool newValue)
-        //{
-        //    if (newValue == true) ChangesDescription = ChangesInText();
-        //}
-
         #endregion End: Property Events ----------------------------------------------------------------------------------
 
         #region Commands =========================================================================================
@@ -99,6 +108,8 @@ namespace VisGitCore.ViewModels
 
         #endregion End: Commands
 
+        #region Public Methods =========================================================================================
+
         public MilestoneViewModel()
         {
         }
@@ -109,8 +120,6 @@ namespace VisGitCore.ViewModels
             RepositoryId = repositoryId;
             UpdateViewmodelProperties(milestone);
         }
-
-        #region Public Methods =========================================================================================
 
         internal async Task DeleteMilestoneAsync()
         {
