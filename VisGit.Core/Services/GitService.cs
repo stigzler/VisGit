@@ -67,6 +67,7 @@ namespace VisGitCore.Services
 
             if (open) milestoneUpdate.State = ItemState.Open;
             else milestoneUpdate.State = ItemState.Closed;
+
             return await gitHubClient.Issue.Milestone.Update(repositoryId, milestoneNumber, milestoneUpdate);
         }
 
@@ -77,7 +78,6 @@ namespace VisGitCore.Services
 
         internal async Task<Milestone> CreateNewMilestoneAsync(long repositoryId, string title)
         {
-            //NewMilestone newMilestone = new NewMilestone("New Milestone created " + DateTime.Now.ToShortDateString());
             NewMilestone newMilestone = new NewMilestone(title);
             return await gitHubClient.Issue.Milestone.Create(repositoryId, newMilestone);
         }
@@ -87,6 +87,25 @@ namespace VisGitCore.Services
         internal async Task<IReadOnlyList<Label>> GetAllLabelsForRepositoryAsync(long repositoryId)
         {
             return await gitHubClient.Issue.Labels.GetAllForRepository(repositoryId);
+        }
+
+        internal async Task<Label> SaveLabelAsync(long repositoryId, string gitName, string newName, string description, string color)
+        {
+            LabelUpdate labelUpdate = new LabelUpdate(gitName, color);
+            labelUpdate.Name = newName;
+            labelUpdate.Description = description;
+            return await gitHubClient.Issue.Labels.Update(repositoryId, gitName, labelUpdate);
+        }
+
+        internal async Task DeleteLabelAsync(long repositoryId, string gitName)
+        {
+            await gitHubClient.Issue.Labels.Delete(repositoryId, gitName);
+        }
+
+        internal async Task<Label> CreateNewLabelAsync(long repositoryId, string title, string color)
+        {
+            NewLabel newLabel = new NewLabel(title, color);
+            return await gitHubClient.Issue.Labels.Create(repositoryId, newLabel);
         }
     }
 }

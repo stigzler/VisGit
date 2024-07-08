@@ -20,4 +20,7 @@
     <converters:SortToBoolConverter x:Key="SortToBoolConverter" />
     <converters:HexRgbToLabelBackground x:Key="HexRgbToLabelBackground" />
     <converters:HexRgbToLabelForeground x:Key="HexRgbToLabelForeground" />
+    <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+    <converters:InverseBoolToOpacityConverter x:Key="InverseBoolToOpacityConverter" />
+    <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
 </ResourceDictionary>

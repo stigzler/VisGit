@@ -216,9 +216,15 @@ namespace VisGitCore.ViewModels
             switch (CurrentViewModel)
             {
                 case MilestonesViewModel:
-                    StartOperation("Authenticating User");
+                    StartOperation("Creating new Milestone");
                     await milestonesViewModel.CreateNewMilestoneAsync();
                     FinishOperation("New Milestone Created");
+                    break;
+
+                case LabelsViewModel:
+                    StartOperation("Creating new Label");
+                    await labelsViewModel.CreateNewLabelAsync();
+                    FinishOperation("New Label Created");
                     break;
             }
         }

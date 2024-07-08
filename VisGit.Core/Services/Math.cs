@@ -14,5 +14,10 @@ namespace VisGitCore.Services
             if (denominator == 0) return 0;
             return (int)System.Math.Round((double)(100 * numerator) / denominator);
         }
+
+        internal static int RandomNumber(Random rnd, int min, int max)
+        {
+            return rnd.Next(min, max + 1); // max+1 because non-inclusive
+        }
     }
 }

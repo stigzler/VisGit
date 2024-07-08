@@ -9,12 +9,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
 using VisGitCore.Messages;
+using Microsoft.VisualStudio.Extensibility;
+using Community.VisualStudio.Toolkit;
 
 namespace VisGitCore.ViewModels
 {
@@ -74,9 +77,16 @@ namespace VisGitCore.ViewModels
             WeakReferenceMessenger.Default.Send(new ChangeViewMessage(Enums.ViewRequest.Home));
         }
 
+        // TODO: This should be moved into MilestoneViewModel
         [RelayCommand]
         private async Task DeleteMilestoneAsync()
         {
+            var result = await VS.MessageBox.ShowAsync("Are you sure you wish to delete this milestone?", "",
+                 Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING,
+                 Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO);
+
+            if (result == Microsoft.VisualStudio.VSConstants.MessageBoxResult.IDNO) return;
+
             await SelectedMilestoneViewModel.DeleteMilestoneAsync();
             RepositoryMilestonesVMs.Remove(SelectedMilestoneViewModel);
             if (RepositoryMilestonesVMs.Count > 0) SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];

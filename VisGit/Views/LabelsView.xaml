@@ -81,9 +81,10 @@
                         <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
                             Style="{StaticResource ButtonStyle}" Command="{Binding SelectedLabelViewModel.SaveLabelCommand}"
-                            Visibility="{Binding SelectedLabelViewModel.HasChanges,
-                            Converter={StaticResource BoolToVisibilityConverter}}"
-                           ToolTip="Save Changes">
+                            Visibility="{Binding SelectedLabelViewModel.HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
+                            IsEnabled="{Binding SelectedLabelViewModel.HasErrors, Converter={StaticResource InverseBoolConverter}}"
+                            Opacity="{Binding SelectedLabelViewModel.HasErrors, Converter={StaticResource InverseBoolToOpacityConverter}}"
+                            ToolTip="Save Changes">
                         </Button>
 
                         <TextBox x:Name="MilestoneTitleTB" VerticalAlignment="Center" Margin="4,0,0,0"
@@ -152,8 +153,10 @@
 
                         <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
                              Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
-                             Style="{StaticResource ButtonStyle}" ToolTip="Delete Label" Command="{Binding DeleteMilestoneCommand}">
+                             Style="{StaticResource ButtonStyle}" ToolTip="Delete Label" Command="{Binding SelectedLabelViewModel.DeleteLabelCommand}">
                         </Button>
+
+                        <TextBox Width="80" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedLabelViewModel.NameUnique, Mode=OneWay}"></TextBox>
 
                         <!--<Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
                             Content="{DynamicResource UiTestImage}" d:Content="{DynamicResource UiTestImageDT}"

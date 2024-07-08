@@ -84,5 +84,21 @@ namespace VisGitCore.Controllers
 
             return labelViewModels;
         }
+
+        internal async Task<Label> SaveLabelAsync(LabelViewModel labelViewModel)
+        {
+            return await gitService.SaveLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name, labelViewModel.Name,
+                labelViewModel.Description, labelViewModel.Color);
+        }
+
+        internal async Task DeleteLabelAsync(LabelViewModel labelViewModel)
+        {
+            await gitService.DeleteLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name);
+        }
+
+        internal async Task<Label> CreateNewLabelAsync(long repositoryId, string title, string color)
+        {
+            return await gitService.CreateNewLabelAsync(repositoryId, title, color);
+        }
     }
 }

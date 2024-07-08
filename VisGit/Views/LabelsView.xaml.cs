@@ -1,4 +1,5 @@
-﻿using Dsafa.WpfColorPicker;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Dsafa.WpfColorPicker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VisGitCore.Messages;
 
 namespace VisGit.Views
 {
@@ -45,8 +47,8 @@ namespace VisGit.Views
             var dialog = new Dsafa.WpfColorPicker.ColorPickerDialog(Colors.Red);
             //dialog.Owner = this;
 
-            dialog.Background = VS.Services.GetFontAndColorStorageAsync().
-            dialog.Foreground = new SolidColorBrush(Colors.Gainsboro);
+            //dialog.Background = VS.Services.GetFontAndColorStorageAsync().
+            //dialog.Foreground = new SolidColorBrush(Colors.Gainsboro);
 
             dialog.Background = new SolidColorBrush(Color.FromArgb(255, 30, 30, 30));
             dialog.Foreground = new SolidColorBrush(Colors.Gainsboro);
