@@ -15,6 +15,8 @@ namespace VisGitCore.Services
         {
         }
 
+        // User ==============================================================================================
+
         internal async Task<Exception> AuthenticateUserAsync(string personalAccessToken)
         {
             try
@@ -30,10 +32,19 @@ namespace VisGitCore.Services
             }
         }
 
+        internal void Logout()
+        {
+            gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
+        }
+
+        // Repositories ==============================================================================================
+
         internal async Task<IReadOnlyList<Repository>> GetAllUserRepositoriesAsync()
         {
             return await gitHubClient.Repository.GetAllForCurrent();
         }
+
+        // Milestones ==============================================================================================
 
         internal async Task<IReadOnlyList<Milestone>> GetAllMilestonesForRepositoryAsync(long repositoryId)
         {
@@ -71,9 +82,11 @@ namespace VisGitCore.Services
             return await gitHubClient.Issue.Milestone.Create(repositoryId, newMilestone);
         }
 
-        internal void Logout()
+        // Labels ==============================================================================================
+
+        internal async Task<IReadOnlyList<Label>> GetAllLabelsForRepositoryAsync(long repositoryId)
         {
-            gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
+            return await gitHubClient.Issue.Labels.GetAllForRepository(repositoryId);
         }
     }
 }

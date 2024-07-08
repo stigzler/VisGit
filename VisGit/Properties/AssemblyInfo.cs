@@ -19,6 +19,8 @@ using VisGit;
 [assembly: ProvideCodeBase(AssemblyName = "CommunityToolkit.Mvvm")]
 [assembly: ProvideCodeBase(AssemblyName = "VisGit.Core")]
 [assembly: ProvideCodeBase(AssemblyName = "Octokit")]
+[assembly: ProvideCodeBase(AssemblyName = "Dsafa.WpfColorPicker")]
+[assembly: ProvideCodeBase(AssemblyName = "WpfScreenHelper")]
 
 namespace System.Runtime.CompilerServices
 {

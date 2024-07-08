@@ -51,4 +51,7 @@
 
     <imaging:CrispImage x:Key="UiSortImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
     <Image              x:Key="UiSortImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SortAscending.png" />
+
+    <imaging:CrispImage x:Key="UiColorDialogImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.ColorDialog}" />
+    <Image              x:Key="UiColorDialogImageDT" x:Shared="false" Width="16" Height="16" Source="Images/ColorDialog.png" />
 </ResourceDictionary>

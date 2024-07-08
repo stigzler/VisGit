@@ -49,6 +49,8 @@
     <Compile Include="Converters\BoolToOpenClosedConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DateOffsetToDateConverter.cs" />
+    <Compile Include="Converters\HexRgbToLabelForeground.cs" />
+    <Compile Include="Converters\HexRgbToLabelBackground.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\LastUpdatedConverter.cs" />
     <Compile Include="Converters\DueByConverter.cs" />
@@ -62,6 +64,9 @@
     <Compile Include="Commands\MyToolWindowCommand.cs" />
     <Compile Include="Views\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LabelsView.xaml.cs">
+      <DependentUpon>LabelsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MilestonesView.xaml.cs">
       <DependentUpon>MilestonesView.xaml</DependentUpon>
@@ -92,6 +97,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\CloakOrHide.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\ColorDialog.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Delete.png">
@@ -213,12 +221,19 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\LabelsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MilestonesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Dsafa.WpfColorPicker">
+      <HintPath>..\..\..\..\..\..\2.ThirdParty\2.Forks\wpf-color-picker\src\WpfColorPicker\bin\Debug\Dsafa.WpfColorPicker.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Design" />
     <Reference Include="System.Xaml" />
@@ -226,6 +241,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="WpfScreenHelper, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\2.ThirdParty\2.Forks\wpf-color-picker\src\WpfColorPicker\bin\Debug\WpfScreenHelper.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">

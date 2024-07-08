@@ -37,6 +37,8 @@ namespace VisGitCore.Controllers
             return repositoryViewModels;
         }
 
+        // Milestones ==============================================================================================
+
         internal async Task<ObservableCollection<MilestoneViewModel>> GetAllMilestonesForRepoAsync(long repositoryId)
         {
             ObservableCollection<MilestoneViewModel> milestoneViewModels = new ObservableCollection<MilestoneViewModel>();
@@ -65,6 +67,22 @@ namespace VisGitCore.Controllers
         internal async Task<Milestone> CreateNewMilestoneAsync(long repositoryId, string title)
         {
             return await gitService.CreateNewMilestoneAsync(repositoryId, title);
+        }
+
+        // Labels ==============================================================================================
+
+        internal async Task<ObservableCollection<LabelViewModel>> GetAllLabelsForRepoAsync(long repositoryId)
+        {
+            ObservableCollection<LabelViewModel> labelViewModels = new ObservableCollection<LabelViewModel>();
+
+            IReadOnlyList<Label> repositoryLabels = await gitService.GetAllLabelsForRepositoryAsync(repositoryId);
+
+            foreach (Label label in repositoryLabels)
+            {
+                labelViewModels.Add(new LabelViewModel(this, label, repositoryId));
+            }
+
+            return labelViewModels;
         }
     }
 }

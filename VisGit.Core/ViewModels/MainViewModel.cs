@@ -52,14 +52,7 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private RepositoryViewModel _selectedRespositoryVM;
 
-        // Milestone objects -------------------------------------------------------------
-        [ObservableProperty]
-        private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
-
-        [ObservableProperty]
-        private ICollectionView _repositoryMilestonesView;
-
-        // Filter
+        // Filter -------------------------------------------------------------
 
         [ObservableProperty]
         internal ObservableCollection<Filter> _filters;
@@ -67,7 +60,7 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private Filter _selectedFilter;
 
-        // Sort
+        // Sort -------------------------------------------------------------
 
         [ObservableProperty]
         private ObservableCollection<Data.Models.Sort> _sorts;
@@ -88,12 +81,11 @@ namespace VisGitCore.ViewModels
 
         private GitController gitController;
 
-        // DataViews
-
-        // View Models
-
         private HomeViewModel homeViewModel;
+
         private MilestonesViewModel milestonesViewModel;
+
+        private LabelsViewModel labelsViewModel;
 
         #endregion End: Operational Vars
 
@@ -106,7 +98,21 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedRespositoryVMChanged(RepositoryViewModel value)
         {
-            _ = GetAllMilestonesForRepoAsync(value.GitRepository.Id);
+            //if (SelectedGitObject.Type == GitObjectType.Milestone)
+            //{
+            //    milestonesViewModel.gitRepositoryVm = value;
+            //    _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
+            //}
+            //else if (SelectedGitObject.Type == GitObjectType.Label)
+            //{
+            //    labelsViewModel.gitRepositoryVm = value;
+            //    _ = labelsViewModel.GetAllLabelsForRepoAsync();
+            //}
+
+            milestonesViewModel.gitRepositoryVm = value;
+            _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
+            labelsViewModel.gitRepositoryVm = value;
+            _ = labelsViewModel.GetAllLabelsForRepoAsync();
         }
 
         partial void OnSelectedGitObjectChanged(GitObject gitObject)
@@ -117,25 +123,15 @@ namespace VisGitCore.ViewModels
                     CurrentViewModel = milestonesViewModel;
                     Filters = Filter.MilestoneFilters;
                     Sorts = Data.Models.Sort.MilestoneSorts;
-                    if (RepositoryMilestonesVMs.Count > 0)
-                    {
-                        milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];
-                        SelectedFilter = Filters.First();
-                        SelectedSort = Sorts.First();
-                    }
                     break;
 
                 case GitObjectType.Label:
+                    CurrentViewModel = labelsViewModel;
                     Filters = Filter.LabelFilters;
                     Sorts = Data.Models.Sort.LabelSorts;
                     break;
             }
             if (Filters.Count > 0) SelectedFilter = Filters[0];
-        }
-
-        partial void OnRepositoryMilestonesVMsChanged(ObservableCollection<MilestoneViewModel> oldValue, ObservableCollection<MilestoneViewModel> newValue)
-        {
-            if (RepositoryMilestonesVMs.Count > 0) milestonesViewModel.SelectedMilestoneViewModel = RepositoryMilestonesVMs.First();
         }
 
         partial void OnSelectedFilterChanged(Filter oldValue, Filter newValue)
@@ -179,7 +175,8 @@ namespace VisGitCore.ViewModels
 
             WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this);
 
-            milestonesViewModel = new MilestonesViewModel();
+            milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
+            labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
 
@@ -219,11 +216,9 @@ namespace VisGitCore.ViewModels
             switch (CurrentViewModel)
             {
                 case MilestonesViewModel:
-                    Debug.WriteLine("Add Milestone!");
-                    string title = "New Milestone created " + DateTime.Now.ToShortDateString();
-                    Milestone newMilestone = await gitController.CreateNewMilestoneAsync(SelectedRespositoryVM.GitRepository.Id, title);
-                    MilestoneViewModel newMilestoneViewModel = new MilestoneViewModel(gitController, newMilestone, SelectedRespositoryVM.GitRepository.Id);
-                    RepositoryMilestonesVMs.Add(newMilestoneViewModel);
+                    StartOperation("Authenticating User");
+                    await milestonesViewModel.CreateNewMilestoneAsync();
+                    FinishOperation("New Milestone Created");
                     break;
             }
         }
@@ -259,15 +254,7 @@ namespace VisGitCore.ViewModels
         {
             UserRepositoryVMs.Clear();
             UserRepositoryVMs = await gitController.GetAllRepositoriesAsync();
-            milestonesViewModel.RepositoryMilestonesVMs = RepositoryMilestonesVMs;
-        }
-
-        private async Task GetAllMilestonesForRepoAsync(long repositoryId)
-        {
-            RepositoryMilestonesVMs.Clear();
-            RepositoryMilestonesVMs = await gitController.GetAllMilestonesForRepoAsync(repositoryId);
-            RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
-            milestonesViewModel.RepositoryMilestonesVMs = RepositoryMilestonesVMs;
+            //milestonesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
         }
 
         void IRecipient<ChangeViewMessage>.Receive(ChangeViewMessage message)
@@ -282,6 +269,7 @@ namespace VisGitCore.ViewModels
 
         private void SortGitObjectViews()
         {
+            if (SelectedSort == null) return;
             if (SelectedGitObject.Type == GitObjectType.Milestone)
                 milestonesViewModel.SortMilestones(SelectedSort.SortType, SortDirection);
         }

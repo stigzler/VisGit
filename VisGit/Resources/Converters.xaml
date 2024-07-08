@@ -18,4 +18,6 @@
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:SortDirectionToIconConverter x:Key="SortDirectionToIconConverter" />
     <converters:SortToBoolConverter x:Key="SortToBoolConverter" />
+    <converters:HexRgbToLabelBackground x:Key="HexRgbToLabelBackground" />
+    <converters:HexRgbToLabelForeground x:Key="HexRgbToLabelForeground" />
 </ResourceDictionary>
