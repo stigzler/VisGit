@@ -23,23 +23,6 @@ namespace VisGitCore.ViewModels
         IRecipient<LabelDeletedMessage>,
         IRecipient<LabelNameChangingMessage>
     {
-        void IRecipient<LabelDeletedMessage>.Receive(LabelDeletedMessage message)
-        {
-            if (RepositoryLabelsVMs.Contains(message.Value))
-                RepositoryLabelsVMs.Remove(message.Value);
-            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Label Deleted"));
-        }
-
-        void IRecipient<LabelNameChangingMessage>.Receive(LabelNameChangingMessage message)
-        {
-            // Checks changed Name against other local names and remote names (excluding itself) to check for duplicates
-            if (RepositoryLabelsVMs.Where(l => l.Name == message.NewName.Trim()).Count() > 0 ||
-                RepositoryLabelsVMs.Where(l => (l.GitLabel.Name == message.NewName.Trim()) && message.Value.GitLabel.Id != l.GitLabel.Id).Count() > 0)
-                message.Value.NameUnique = false;
-            else
-                message.Value.NameUnique = true;
-        }
-
         #region Properties =========================================================================================
 
         // View Related
@@ -64,6 +47,27 @@ namespace VisGitCore.ViewModels
         private ListSortDirection lastSortDirection = ListSortDirection.Ascending;
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
+
+        #region Messages =========================================================================================
+
+        void IRecipient<LabelDeletedMessage>.Receive(LabelDeletedMessage message)
+        {
+            if (RepositoryLabelsVMs.Contains(message.Value))
+                RepositoryLabelsVMs.Remove(message.Value);
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Label Deleted"));
+        }
+
+        void IRecipient<LabelNameChangingMessage>.Receive(LabelNameChangingMessage message)
+        {
+            // Checks changed Name against other local names and remote names (excluding itself) to check for duplicates
+            if (RepositoryLabelsVMs.Where(l => l.Name == message.NewName.Trim()).Count() > 0 ||
+                RepositoryLabelsVMs.Where(l => (l.GitLabel.Name == message.NewName.Trim()) && message.Value.GitLabel.Id != l.GitLabel.Id).Count() > 0)
+                message.Value.NameUnique = false;
+            else
+                message.Value.NameUnique = true;
+        }
+
+        #endregion End: Messages ---------------------------------------------------------------------------------
 
         #region Commands =========================================================================================
 

@@ -67,6 +67,7 @@
     <Compile Include="Data\Models\GitObjectType.cs" />
     <Compile Include="Enums\ViewRequest.cs" />
     <Compile Include="Helpers\Color.cs" />
+    <Compile Include="Helpers\Date.cs" />
     <Compile Include="Messages\ChangeViewMessage.cs" />
     <Compile Include="Messages\LabelDeletedMessage.cs" />
     <Compile Include="Messages\MilestoneTitleChangingMessage.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="Services\GitService.cs" />
     <Compile Include="Services\Math.cs" />
     <Compile Include="Services\UserSettings.cs" />
+    <Compile Include="ViewModels\IssuesViewModel.cs" />
+    <Compile Include="ViewModels\IssueViewModel.cs" />
     <Compile Include="ViewModels\LabelsViewModel.cs" />
     <Compile Include="ViewModels\LabelViewModel.cs" />
     <Compile Include="ViewModels\MilestonesViewModel.cs" />

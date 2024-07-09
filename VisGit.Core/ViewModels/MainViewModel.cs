@@ -88,6 +88,8 @@ namespace VisGitCore.ViewModels
 
         private LabelsViewModel labelsViewModel;
 
+        private IssuesViewModel issuesViewModel;
+
         #endregion End: Operational Vars
 
         #region Property Changed Methods =========================================================================================
@@ -114,6 +116,8 @@ namespace VisGitCore.ViewModels
             _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
             labelsViewModel.gitRepositoryVm = value;
             _ = labelsViewModel.GetAllLabelsForRepoAsync();
+            issuesViewModel.gitRepositoryVm = value;
+            _ = issuesViewModel.GetAllLabelsForRepoAsync();
         }
 
         partial void OnSelectedGitObjectChanged(GitObject gitObject)
@@ -130,6 +134,12 @@ namespace VisGitCore.ViewModels
                     CurrentViewModel = labelsViewModel;
                     Filters = Filter.LabelFilters;
                     Sorts = Data.Models.Sort.LabelSorts;
+                    break;
+
+                case GitObjectType.Issue:
+                    CurrentViewModel = issuesViewModel;
+                    Filters = Filter.IssueFilters;
+                    Sorts = Data.Models.Sort.IssueSorts;
                     break;
             }
             if (Filters.Count > 0) SelectedFilter = Filters[0];
@@ -177,6 +187,7 @@ namespace VisGitCore.ViewModels
 
             milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
             labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
+            issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
         }

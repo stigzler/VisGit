@@ -61,6 +61,9 @@
     <Compile Include="Converters\HexRgbToLabelForeground.cs" />
     <Compile Include="Converters\HexRgbToLabelBackground.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\IssueStatusToIconConverter.cs" />
+    <Compile Include="Converters\IssueStatusToOpacityConverter.cs" />
+    <Compile Include="Converters\IssueToKeyDatesConverter.cs" />
     <Compile Include="Converters\LastUpdatedConverter.cs" />
     <Compile Include="Converters\DueByConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
@@ -76,6 +79,9 @@
     </Compile>
     <Compile Include="Views\LabelsView.xaml.cs">
       <DependentUpon>LabelsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IssuesView.xaml.cs">
+      <DependentUpon>IssuesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MilestonesView.xaml.cs">
       <DependentUpon>MilestonesView.xaml</DependentUpon>
@@ -232,6 +238,10 @@
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\LabelsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\IssuesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

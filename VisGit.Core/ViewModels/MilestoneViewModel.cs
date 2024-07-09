@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using VisGitCore.Messages;
 using System.ComponentModel.DataAnnotations;
+using VisGitCore.Helpers;
 
 namespace VisGitCore.ViewModels
 {
@@ -33,9 +34,11 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private bool _open;
 
+        // Git updates this server side which is returned/updated on save, so no need to set it locally.
+        public DateTimeOffset? UpdatedAt { get => GitMilestone.UpdatedAt; }
+
         public int Number { get => GitMilestone.Number; }
         public Octokit.StringEnum<ItemState> State { get => GitMilestone.State; }
-        public DateTimeOffset? UpdatedAt { get => GitMilestone.UpdatedAt; }
         public int OpenIssues { get => GitMilestone.OpenIssues; }
 
         // View Related ----------------------------------------------------------------

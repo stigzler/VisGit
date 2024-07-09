@@ -32,6 +32,11 @@ namespace VisGitCore.Services
             }
         }
 
+        internal async Task<User> GetAuthenticatedUserAsync()
+        {
+            return await gitHubClient.User.Current();
+        }
+
         internal void Logout()
         {
             gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
@@ -44,7 +49,7 @@ namespace VisGitCore.Services
             return await gitHubClient.Repository.GetAllForCurrent();
         }
 
-        // Milestones ==============================================================================================
+        #region Milestones =========================================================================================
 
         internal async Task<IReadOnlyList<Milestone>> GetAllMilestonesForRepositoryAsync(long repositoryId)
         {
@@ -82,7 +87,9 @@ namespace VisGitCore.Services
             return await gitHubClient.Issue.Milestone.Create(repositoryId, newMilestone);
         }
 
-        // Labels ==============================================================================================
+        #endregion End: Milestones ---------------------------------------------------------------------------------
+
+        #region Labels =========================================================================================
 
         internal async Task<IReadOnlyList<Label>> GetAllLabelsForRepositoryAsync(long repositoryId)
         {
@@ -108,5 +115,16 @@ namespace VisGitCore.Services
             NewLabel newLabel = new NewLabel(title, color);
             return await gitHubClient.Issue.Labels.Create(repositoryId, newLabel);
         }
+
+        #endregion End: Labels ---------------------------------------------------------------------------------
+
+        #region Issues =========================================================================================
+
+        internal async Task<IReadOnlyList<Issue>> GetAllIssuesForRepositoryAsync(long repositoryId)
+        {
+            return await gitHubClient.Issue.GetAllForRepository(repositoryId);
+        }
+
+        #endregion End: Issues ---------------------------------------------------------------------------------
     }
 }

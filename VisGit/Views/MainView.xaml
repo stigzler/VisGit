@@ -157,6 +157,9 @@
                 <DataTemplate DataType="{x:Type viewmodels:LabelsViewModel}">
                     <views:LabelsView></views:LabelsView>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:IssuesViewModel}">
+                    <views:IssuesView></views:IssuesView>
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </DockPanel>

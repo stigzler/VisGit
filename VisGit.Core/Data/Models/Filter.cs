@@ -42,5 +42,11 @@ namespace VisGitCore.Data.Models
         {
             new Filter("None", KnownMonikers.DeleteFilter, FilterType.None)
         };
+
+        public static ObservableCollection<Filter> IssueFilters = new ObservableCollection<Filter>()
+        {   new Filter("Open", KnownMonikers.Visible, FilterType.Open),
+            new Filter("Closed", KnownMonikers.CloakOrHide, FilterType.Closed),
+            new Filter("None", KnownMonikers.DeleteFilter, FilterType.None)
+        };
     }
 }

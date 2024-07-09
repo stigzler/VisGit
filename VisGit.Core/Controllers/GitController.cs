@@ -14,6 +14,8 @@ namespace VisGitCore.Controllers
 {
     internal class GitController
     {
+        public User User { get; set; }
+
         private GitService gitService;
 
         public GitController(GitService gitService)
@@ -31,7 +33,11 @@ namespace VisGitCore.Controllers
         {
             try
             {
-                if (await gitService.AuthenticateUserAsync(personalAccessToken) == null) return true;
+                if (await gitService.AuthenticateUserAsync(personalAccessToken) == null)
+                {
+                    User = await gitService.GetAuthenticatedUserAsync();
+                    return true;
+                }
                 else return false;
             }
             catch (Exception ex) { SendOperationErrorMessage("Error authenticating PAT", ex); }
@@ -61,7 +67,7 @@ namespace VisGitCore.Controllers
             return null;
         }
 
-        // Milestones ==============================================================================================
+        #region Milestones =========================================================================================
 
         internal async Task<ObservableCollection<MilestoneViewModel>> GetAllMilestonesForRepoAsync(long repositoryId)
         {
@@ -124,7 +130,9 @@ namespace VisGitCore.Controllers
             return null;
         }
 
-        // Labels ==============================================================================================
+        #endregion End: Milestones ---------------------------------------------------------------------------------
+
+        #region Labels =========================================================================================
 
         internal async Task<ObservableCollection<LabelViewModel>> GetAllLabelsForRepoAsync(long repositoryId)
         {
@@ -174,5 +182,33 @@ namespace VisGitCore.Controllers
             catch (Exception ex) { SendOperationErrorMessage("Error creating new Label", ex); }
             return null;
         }
+
+        #endregion End: Labels ---------------------------------------------------------------------------------
+
+        #region Issues =========================================================================================
+
+        internal async Task<ObservableCollection<IssueViewModel>> GetAllIssuesForRepoAsync(long repositoryId)
+        {
+            ObservableCollection<IssueViewModel> issueViewModels = new ObservableCollection<IssueViewModel>();
+
+            try
+            {
+                IReadOnlyList<Issue> repositoryIssues = await gitService.GetAllIssuesForRepositoryAsync(repositoryId);
+
+                foreach (Issue issue in repositoryIssues)
+                {
+                    issueViewModels.Add(new IssueViewModel(this, issue, repositoryId));
+                }
+
+                return issueViewModels;
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error loading Issues", ex);
+            }
+            return null;
+        }
+
+        #endregion End: Issues ---------------------------------------------------------------------------------
     }
 }

@@ -25,4 +25,7 @@
     <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
     <converters:GitLabelNameConverter x:Key="GitLabelNameConverter" />
     <converters:GitMilestoneTitleConverter x:Key="GitMilestoneTitleConverter" />
+    <converters:IssueStatusToOpacityConverter x:Key="IssueStatusToOpacityConverter" />
+    <converters:IssueToKeyDatesConverter x:Key="IssueToKeyDatesConverter" />
+    <converters:IssueStatusToIconConverter x:Key="IssueStatusToIconConverter" />
 </ResourceDictionary>

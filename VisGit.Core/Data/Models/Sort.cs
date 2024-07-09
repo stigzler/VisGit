@@ -48,5 +48,12 @@ namespace VisGitCore.Data.Models
             new Sort("Open Issues", KnownMonikers.DisableAllBreakpoints, SortType.OpenIssues),
             new Sort("None", KnownMonikers.ClearSort, SortType.None)
         };
+
+        public static ObservableCollection<Sort> IssueSorts = new ObservableCollection<Sort>()
+        {
+            new Sort("Alphabetically", KnownMonikers.FilterAlphabetically, SortType.None),
+            new Sort("Open Issues", KnownMonikers.DisableAllBreakpoints, SortType.OpenIssues),
+            new Sort("None", KnownMonikers.ClearSort, SortType.None)
+        };
     }
 }
