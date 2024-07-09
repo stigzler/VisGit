@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using Octokit;
 using VisGitCore.Controllers;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using VisGitCore.Messages;
+using System.ComponentModel.DataAnnotations;
 
 namespace VisGitCore.ViewModels
 {
@@ -16,6 +19,9 @@ namespace VisGitCore.ViewModels
 
         // Model related ----------------------------------------------------------------
         [ObservableProperty]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Title cannot be empty")]
+        [NotifyDataErrorInfo]
+        [CustomValidation(typeof(MilestoneViewModel), nameof(ValidateTitleUnique))]
         private string _title;
 
         [ObservableProperty]
@@ -58,6 +64,9 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private bool _hasChanges;
 
+        [ObservableProperty]
+        private bool _titleUnique;
+
         public long RepositoryId { get; set; }
 
         #endregion End: Properties
@@ -69,6 +78,11 @@ namespace VisGitCore.ViewModels
         #endregion End: Operational Vars
 
         #region Property Events =========================================================================================
+
+        partial void OnTitleChanging(string value)
+        {
+            WeakReferenceMessenger.Default.Send(new MilestoneTitleChangingMessage(this) { NewTitle = value });
+        }
 
         partial void OnTitleChanged(string oldValue, string newValue)
         {
@@ -124,6 +138,14 @@ namespace VisGitCore.ViewModels
         internal async Task DeleteMilestoneAsync()
         {
             await gitController.DeleteMilestoneAsync(this);
+        }
+
+        public static ValidationResult ValidateTitleUnique(string name, ValidationContext context)
+        {
+            MilestoneViewModel milestoneViewModel = (MilestoneViewModel)context.ObjectInstance;
+
+            if (milestoneViewModel.TitleUnique) return ValidationResult.Success;
+            return new("Title must be unique. Conflicts with another local or remote (git) title.");
         }
 
         #endregion End: Public Methods

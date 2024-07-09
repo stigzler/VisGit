@@ -94,6 +94,7 @@ namespace VisGitCore.Services
             LabelUpdate labelUpdate = new LabelUpdate(gitName, color);
             labelUpdate.Name = newName;
             labelUpdate.Description = description;
+
             return await gitHubClient.Issue.Labels.Update(repositoryId, gitName, labelUpdate);
         }
 

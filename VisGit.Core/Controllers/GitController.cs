@@ -1,8 +1,12 @@
-﻿using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Octokit;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using VisGitCore.Messages;
 using VisGitCore.Services;
 using VisGitCore.ViewModels;
 
@@ -17,24 +21,44 @@ namespace VisGitCore.Controllers
             this.gitService = gitService;
         }
 
+        internal void SendOperationErrorMessage(string message, Exception exception = null, object associatedObject = null)
+        {
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage(message)
+            { Exception = exception, AssociatedObject = associatedObject });
+        }
+
         internal async Task<bool> AuthenticateUserAsync(string personalAccessToken)
         {
-            if (await gitService.AuthenticateUserAsync(personalAccessToken) == null) return true;
-            else return false;
+            try
+            {
+                if (await gitService.AuthenticateUserAsync(personalAccessToken) == null) return true;
+                else return false;
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error authenticating PAT", ex); }
+            return false;
         }
 
         internal async Task<ObservableCollection<RepositoryViewModel>> GetAllRepositoriesAsync()
         {
             ObservableCollection<RepositoryViewModel> repositoryViewModels = new ObservableCollection<RepositoryViewModel>();
 
-            IReadOnlyList<Repository> userRepositories = await gitService.GetAllUserRepositoriesAsync();
-
-            foreach (Repository repository in userRepositories)
+            try
             {
-                repositoryViewModels.Add(new RepositoryViewModel(repository));
+                IReadOnlyList<Repository> userRepositories = await gitService.GetAllUserRepositoriesAsync();
+
+                foreach (Repository repository in userRepositories)
+                {
+                    repositoryViewModels.Add(new RepositoryViewModel(repository));
+                }
+
+                return repositoryViewModels;
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error loading repositories", ex);
             }
 
-            return repositoryViewModels;
+            return null;
         }
 
         // Milestones ==============================================================================================
@@ -43,30 +67,61 @@ namespace VisGitCore.Controllers
         {
             ObservableCollection<MilestoneViewModel> milestoneViewModels = new ObservableCollection<MilestoneViewModel>();
 
-            IReadOnlyList<Milestone> repositoryMilestones = await gitService.GetAllMilestonesForRepositoryAsync(repositoryId);
-
-            foreach (Milestone milestone in repositoryMilestones)
+            try
             {
-                milestoneViewModels.Add(new MilestoneViewModel(this, milestone, repositoryId));
-            }
+                IReadOnlyList<Milestone> repositoryMilestones = await gitService.GetAllMilestonesForRepositoryAsync(repositoryId);
 
-            return milestoneViewModels;
+                foreach (Milestone milestone in repositoryMilestones)
+                {
+                    milestoneViewModels.Add(new MilestoneViewModel(this, milestone, repositoryId));
+                }
+
+                return milestoneViewModels;
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error loading Milestones", ex);
+            }
+            return null;
         }
 
         internal async Task<Milestone> SaveMilestoneAsync(MilestoneViewModel milestoneViewModel)
         {
-            return await gitService.SaveMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number,
-                 milestoneViewModel.Title, milestoneViewModel.Description, milestoneViewModel.DueOn, milestoneViewModel.Open);
+            try
+            {
+                return await gitService.SaveMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number,
+                     milestoneViewModel.Title, milestoneViewModel.Description, milestoneViewModel.DueOn, milestoneViewModel.Open);
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error saving Milestone", ex);
+            }
+            return null;
         }
 
         internal async Task DeleteMilestoneAsync(MilestoneViewModel milestoneViewModel)
         {
-            await gitService.DeleteMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number);
+            try
+            {
+                await gitService.DeleteMilestoneAsync(milestoneViewModel.RepositoryId, milestoneViewModel.GitMilestone.Number);
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error deleting Milestone", ex);
+            }
         }
 
         internal async Task<Milestone> CreateNewMilestoneAsync(long repositoryId, string title)
         {
-            return await gitService.CreateNewMilestoneAsync(repositoryId, title);
+            try
+            {
+                return await gitService.CreateNewMilestoneAsync(repositoryId, title);
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error creating new Milestone", ex);
+            }
+            return null;
         }
 
         // Labels ==============================================================================================
@@ -75,30 +130,49 @@ namespace VisGitCore.Controllers
         {
             ObservableCollection<LabelViewModel> labelViewModels = new ObservableCollection<LabelViewModel>();
 
-            IReadOnlyList<Label> repositoryLabels = await gitService.GetAllLabelsForRepositoryAsync(repositoryId);
-
-            foreach (Label label in repositoryLabels)
+            try
             {
-                labelViewModels.Add(new LabelViewModel(this, label, repositoryId));
-            }
+                IReadOnlyList<Label> repositoryLabels = await gitService.GetAllLabelsForRepositoryAsync(repositoryId);
 
-            return labelViewModels;
+                foreach (Label label in repositoryLabels)
+                {
+                    labelViewModels.Add(new LabelViewModel(this, label, repositoryId));
+                }
+
+                return labelViewModels;
+            }
+            catch (Exception ex)
+            {
+                SendOperationErrorMessage("Error loading Labels", ex);
+            }
+            return null;
         }
 
         internal async Task<Label> SaveLabelAsync(LabelViewModel labelViewModel)
         {
-            return await gitService.SaveLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name, labelViewModel.Name,
-                labelViewModel.Description, labelViewModel.Color);
+            try
+            {
+                return await gitService.SaveLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name, labelViewModel.Name,
+                    labelViewModel.Description, labelViewModel.Color);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error saving Label", ex); }
+            return null;
         }
 
         internal async Task DeleteLabelAsync(LabelViewModel labelViewModel)
         {
-            await gitService.DeleteLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name);
+            try
+            {
+                await gitService.DeleteLabelAsync(labelViewModel.RepositoryId, labelViewModel.GitLabel.Name);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error deleting Label", ex); }
         }
 
         internal async Task<Label> CreateNewLabelAsync(long repositoryId, string title, string color)
         {
-            return await gitService.CreateNewLabelAsync(repositoryId, title, color);
+            try { return await gitService.CreateNewLabelAsync(repositoryId, title, color); }
+            catch (Exception ex) { SendOperationErrorMessage("Error creating new Label", ex); }
+            return null;
         }
     }
 }

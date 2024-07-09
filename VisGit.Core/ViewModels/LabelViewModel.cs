@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VisGitCore.Controllers;
 using VisGitCore.Messages;
+using System.Diagnostics;
+
+using Octokit;
 
 namespace VisGitCore.ViewModels
 {
@@ -23,7 +26,7 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Name cannot be empty")]
         [NotifyDataErrorInfo]
-        [CustomValidation(typeof(LabelViewModel), nameof(ValidateNameUnique), ErrorMessage = "Name must be unique")]
+        [CustomValidation(typeof(LabelViewModel), nameof(ValidateNameUnique))]
         private string _name;
 
         [ObservableProperty]
@@ -81,12 +84,13 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private async Task SaveLabelAsync()
         {
-            Label returnedLabel = await gitController.SaveLabelAsync(this);
+            Octokit.Label returnedLabel = await gitController.SaveLabelAsync(this);
 
             if (returnedLabel != null)
             {
                 UpdateViewmodelProperties(returnedLabel);
                 HasChanges = HasDifferences();
+                WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Label saved."));
             }
         }
 
@@ -99,7 +103,7 @@ namespace VisGitCore.ViewModels
 
             if (result == Microsoft.VisualStudio.VSConstants.MessageBoxResult.IDNO) return;
 
-            await gitController.DeleteLabelAsync(this); // reinstate once messaging sorted
+            await gitController.DeleteLabelAsync(this);
 
             WeakReferenceMessenger.Default.Send(new LabelDeletedMessage(this));
         }
@@ -120,7 +124,7 @@ namespace VisGitCore.ViewModels
 
         #region Private Methods =========================================================================================
 
-        private void UpdateViewmodelProperties(Label label)
+        private void UpdateViewmodelProperties(Octokit.Label label)
         {
             GitLabel = label;
 
@@ -142,27 +146,11 @@ namespace VisGitCore.ViewModels
 
         public static ValidationResult ValidateNameUnique(string name, ValidationContext context)
         {
-            //RegistrationForm instance = (RegistrationForm)context.ObjectInstance;
-            //bool isValid = instance.service.Validate(name);
-
-            //if (isValid)
-            //{
-            //    return ValidationResult.Success;
-            //}
-
             LabelViewModel labelViewModel = (LabelViewModel)context.ObjectInstance;
 
             if (labelViewModel.NameUnique) return ValidationResult.Success;
-            return new("Name must be unique");
+            return new("Name must be unique. Conflicts with another local or remote (git) name.");
         }
-
-        //void IRecipient<QueryNameUniqueMessage>.Receive(QueryNameUniqueMessage message)
-        //{
-        //    if (message.Name == Name)
-        //        NameUnique = true;
-        //    else
-        //        NameUnique = false;
-        //}
 
         #endregion End: Private Methods ---------------------------------------------------------------------------------
     }

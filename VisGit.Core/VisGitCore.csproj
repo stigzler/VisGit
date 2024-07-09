@@ -66,9 +66,12 @@
     <Compile Include="Data\Models\GitObject.cs" />
     <Compile Include="Data\Models\GitObjectType.cs" />
     <Compile Include="Enums\ViewRequest.cs" />
+    <Compile Include="Helpers\Color.cs" />
     <Compile Include="Messages\ChangeViewMessage.cs" />
     <Compile Include="Messages\LabelDeletedMessage.cs" />
-    <Compile Include="Messages\QueryNameUniqueMessage.cs" />
+    <Compile Include="Messages\MilestoneTitleChangingMessage.cs" />
+    <Compile Include="Messages\LabelNameChangingMessage.cs" />
+    <Compile Include="Messages\UpdateUserMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

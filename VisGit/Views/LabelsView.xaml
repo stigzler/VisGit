@@ -87,10 +87,16 @@
                             ToolTip="Save Changes">
                         </Button>
 
-                        <TextBox x:Name="MilestoneTitleTB" VerticalAlignment="Center" Margin="4,0,0,0"
-                                 Text="{Binding SelectedLabelViewModel.Name, UpdateSourceTrigger=PropertyChanged}"
-                              FontSize="18" Style="{StaticResource TextBoxStyle}"
-                             d:Background="Transparent" d:Foreground="White" d:Text="Label Name" />
+                        <TextBox x:Name="LabelGitNameTB" DockPanel.Dock="Right" HorizontalAlignment="Right" Opacity="0.5" Style="{StaticResource TextBoxStyle}"
+                                 FontStyle="Italic" Text="{Binding SelectedLabelViewModel.GitLabel.Name, Mode=OneWay,
+                                                            Converter={StaticResource GitLabelNameConverter}}"
+                                d:Text="(Gitname: label1)" />
+
+                        <TextBox x:Name="LabelNameTB" VerticalAlignment="Center" Margin="4,0,0,0"
+                                Text="{Binding SelectedLabelViewModel.Name, UpdateSourceTrigger=PropertyChanged}"
+
+                                FontSize="18" Style="{StaticResource TextBoxStyle}"
+                                d:Background="Transparent" d:Foreground="White" d:Text="Label Name" />
                     </DockPanel>
 
                     <Separator DockPanel.Dock="Top" Background="Gray"></Separator>
@@ -156,7 +162,7 @@
                              Style="{StaticResource ButtonStyle}" ToolTip="Delete Label" Command="{Binding SelectedLabelViewModel.DeleteLabelCommand}">
                         </Button>
 
-                        <TextBox Width="80" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedLabelViewModel.NameUnique, Mode=OneWay}"></TextBox>
+                        <!--<TextBox Width="80" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedLabelViewModel.NameUnique, Mode=OneWay}"></TextBox>-->
 
                         <!--<Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
                             Content="{DynamicResource UiTestImage}" d:Content="{DynamicResource UiTestImageDT}"

@@ -71,10 +71,16 @@
                         <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
                             Style="{StaticResource ButtonStyle}" Command="{Binding SelectedMilestoneViewModel.SaveMilestoneCommand}"
-                            Visibility="{Binding SelectedMilestoneViewModel.HasChanges,
-                            Converter={StaticResource BoolToVisibilityConverter}}"
+                            Visibility="{Binding SelectedMilestoneViewModel.HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
+                            IsEnabled="{Binding SelectedMilestoneViewModel.HasErrors, Converter={StaticResource InverseBoolConverter}}"
+                            Opacity="{Binding SelectedMilestoneViewModel.HasErrors, Converter={StaticResource InverseBoolToOpacityConverter}}"
                            ToolTip="Save Changes">
                         </Button>
+
+                        <TextBox x:Name="LabelGitNameTB" DockPanel.Dock="Right" HorizontalAlignment="Right" Opacity="0.5" Style="{StaticResource TextBoxStyle}"
+                                FontStyle="Italic" Text="{Binding SelectedMilestoneViewModel.GitMilestone.Title, Mode=OneWay,
+                                Converter={StaticResource GitMilestoneTitleConverter}}"
+                                d:Text="(Git Title: label1)" />
 
                         <TextBox x:Name="MilestoneTitleTB" VerticalAlignment="Center" Margin="4,0,0,0"
                                  Text="{Binding SelectedMilestoneViewModel.Title, UpdateSourceTrigger=PropertyChanged}"

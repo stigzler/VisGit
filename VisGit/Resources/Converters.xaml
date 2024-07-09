@@ -23,4 +23,6 @@
     <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
     <converters:InverseBoolToOpacityConverter x:Key="InverseBoolToOpacityConverter" />
     <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+    <converters:GitLabelNameConverter x:Key="GitLabelNameConverter" />
+    <converters:GitMilestoneTitleConverter x:Key="GitMilestoneTitleConverter" />
 </ResourceDictionary>

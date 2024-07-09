@@ -3,20 +3,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.VisualStudio.PlatformUI;
 using Octokit;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
-using VisGitCore.Enums;
+using VisGitCore.Helpers;
 using VisGitCore.Messages;
 
 namespace VisGitCore.ViewModels
@@ -29,19 +27,17 @@ namespace VisGitCore.ViewModels
         {
             if (RepositoryLabelsVMs.Contains(message.Value))
                 RepositoryLabelsVMs.Remove(message.Value);
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Label Deleted"));
         }
 
         void IRecipient<LabelNameChangingMessage>.Receive(LabelNameChangingMessage message)
         {
-            Debug.WriteLine($"Groups: {RepositoryLabelsVMs.GroupBy(l => l.Name).Count()}");
-            Debug.WriteLine($"Total: {RepositoryLabelsVMs.Count()}");
-
-            if (RepositoryLabelsVMs.Where(l => l.Name == message.NewName.Trim()).Count() > 0)
+            // Checks changed Name against other local names and remote names (excluding itself) to check for duplicates
+            if (RepositoryLabelsVMs.Where(l => l.Name == message.NewName.Trim()).Count() > 0 ||
+                RepositoryLabelsVMs.Where(l => (l.GitLabel.Name == message.NewName.Trim()) && message.Value.GitLabel.Id != l.GitLabel.Id).Count() > 0)
                 message.Value.NameUnique = false;
             else
                 message.Value.NameUnique = true;
-
-            // if (RepositoryLabelsVMs.GroupBy(l => l.Name).Count() != RepositoryLabelsVMs.Count())
         }
 
         #region Properties =========================================================================================
@@ -87,8 +83,8 @@ namespace VisGitCore.ViewModels
                 byte.Parse(b, System.Globalization.NumberStyles.HexNumber)));
             //dialog.Owner = this;
 
-            dialog.Background = new SolidColorBrush(Color.FromArgb(255, 30, 30, 30));
-            dialog.Foreground = new SolidColorBrush(Colors.Gainsboro);
+            dialog.Background = new SolidColorBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey).ToMediaColor());
+            dialog.Foreground = new SolidColorBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey).ToMediaColor());
 
             var res = dialog.ShowDialog();
             if (res.HasValue && res.Value)
@@ -121,39 +117,31 @@ namespace VisGitCore.ViewModels
             RepositoryLabelsView = CollectionViewSource.GetDefaultView(RepositoryLabelsVMs);
         }
 
-        #endregion End: Public Methods ---------------------------------------------------------------------------------
-
-        #region Private Methods =========================================================================================
-
-        public async Task CreateNewLabelAsync()
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns>bool - whether new label created or not</returns>
+        [RelayCommand]
+        public async Task<bool> CreateNewLabelAsync()
         {
             Random rnd = new Random();
             string color = Services.Math.RandomNumber(rnd, 50, 255).ToString("X2") + Services.Math.RandomNumber(rnd, 50, 255).ToString("X2") +
                 Services.Math.RandomNumber(rnd, 50, 255).ToString("X2");
 
+            // Construct unique name
             int count = 1;
             while (RepositoryLabelsVMs.Any(l => l.Name == "label" + count)) count += 1;
             string name = "label" + count;
 
             Label newLabel = await gitController.CreateNewLabelAsync(gitRepositoryVm.GitRepository.Id, name, color);
+
+            if (newLabel == null) return false; // Exception will have happened.
+
             LabelViewModel newLabelViewModel = new LabelViewModel(gitController, newLabel, gitRepositoryVm.GitRepository.Id);
             RepositoryLabelsVMs.Add(newLabelViewModel);
-
-            //Milestone newMilestone = await gitController.CreateNewMilestoneAsync(gitRepositoryVm.GitRepository.Id, title);
-            //MilestoneViewModel newMilestoneViewModel = new MilestoneViewModel(gitController, newMilestone, gitRepositoryVm.GitRepository.Id);
-            //RepositoryMilestonesVMs.Add(newMilestoneViewModel);
+            return true;
         }
 
-        //void IRecipient<LabelNameChangingMessage>.Receive(LabelViewModel message)
-        //{
-        //    string name = message.Name;
-        //    if (RepositoryLabelsVMs.Any(l => l.Name == name))
-
-        //        WeakReferenceMessenger.Default.Send(new QueryNameUniqueMessage(name) { Name = name, Unique = false });
-        //    else
-        //        WeakReferenceMessenger.Default.Send(new QueryNameUniqueMessage(name) { Name = name, Unique = true });
-        //}
-
-        #endregion End: Private Methods ---------------------------------------------------------------------------------
+        #endregion End: Public Methods ---------------------------------------------------------------------------------
     }
 }

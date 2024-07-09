@@ -18,10 +18,12 @@ using VisGitCore.Data.Models;
 using VisGitCore.Messages;
 using Microsoft.VisualStudio.Extensibility;
 using Community.VisualStudio.Toolkit;
+using System.Windows.Forms;
 
 namespace VisGitCore.ViewModels
 {
-    public partial class MilestonesViewModel : ViewModelBase
+    public partial class MilestonesViewModel : ViewModelBase,
+        IRecipient<MilestoneTitleChangingMessage>
     {
         #region Properties =========================================================================================
 
@@ -90,6 +92,7 @@ namespace VisGitCore.ViewModels
             await SelectedMilestoneViewModel.DeleteMilestoneAsync();
             RepositoryMilestonesVMs.Remove(SelectedMilestoneViewModel);
             if (RepositoryMilestonesVMs.Count > 0) SelectedMilestoneViewModel = RepositoryMilestonesVMs[0];
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Milestone deleted"));
         }
 
         [RelayCommand]
@@ -111,6 +114,8 @@ namespace VisGitCore.ViewModels
             this.gitRepositoryVm = gitRepositoryVm;
 
             RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
+
+            WeakReferenceMessenger.Default.Register<MilestoneTitleChangingMessage>(this);
         }
 
         // Sort and Filter ==============================================================================================
@@ -147,12 +152,20 @@ namespace VisGitCore.ViewModels
 
         // Milestone Operations ==============================================================================================
 
-        public async Task CreateNewMilestoneAsync()
+        public async Task<bool> CreateNewMilestoneAsync()
         {
-            string title = "New Milestone created " + DateTime.Now.ToShortDateString();
+            // string title = "New Milestone created " + DateTime.Now.ToShortDateString();
+
+            // Construct unique name
+            int count = 1;
+            while (RepositoryMilestonesVMs.Any(l => l.Title == "New Milestone " + count)) count += 1;
+            string title = "New Milestone " + count;
+
             Milestone newMilestone = await gitController.CreateNewMilestoneAsync(gitRepositoryVm.GitRepository.Id, title);
+            if (newMilestone == null) return false;
             MilestoneViewModel newMilestoneViewModel = new MilestoneViewModel(gitController, newMilestone, gitRepositoryVm.GitRepository.Id);
             RepositoryMilestonesVMs.Add(newMilestoneViewModel);
+            return true;
         }
 
         public async Task GetAllMilestonesForRepoAsync()
@@ -161,6 +174,16 @@ namespace VisGitCore.ViewModels
             RepositoryMilestonesVMs = await gitController.GetAllMilestonesForRepoAsync(gitRepositoryVm.GitRepository.Id);
             RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
             //milestonesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
+        }
+
+        void IRecipient<MilestoneTitleChangingMessage>.Receive(MilestoneTitleChangingMessage message)
+        {
+            // Checks changed Title against other local names and remote names (excluding itself) to check for duplicates
+            if (RepositoryMilestonesVMs.Where(m => m.Title == message.NewTitle.Trim()).Count() > 0 ||
+                RepositoryMilestonesVMs.Where(l => (l.GitMilestone.Title == message.NewTitle.Trim()) && message.Value.GitMilestone.Id != l.GitMilestone.Id).Count() > 0)
+                message.Value.TitleUnique = false;
+            else
+                message.Value.TitleUnique = true;
         }
 
         #endregion End: Public Methods

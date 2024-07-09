@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Navigation;
@@ -19,7 +20,7 @@ using VisGitCore.Services;
 
 namespace VisGitCore.ViewModels
 {
-    public partial class MainViewModel : ViewModelBase, IRecipient<ChangeViewMessage>
+    public partial class MainViewModel : ViewModelBase, IRecipient<ChangeViewMessage>, IRecipient<UpdateUserMessage>
     {
         #region Properties =========================================================================================
 
@@ -169,23 +170,14 @@ namespace VisGitCore.ViewModels
 
             gitController = new GitController(gitClient);
 
-            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-
             UserRepositoryVMs = new ObservableCollection<RepositoryViewModel>(); // can i do this in the def?
 
             WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this);
+            WeakReferenceMessenger.Default.Register<UpdateUserMessage>(this);
 
             milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
             labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
 
-            RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
-
-            UserSettings.Saved += UserSettings_Saved;
-        }
-
-        private void UserSettings_Saved(UserSettings obj)
-        {
-            // Update any UIElements with related settings:
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
         }
 
@@ -213,18 +205,19 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private async Task AddItemAsync()
         {
+            bool success;
             switch (CurrentViewModel)
             {
                 case MilestonesViewModel:
                     StartOperation("Creating new Milestone");
-                    await milestonesViewModel.CreateNewMilestoneAsync();
-                    FinishOperation("New Milestone Created");
+                    success = await milestonesViewModel.CreateNewMilestoneAsync();
+                    if (success) FinishOperation("New Milestone Created");
                     break;
 
                 case LabelsViewModel:
                     StartOperation("Creating new Label");
-                    await labelsViewModel.CreateNewLabelAsync();
-                    FinishOperation("New Label Created");
+                    success = await labelsViewModel.CreateNewLabelAsync();
+                    if (success) FinishOperation("New Label Created");
                     break;
             }
         }
@@ -248,12 +241,6 @@ namespace VisGitCore.ViewModels
         private void UpdateVsStatusText(string message)
         {
             VisualStudioStatusText = $"VisGit: {message}";
-        }
-
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-        {
-            Debug.WriteLine($"TASK EXCEPTION: {e.Exception.Message}");
-            //SingleLineFeedback = e.Exception.Message;
         }
 
         private async Task GetUserRespositoriesAsync()
@@ -286,10 +273,23 @@ namespace VisGitCore.ViewModels
                 milestonesViewModel.FilterMilestones(SelectedFilter.FilterType);
         }
 
+        void IRecipient<UpdateUserMessage>.Receive(UpdateUserMessage message)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(message.Value);
+            if (message.Exception != null) sb.Append($": {message.Exception.Message}");
+            FinishOperation(sb.ToString());
+        }
+
         #endregion End: Private Methods
 
+        #region Public Methods =========================================================================================
+
+        // Constructor ==============================================================================================
         public MainViewModel()
         {
         }
+
+        #endregion End: Public Methods ---------------------------------------------------------------------------------
     }
 }
