@@ -21,7 +21,8 @@ using VisGit;
 [assembly: ProvideCodeBase(AssemblyName = "Octokit")]
 [assembly: ProvideCodeBase(AssemblyName = "Dsafa.WpfColorPicker")]
 [assembly: ProvideCodeBase(AssemblyName = "WpfScreenHelper")]
-[assembly: ProvideCodeBase(AssemblyName = "System.ComponentModel.Annotations")]
+[assembly: ProvideCodeBase(AssemblyName = "Markdig")]
+[assembly: ProvideCodeBase(AssemblyName = "Markdig.Wpf")]
 
 namespace System.Runtime.CompilerServices
 {

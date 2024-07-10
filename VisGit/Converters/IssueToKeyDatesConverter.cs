@@ -22,7 +22,7 @@ namespace VisGit.Converters
             DateTimeOffset? closed = issueVm.ClosedAt;
 
             string dates = null;
-            dates += $"Opened: {opened.ToString("MMMM dd, yyyy")}";
+            dates += $"Opened by {issueVm.GitIssue.User.Login}: {opened.ToString("MMMM dd, yyyy")}";
 
             if (closed != null)
             {

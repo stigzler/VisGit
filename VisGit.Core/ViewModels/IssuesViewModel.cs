@@ -28,14 +28,30 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private IssueViewModel _selectedIssueViewModel;
 
+        // Labels ==============================================================================================
+
+        [ObservableProperty]
+        private ObservableCollection<LabelViewModel> _repositoryLabels = new ObservableCollection<LabelViewModel>();
+
         [ObservableProperty]
         private Label _selectedExistingLabel;
 
         [ObservableProperty]
         private LabelViewModel _selectedNewLabel;
 
+        // Milestones ==============================================================================================
+
         [ObservableProperty]
-        private ObservableCollection<LabelViewModel> _repositoryLabels = new ObservableCollection<LabelViewModel>();
+        private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SelectedIssueViewModel))]
+        private MilestoneViewModel _selectedMilestoneVM;
+
+        // Assignees ==============================================================================================
+
+        [ObservableProperty]
+        private User _selectedAssignee;
 
         #endregion End: Properties ---------------------------------------------------------------------------------
 
@@ -50,7 +66,16 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedNewLabelChanged(LabelViewModel value)
         {
-            RepositoryLabels.Count();
+            if (!SelectedIssueViewModel.Labels.Any(l => l.Name == SelectedNewLabel.GitLabel.Name))
+                SelectedIssueViewModel.Labels.Add(SelectedNewLabel.GitLabel);
+        }
+
+        partial void OnSelectedMilestoneVMChanged(MilestoneViewModel value)
+        {
+            SelectedIssueViewModel.Milestone = value.GitMilestone;
+            //TODO: This will throw out the open/closed numbers for this specific milestone. Not sure how to manage yet. Ideas:
+            // Refresh entire collection - would need ot also save this
+            // Subtract 1 from open issues
         }
 
         #endregion End: Property Changed Events ---------------------------------------------------------------------------------

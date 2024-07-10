@@ -53,6 +53,9 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private RepositoryViewModel _selectedRespositoryVM;
 
+        [ObservableProperty]
+        private ObservableCollection<LabelViewModel> _repositoryLabelsVMs = new ObservableCollection<LabelViewModel>();
+
         // Filter -------------------------------------------------------------
 
         [ObservableProperty]
@@ -111,6 +114,17 @@ namespace VisGitCore.ViewModels
             _ = issuesViewModel.GetAllIssuesForRepoAsync();
         }
 
+        private async Task UpdateRepositoryLabelsAsync()
+        {
+            RepositoryLabelsVMs.Clear();
+            RepositoryLabelsVMs = await gitController.GetAllLabelsForRepoAsync(SelectedRespositoryVM.GitRepository.Id);
+            labelsViewModel.RepositoryLabelsVMs = RepositoryLabelsVMs;
+        }
+
+        //private async Task UpdateRepositoryIssuesAsync()
+        //{
+        //}
+
         partial void OnSelectedGitObjectChanged(GitObject gitObject)
         {
             switch (gitObject.Type)
@@ -131,6 +145,8 @@ namespace VisGitCore.ViewModels
                     CurrentViewModel = issuesViewModel;
                     Filters = Filter.IssueFilters;
                     Sorts = Data.Models.Sort.IssueSorts;
+                    issuesViewModel.RepositoryLabels = labelsViewModel.RepositoryLabelsVMs;
+                    issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
                     break;
             }
             if (Filters.Count > 0) SelectedFilter = Filters[0];
@@ -178,7 +194,7 @@ namespace VisGitCore.ViewModels
 
             milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
             labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
-            issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM, labelsViewModel.RepositoryLabelsVMs);
+            issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM, RepositoryLabelsVMs);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
         }

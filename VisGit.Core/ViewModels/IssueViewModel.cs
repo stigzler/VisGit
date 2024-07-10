@@ -1,11 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Community.VisualStudio.Toolkit;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.VisualStudio.VCProjectEngine;
 using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using VisGitCore.Controllers;
 using VisGitCore.Helpers;
 
@@ -35,16 +39,25 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private ObservableCollection<Label> _labels = new ObservableCollection<Label>();
 
+        [ObservableProperty]
+        private Milestone _milestone;
+
+        [ObservableProperty]
+        private User _author;
+
+        [ObservableProperty]
+        private ObservableCollection<User> _assignees = new ObservableCollection<User>();
+
         // View Related ==============================================================================================
 
         public string IssuesStatus
         {
             get
             {
-                if (GitIssue.Milestone != null)
+                if (Milestone != null)
                 {
                     double percentageComplete = PercentageComplete;
-                    return $"{percentageComplete.ToString()}% complete " + $"{GitIssue.Milestone.OpenIssues} open {GitIssue.Milestone.ClosedIssues} closed";
+                    return $"{percentageComplete.ToString()}% complete " + $"{Milestone.OpenIssues} open {Milestone.ClosedIssues} closed";
                 }
                 return null;
             }
@@ -54,8 +67,8 @@ namespace VisGitCore.ViewModels
         {
             get
             {
-                if (GitIssue.Milestone != null)
-                    return Services.Math.Percentage(GitIssue.Milestone.ClosedIssues, GitIssue.Milestone.OpenIssues + GitIssue.Milestone.ClosedIssues);
+                if (Milestone != null)
+                    return Services.Math.Percentage(Milestone.ClosedIssues, Milestone.OpenIssues + Milestone.ClosedIssues);
                 return 0;
             }
         }
@@ -99,6 +112,8 @@ namespace VisGitCore.ViewModels
                 ClosedBy = null;
                 ClosedAt = null;
             }
+            // ToDo: Do I need to change any respective milestone? i.e. -1 from open issues and +1 to closed issues?
+            // May have to refactor MilestoneVM as these numbers are gained form the GitMilestone, not an individ property
         }
 
         #endregion End: Property Events ---------------------------------------------------------------------------------
@@ -111,14 +126,14 @@ namespace VisGitCore.ViewModels
         {
             this.gitController = gitController;
             RepositoryId = repositoryId;
-            UpdateViewmodelProperties(issue);
+            _ = UpdateViewmodelPropertiesAsync(issue);
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
 
         #region Private Methods =========================================================================================
 
-        private void UpdateViewmodelProperties(Issue issue)
+        private async Task UpdateViewmodelPropertiesAsync(Issue issue)
         {
             GitIssue = issue;
 
@@ -126,16 +141,18 @@ namespace VisGitCore.ViewModels
             _closedBy = GitIssue.ClosedBy;
             _closedAt = GitIssue.ClosedAt;
             _body = GitIssue.Body;
+            _milestone = GitIssue.Milestone;
+            _author = GitIssue.User;
+            _assignees = new ObservableCollection<User>(GitIssue.Assignees);
 
             _labels.Clear();
-
             foreach (var label in GitIssue.Labels)
                 _labels.Add(label);
 
             if (GitIssue.State == ItemState.Open) _open = true;
             else _open = false;
         }
-
-        #endregion End: Private Methods ---------------------------------------------------------------------------------
     }
+
+    #endregion End: Private Methods ---------------------------------------------------------------------------------
 }

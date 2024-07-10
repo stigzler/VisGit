@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using VisGitCore.Messages;
 using VisGitCore.Services;
@@ -36,6 +38,7 @@ namespace VisGitCore.Controllers
                 if (await gitService.AuthenticateUserAsync(personalAccessToken) == null)
                 {
                     User = await gitService.GetAuthenticatedUserAsync();
+
                     return true;
                 }
                 else return false;

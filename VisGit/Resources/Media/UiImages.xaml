@@ -57,4 +57,10 @@
 
     <imaging:CrispImage x:Key="UiColorDialogImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.ColorDialog}" />
     <Image              x:Key="UiColorDialogImageDT" x:Shared="false" Width="16" Height="16" Source="Images/ColorDialog.png" />
+
+    <imaging:CrispImage x:Key="UiMarkdownImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.MarkdownFile}" />
+    <Image              x:Key="UiMarkdownImageDT" x:Shared="false" Width="16" Height="16" Source="Images/MarkdownFile.png" />
+
+    <imaging:CrispImage x:Key="UiPecilImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Edit}" />
+    <Image              x:Key="UiPecilImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Edit.png" />
 </ResourceDictionary>

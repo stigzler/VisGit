@@ -7,6 +7,7 @@
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+            xmlns:md="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
             xmlns:viewmodels="clr-namespace:VisGitCore.ViewModels;assembly=VisGitCore"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
@@ -28,6 +29,9 @@
                 <ResourceDictionary Source="../Resources/Styles/MenuItem.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ListViewItem.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/MarkdownViewer.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/TabItem.xaml" />
+
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -105,8 +109,17 @@
                         <!-- Below for debug - shows Milestone Number -->
                         <!--<TextBlock>#</TextBlock>
                         <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
+                        <Ellipse Height="22" Width="22" Margin="2,0,4,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" SnapsToDevicePixels="True">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                            </Ellipse.Fill>
+                        </Ellipse>
 
-                        <ContentControl Width="24" Content="{StaticResource UiCalendarImage}" d:Content="{StaticResource UiCalendarImageDT}" />
+                        <!--<ContentControl Width="24" Content="{StaticResource UiCalendarImage}" d:Content="{StaticResource UiCalendarImageDT}" />-->
+
+                        <!--<Image Margin="2" Source="{Binding SelectedIssueViewModel.Author.AvatarUrl}" Stretch="UniformToFill"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               ToolTip="{Binding SelectedIssueViewModel.Author.Login}" />-->
 
                         <TextBlock x:Name="DatesTB" VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel,
                                 Converter={StaticResource IssueToKeyDatesConverter}}" d:Text="Opened: June 23, 2024 Closed: June 30, 2024 by Dave"
@@ -122,6 +135,50 @@
                         <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.Open,
                             Converter={StaticResource BoolToOpenClosedConverter}}"
                             d:Text="Open" d:Foreground="White" />
+
+                        <!-- Assignees -->
+
+                        <ListView  ItemsSource="{Binding SelectedIssueViewModel.Assignees}" SelectedItem="{Binding SelectedAssignee}"
+                                   BorderThickness="0" Margin="4,0,0,0"
+                                   ItemContainerStyle="{StaticResource LvItemStyle}"
+                                   d:Width="100" d:Background="Transparent" d:BorderThickness="0">
+
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--<Border BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource HexRgbToLabelForeground}}"
+                                               SnapsToDevicePixels="True" CornerRadius="8" Background="{Binding Color, Converter={StaticResource HexRgbToLabelBackground}}" Margin="2">
+                                            <TextBlock Text="{Binding Name}"
+                                                   Padding="8,0,8,0" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                                                   FontWeight="Bold" />
+                                        </Border>-->
+                                        <Ellipse Height="22" Width="22" Margin="2,0,2,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                                                 SnapsToDevicePixels="True" ToolTip="{Binding Login}">
+                                            <Ellipse.Fill>
+                                                <ImageBrush ImageSource="{Binding AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu Style="{StaticResource ContextMenu}">
+                                    <MenuItem Header="Remove Label" Style="{StaticResource MenuItem}" Command="{Binding RemoveLabelCommand}">
+                                        <MenuItem.Icon>
+                                            <ContentControl Width="16" Content="{StaticResource UiLabelImage}"
+                                                            d:Content="{StaticResource UiLabelImageDT}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
 
                         <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
                              Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
@@ -152,18 +209,18 @@
 
                         <ToggleButton x:Name="DueByBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
                                       Content="{DynamicResource UiAddLabelImage}"
-                                    d:Content="{DynamicResource UiAddLabelImageDT}" ToolTip="Change Due by Date" />
+                                    d:Content="{DynamicResource UiAddLabelImageDT}" ToolTip="Add Label" />
 
                         <Popup x:Name="ContextPopup" PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
                                IsOpen="{Binding ElementName=DueByBT, Path=IsChecked}">
                             <ListView x:Name="NewLabelLV"  ItemsSource="{Binding RepositoryLabels}"
-                                      SelectedItem="{Binding SelectedNewLabel}">
+                                      SelectedItem="{Binding SelectedNewLabel}" DisplayMemberPath="Name">
                             </ListView>
                         </Popup>
 
                         <!-- Existing Labels -->
 
-                        <ListView  ItemsSource="{Binding SelectedIssueViewModel.Labels}" SelectedItem="{Binding SelectedLabel}"
+                        <ListView  ItemsSource="{Binding SelectedIssueViewModel.Labels}" SelectedItem="{Binding SelectedExistingLabel}"
                                    BorderThickness="0"
                                    ItemContainerStyle="{StaticResource LvItemStyle}"
                                    d:Width="100" d:Background="Transparent" d:BorderThickness="0">
@@ -200,14 +257,26 @@
                         </ListView>
 
                         <!-- ISSUES -->
-                        <StackPanel x:Name="MilestoneInfo" Orientation="Horizontal" Visibility="{Binding SelectedIssueViewModel.MilestoneTitle,
+                        <StackPanel x:Name="MilestoneInfo" Orientation="Horizontal" Visibility="{Binding SelectedIssueViewModel.Milestone.Title,
                                     Converter={StaticResource NullToVisibilityConverter}}" VerticalAlignment="Center">
-                            <ContentControl Width="24" Content="{StaticResource UiMilestoneImage}"
-                                        d:Content="{StaticResource UiMilestoneImageDT}" />
-                            <TextBlock Text="{Binding SelectedIssueViewModel.MilestoneTitle, Mode=OneWay}"
-                                   d:Foreground="Gainsboro" d:Text="Milestone 1" />
-                            <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,0,0,0" FontWeight="Bold" />
-                            <TextBlock Text="{Binding SelectedIssueViewModel.IssuesStatus}"
+                            <!--<ContentControl Width="24" Content="{StaticResource UiMilestoneImage}"
+                                        d:Content="{StaticResource UiMilestoneImageDT}" />-->
+
+                            <ToggleButton x:Name="ChangeMilestoneDDB" Width="24" Height="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      Content="{DynamicResource UiMilestoneImage}"
+                                    d:Content="{DynamicResource UiMilestoneImageDT}" ToolTip="Change Milestone" />
+
+                            <Popup  PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=ChangeMilestoneDDB, Path=IsChecked}">
+                                <ListView ItemsSource="{Binding RepositoryMilestonesVMs}" DisplayMemberPath="Title"
+                                      SelectedItem="{Binding SelectedMilestoneVM}">
+                                </ListView>
+                            </Popup>
+
+                            <TextBlock Text="{Binding SelectedIssueViewModel.Milestone.Title, Mode=OneWay}"
+                                   d:Foreground="Gainsboro" d:Text="Milestone 1" VerticalAlignment="Center" />
+                            <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,0,0,0" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding SelectedIssueViewModel.IssuesStatus}" VerticalAlignment="Center"
                                    d:Text="50% complete 1 open 1 closed" d:Foreground="Gainsboro" Margin="4,0,0,0" />
                             <ProgressBar Value="{Binding SelectedIssueViewModel.PercentageComplete, Mode=OneWay}"
                                      Width="50" Height="5" Background="#20808080" Foreground="#00a2ed" BorderBrush="#80808080"
@@ -215,14 +284,34 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <!--<Separator DockPanel.Dock="Top" Background="Gray"></Separator>-->
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="2">
-                        <TextBox x:Name="MilestoneDescriptionTB"
-                                 TextWrapping="wrap" AcceptsReturn="True" Padding="2"
-                            Text="{Binding SelectedIssueViewModel.Body, UpdateSourceTrigger=PropertyChanged}"
-                             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
-                            d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
-                    </ScrollViewer>
+                    <TabControl TabStripPlacement="Left" Background="Transparent">
+
+                        <TabItem Style="{StaticResource TabItemStyle}" Width="30" Height="30" Margin="0" Padding="0" ToolTip="Markdown">
+                            <TabItem.Header>
+                                <ContentControl Width="24" Content="{StaticResource UiMarkdownImage}" d:Content="{StaticResource UiMarkdownImageDT}" />
+                            </TabItem.Header>
+                            <TabItem.Content>
+                                <md:MarkdownViewer Markdown="{Binding SelectedIssueViewModel.Body}" Style="{StaticResource MarkdownViewer}"
+                                                   d:Markdown="## Markdown Text">
+                                </md:MarkdownViewer>
+                            </TabItem.Content>
+                        </TabItem>
+
+                        <TabItem Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Edit/Text">
+                            <TabItem.Header>
+                                <ContentControl Width="24" Content="{StaticResource UiPecilImage}" d:Content="{StaticResource UiPecilImageDT}" />
+                            </TabItem.Header>
+                            <TabItem.Content>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="2" Width="auto">
+                                    <TextBox x:Name="MilestoneDescriptionTB"
+                                        TextWrapping="wrap" AcceptsReturn="True" Padding="2"
+                                        Text="{Binding SelectedIssueViewModel.Body, UpdateSourceTrigger=PropertyChanged}"
+                                        Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
+                                        d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
+                                </ScrollViewer>
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
                 </DockPanel>
             </Grid>
         </Grid>

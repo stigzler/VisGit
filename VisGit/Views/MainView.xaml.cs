@@ -35,6 +35,9 @@ namespace VisGit.Views
                 return null; // or handle other assemblies if necessary
             };
 
+            var bastard = new Markdig.Helpers.NewLine();
+            var dave = new Markdig.Wpf.MarkdownViewer();
+
             // this solves MS bug:
             // https://stackoverflow.com/questions/78644729/visual-studio-extension-using-external-library-produces-could-not-load-file-or
             var assemblyLoadFix = new VisGitCore.ViewModels.MainViewModel();
