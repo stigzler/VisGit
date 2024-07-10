@@ -5,29 +5,19 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mwt1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
 
-    <!-- BUTTON STYLE -->
-    <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+    <!-- CONTEXTMENU STYLE -->
+    <Style x:Key="ContextMenu" TargetType="ContextMenu">
         <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
-
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                                BorderBrush="Gray" BorderThickness="1">
+                        <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" Margin="2" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#2000A2Ed" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="False">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 </ResourceDictionary>

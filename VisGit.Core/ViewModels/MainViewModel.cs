@@ -101,23 +101,14 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedRespositoryVMChanged(RepositoryViewModel value)
         {
-            //if (SelectedGitObject.Type == GitObjectType.Milestone)
-            //{
-            //    milestonesViewModel.gitRepositoryVm = value;
-            //    _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
-            //}
-            //else if (SelectedGitObject.Type == GitObjectType.Label)
-            //{
-            //    labelsViewModel.gitRepositoryVm = value;
-            //    _ = labelsViewModel.GetAllLabelsForRepoAsync();
-            //}
-
             milestonesViewModel.gitRepositoryVm = value;
             _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
+
             labelsViewModel.gitRepositoryVm = value;
             _ = labelsViewModel.GetAllLabelsForRepoAsync();
+
             issuesViewModel.gitRepositoryVm = value;
-            _ = issuesViewModel.GetAllLabelsForRepoAsync();
+            _ = issuesViewModel.GetAllIssuesForRepoAsync();
         }
 
         partial void OnSelectedGitObjectChanged(GitObject gitObject)
@@ -187,7 +178,7 @@ namespace VisGitCore.ViewModels
 
             milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
             labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
-            issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM);
+            issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM, labelsViewModel.RepositoryLabelsVMs);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
         }

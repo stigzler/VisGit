@@ -24,6 +24,10 @@
                 <ResourceDictionary Source="../Resources/Styles/TextBox.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/Calendar.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ToggleButton.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ContextMenu.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/MenuItem.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ListViewItem.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -39,6 +43,8 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
+            <!-- LISTVIEW -->
 
             <ListView x:Name="IssuesLV" Grid.Column="0" Width="auto"
                       ItemsSource="{Binding RepositoryIssuesVMs}"
@@ -64,8 +70,11 @@
             <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2" Background="Transparent"
                   Visibility="{Binding SelectedMilestoneViewModel, Converter={StaticResource NullToVisibilityConverter}}">
 
+                <!-- TITLE AND DESCRIPTION -->
+
                 <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0">
 
+                    <!-- TITLE ROW -->
                     <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
 
                         <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
@@ -83,61 +92,21 @@
                                 d:Text="(Git Title: UI Bug)" d:Foreground="Gray" />-->
 
                         <TextBox x:Name="MilestoneTitleTB" VerticalAlignment="Center" Margin="4,0,0,0"
-                                 Text="{Binding SelectedMilestoneViewModel.Title, UpdateSourceTrigger=PropertyChanged}"
-                              FontSize="18" Style="{StaticResource TextBoxStyle}"
-                             d:Background="Transparent" d:Foreground="White" d:Text="Issue Title" />
+                                Text="{Binding SelectedIssueViewModel.Title, UpdateSourceTrigger=PropertyChanged}"
+                                FontSize="18" Style="{StaticResource TextBoxStyle}"
+                                d:Background="Transparent" d:Foreground="White" d:Text="Issue Title" />
                     </DockPanel>
 
                     <Separator DockPanel.Dock="Top" Background="Gray"></Separator>
 
+                    <!-- DATES AND COMMANDS ROW -->
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="24">
 
                         <!-- Below for debug - shows Milestone Number -->
                         <!--<TextBlock>#</TextBlock>
                         <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
 
-                        <!--<Button Width="24"  MinWidth="10" Padding="0" Content="{DynamicResource UiCalendarImage}"
-                                    d:Content="{DynamicResource UiCalendarImageDT}"
-                                    Style="{StaticResource ButtonStyle}" ToolTip="Change Due by Date">
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.Click">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <BooleanAnimationUsingKeyFrames
-                                                     Storyboard.TargetName="ContextPopup"
-                                                     Storyboard.TargetProperty="IsOpen">
-                                                    <DiscreteBooleanKeyFrame KeyTime="0:0:0" Value="True" />
-                                                </BooleanAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>-->
-
-                        <!--<ToggleButton x:Name="DueByBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
-                                      Content="{DynamicResource UiCalendarImage}"
-                                    d:Content="{DynamicResource UiCalendarImageDT}" ToolTip="Change Due by Date" />-->
-
                         <ContentControl Width="24" Content="{StaticResource UiCalendarImage}" d:Content="{StaticResource UiCalendarImageDT}" />
-
-                        <!--<Popup x:Name="ContextPopup" PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
-                               IsOpen="{Binding ElementName=DueByBT, Path=IsChecked}">
-                            <StackPanel Orientation="Vertical">
-                                <Calendar Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
-                                      Foreground="White" BorderThickness="0"
-                                  CalendarButtonStyle="{DynamicResource CalendarButtonStyle}"
-                                  CalendarItemStyle="{DynamicResource CalendarItemStyle}"
-                                  CalendarDayButtonStyle="{DynamicResource CalendarCalendarDayButtonStyle}"
-                                  Style="{DynamicResource CalendarStyle}"
-                                  SelectedDate="{Binding SelectedMilestoneViewModel.DueOn, Mode=TwoWay,
-                                        Converter={StaticResource DateOffsetToDateConverter}}"
-                                  DisplayDate="{Binding SelectedMilestoneViewModel.DueOn, Mode=OneWay,
-                                        Converter={StaticResource DateOffsetToDateConverter}}"
-                                    SelectedDatesChanged="Calendar_SelectedDatesChanged" />
-                            </StackPanel>
-                        </Popup>-->
 
                         <TextBlock x:Name="DatesTB" VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel,
                                 Converter={StaticResource IssueToKeyDatesConverter}}" d:Text="Opened: June 23, 2024 Closed: June 30, 2024 by Dave"
@@ -174,20 +143,83 @@
                                         ToolTip="Has changes." />-->
                     </StackPanel>
 
+                    <!-- ISSUES AND LABELS ROW -->
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,4,2,0" />
-                        <TextBlock Text="{Binding SelectedMilestoneViewModel.IssuesStatus}" Margin="4"
-                                   d:Text="50% complete 1 open 1 closed" d:Foreground="Gainsboro" />
-                        <ProgressBar Value="{Binding SelectedMilestoneViewModel.PercentageComplete, Mode=OneWay}"
-                                     Width="150" Height="5" Background="#20808080" Foreground="#00a2ed" BorderBrush="#80808080"
-                                     Margin="4,0,0,0" d:Value="50" />
+
+                        <!-- LABELS -->
+
+                        <!-- Add Label -->
+
+                        <ToggleButton x:Name="DueByBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      Content="{DynamicResource UiAddLabelImage}"
+                                    d:Content="{DynamicResource UiAddLabelImageDT}" ToolTip="Change Due by Date" />
+
+                        <Popup x:Name="ContextPopup" PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=DueByBT, Path=IsChecked}">
+                            <ListView x:Name="NewLabelLV"  ItemsSource="{Binding RepositoryLabels}"
+                                      SelectedItem="{Binding SelectedNewLabel}">
+                            </ListView>
+                        </Popup>
+
+                        <!-- Existing Labels -->
+
+                        <ListView  ItemsSource="{Binding SelectedIssueViewModel.Labels}" SelectedItem="{Binding SelectedLabel}"
+                                   BorderThickness="0"
+                                   ItemContainerStyle="{StaticResource LvItemStyle}"
+                                   d:Width="100" d:Background="Transparent" d:BorderThickness="0">
+
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource HexRgbToLabelForeground}}"
+                                               SnapsToDevicePixels="True" CornerRadius="8" Background="{Binding Color, Converter={StaticResource HexRgbToLabelBackground}}" Margin="2">
+                                            <TextBlock Text="{Binding Name}"
+                                                   Padding="8,0,8,0" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                                                   FontWeight="Bold" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+
+                            <ListView.ContextMenu>
+                                <ContextMenu Style="{StaticResource ContextMenu}">
+                                    <MenuItem Header="Remove Label" Style="{StaticResource MenuItem}" Command="{Binding RemoveLabelCommand}">
+                                        <MenuItem.Icon>
+                                            <ContentControl Width="16" Content="{StaticResource UiLabelImage}"
+                                                            d:Content="{StaticResource UiLabelImageDT}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
+
+                        <!-- ISSUES -->
+                        <StackPanel x:Name="MilestoneInfo" Orientation="Horizontal" Visibility="{Binding SelectedIssueViewModel.MilestoneTitle,
+                                    Converter={StaticResource NullToVisibilityConverter}}" VerticalAlignment="Center">
+                            <ContentControl Width="24" Content="{StaticResource UiMilestoneImage}"
+                                        d:Content="{StaticResource UiMilestoneImageDT}" />
+                            <TextBlock Text="{Binding SelectedIssueViewModel.MilestoneTitle, Mode=OneWay}"
+                                   d:Foreground="Gainsboro" d:Text="Milestone 1" />
+                            <TextBlock Text="Issues:" d:Foreground="Gainsboro" Margin="4,0,0,0" FontWeight="Bold" />
+                            <TextBlock Text="{Binding SelectedIssueViewModel.IssuesStatus}"
+                                   d:Text="50% complete 1 open 1 closed" d:Foreground="Gainsboro" Margin="4,0,0,0" />
+                            <ProgressBar Value="{Binding SelectedIssueViewModel.PercentageComplete, Mode=OneWay}"
+                                     Width="50" Height="5" Background="#20808080" Foreground="#00a2ed" BorderBrush="#80808080"
+                                     d:Value="50" Margin="8,0,0,0" />
+                        </StackPanel>
                     </StackPanel>
 
                     <!--<Separator DockPanel.Dock="Top" Background="Gray"></Separator>-->
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="2">
                         <TextBox x:Name="MilestoneDescriptionTB"
                                  TextWrapping="wrap" AcceptsReturn="True" Padding="2"
-                            Text="{Binding SelectedMilestoneViewModel.Description, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding SelectedIssueViewModel.Body, UpdateSourceTrigger=PropertyChanged}"
                              Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
                             d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
                     </ScrollViewer>

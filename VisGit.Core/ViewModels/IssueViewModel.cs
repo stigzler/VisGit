@@ -2,6 +2,7 @@
 using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,46 @@ namespace VisGitCore.ViewModels
 
         [ObservableProperty]
         private DateTimeOffset? _closedAt;
+
+        [ObservableProperty]
+        private string _body;
+
+        [ObservableProperty]
+        private ObservableCollection<Label> _labels = new ObservableCollection<Label>();
+
+        // View Related ==============================================================================================
+
+        public string IssuesStatus
+        {
+            get
+            {
+                if (GitIssue.Milestone != null)
+                {
+                    double percentageComplete = PercentageComplete;
+                    return $"{percentageComplete.ToString()}% complete " + $"{GitIssue.Milestone.OpenIssues} open {GitIssue.Milestone.ClosedIssues} closed";
+                }
+                return null;
+            }
+        }
+
+        public double PercentageComplete
+        {
+            get
+            {
+                if (GitIssue.Milestone != null)
+                    return Services.Math.Percentage(GitIssue.Milestone.ClosedIssues, GitIssue.Milestone.OpenIssues + GitIssue.Milestone.ClosedIssues);
+                return 0;
+            }
+        }
+
+        public string MilestoneTitle
+        {
+            get
+            {
+                if (GitIssue.Milestone != null) return GitIssue.Milestone.Title;
+                return null;
+            }
+        }
 
         // Operational ==============================================================================================
 
@@ -84,6 +125,12 @@ namespace VisGitCore.ViewModels
             _title = GitIssue.Title;
             _closedBy = GitIssue.ClosedBy;
             _closedAt = GitIssue.ClosedAt;
+            _body = GitIssue.Body;
+
+            _labels.Clear();
+
+            foreach (var label in GitIssue.Labels)
+                _labels.Add(label);
 
             if (GitIssue.State == ItemState.Open) _open = true;
             else _open = false;

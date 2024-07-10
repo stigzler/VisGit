@@ -22,6 +22,9 @@
     <imaging:CrispImage x:Key="UiLabelImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SmartTag}" />
     <Image              x:Key="UiLabelImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SmartTag.png" />
 
+    <imaging:CrispImage x:Key="UiAddLabelImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewSmartTag}" />
+    <Image              x:Key="UiAddLabelImageDT" x:Shared="false" Width="16" Height="16" Source="Images/NewSmartTag.png" />
+
     <imaging:CrispImage x:Key="UiTestImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.RunTest}" />
     <Image              x:Key="UiTestImageDT" x:Shared="false" Width="16" Height="16" Source="Images/RunTest.png" />
 

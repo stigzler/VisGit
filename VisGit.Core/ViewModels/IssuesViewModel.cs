@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +28,15 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private IssueViewModel _selectedIssueViewModel;
 
+        [ObservableProperty]
+        private Label _selectedExistingLabel;
+
+        [ObservableProperty]
+        private LabelViewModel _selectedNewLabel;
+
+        [ObservableProperty]
+        private ObservableCollection<LabelViewModel> _repositoryLabels = new ObservableCollection<LabelViewModel>();
+
         #endregion End: Properties ---------------------------------------------------------------------------------
 
         #region Operational Vars =========================================================================================
@@ -35,9 +46,37 @@ namespace VisGitCore.ViewModels
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
+        #region Property Changed Events =========================================================================================
+
+        partial void OnSelectedNewLabelChanged(LabelViewModel value)
+        {
+            RepositoryLabels.Count();
+        }
+
+        #endregion End: Property Changed Events ---------------------------------------------------------------------------------
+
+        #region Commands =========================================================================================
+
+        [RelayCommand]
+        private void RemoveLabel()
+        {
+            if (SelectedIssueViewModel == null) return;
+            SelectedIssueViewModel.Labels.Remove(SelectedExistingLabel);
+        }
+
+        #endregion End: Commands ---------------------------------------------------------------------------------
+
         #region Public Methods =========================================================================================
 
-        public async Task GetAllLabelsForRepoAsync()
+        internal IssuesViewModel(GitController gitController, RepositoryViewModel gitRepositoryVm,
+            ObservableCollection<LabelViewModel> repositoryLabels)
+        {
+            this.gitController = gitController;
+            this.gitRepositoryVm = gitRepositoryVm;
+            _repositoryLabels = repositoryLabels;
+        }
+
+        public async Task GetAllIssuesForRepoAsync()
         {
             RepositoryIssuesVMs.Clear();
             RepositoryIssuesVMs = await gitController.GetAllIssuesForRepoAsync(gitRepositoryVm.GitRepository.Id);
@@ -45,16 +84,5 @@ namespace VisGitCore.ViewModels
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
-
-        internal IssuesViewModel(GitController gitController, RepositoryViewModel gitRepositoryVm)
-        {
-            this.gitController = gitController;
-            this.gitRepositoryVm = gitRepositoryVm;
-
-            //RepositoryLabelsView = CollectionViewSource.GetDefaultView(RepositoryLabelsVMs);
-
-            //WeakReferenceMessenger.Default.Register<LabelDeletedMessage>(this);
-            //WeakReferenceMessenger.Default.Register<LabelNameChangingMessage>(this);
-        }
     }
 }
