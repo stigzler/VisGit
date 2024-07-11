@@ -126,14 +126,14 @@ namespace VisGitCore.ViewModels
         {
             this.gitController = gitController;
             RepositoryId = repositoryId;
-            _ = UpdateViewmodelPropertiesAsync(issue);
+            UpdateViewmodelProperties(issue);
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
 
         #region Private Methods =========================================================================================
 
-        private async Task UpdateViewmodelPropertiesAsync(Issue issue)
+        private void UpdateViewmodelProperties(Issue issue)
         {
             GitIssue = issue;
 

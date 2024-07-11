@@ -3,6 +3,7 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
             xmlns:local="clr-namespace:VisGit.Views"
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
@@ -109,9 +110,10 @@
                         <!-- Below for debug - shows Milestone Number -->
                         <!--<TextBlock>#</TextBlock>
                         <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
-                        <Ellipse Height="22" Width="22" Margin="2,0,4,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" SnapsToDevicePixels="True">
+                        <Ellipse  Height="22" Width="22" Margin="2,0,4,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" SnapsToDevicePixels="True">
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}"
+                                            d:ImageSource="pack://application:,,,/VisGit;component/Resources/Media/Images/WillyRound32.png" RenderOptions.BitmapScalingMode="HighQuality" />
                             </Ellipse.Fill>
                         </Ellipse>
 
@@ -138,10 +140,47 @@
 
                         <!-- Assignees -->
 
-                        <ListView  ItemsSource="{Binding SelectedIssueViewModel.Assignees}" SelectedItem="{Binding SelectedAssignee}"
-                                   BorderThickness="0" Margin="4,0,0,0"
+                        <ToggleButton x:Name="AssignUserDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      Content="{DynamicResource UiAssignees}" Margin="4,0,0,0"
+                                    d:Content="{DynamicResource UiAssigneesDT}" ToolTip="Assign/ed Users" />
+
+                        <Popup x:Name="AssignUserPopup" PlacementTarget="{Binding ElementName=AssignUserDDB}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=AssignUserDDB, Path=IsChecked}" MinWidth="150">
+                            <Border BorderThickness="1" BorderBrush="Gray">
+                                <StackPanel Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
+                                    <DockPanel LastChildFill="True" Height="26">
+                                        <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Height="24" Width="24"
+                                                Margin="1" Command="{Binding SearchUsersCommand}"
+                                                CommandParameter="{Binding ElementName=UserSearchTB, Path=Text}">
+                                            <ContentControl Background="Transparent" Width="26" Content="{StaticResource UiSearchImage}" d:Content="{StaticResource UiSearchImageDT}" />
+                                        </Button>
+                                        <TextBox x:Name="UserSearchTB" Style="{StaticResource TextBoxStyle}"
+                                                 Height="26" Margin="4" AcceptsReturn="false">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter" Command="{Binding SearchUsersCommand}"
+                                                            CommandParameter="{Binding ElementName=UserSearchTB, Path=Text}" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                    </DockPanel>
+                                    <ListView x:Name="AssignUserLV"  ItemsSource="{Binding SearchUserResult.Items}"
+                                            DisplayMemberPath="Login"
+                                            MinHeight="100" MaxHeight="300" BorderThickness="0"
+                                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=AssignUserLV}">
+                                                <i:InvokeCommandAction Command="{Binding AssignUserCommand}"
+                                                                       CommandParameter="{Binding ElementName=AssignUserLV, Path=SelectedItem}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+
+                        <ListView x:Name="AssignedUsersLV" ItemsSource="{Binding SelectedIssueViewModel.Assignees}"
+                                   BorderThickness="0" SelectedItem="{Binding SelectedAssignee}"
                                    ItemContainerStyle="{StaticResource LvItemStyle}"
-                                   d:Width="100" d:Background="Transparent" d:BorderThickness="0">
+                                   d:Width="50" d:Background="Transparent" d:BorderThickness="0" SelectionChanged="AssignedUsersLV_SelectionChanged">
 
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -152,16 +191,11 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <!--<Border BorderThickness="1" BorderBrush="{Binding Color, Converter={StaticResource HexRgbToLabelForeground}}"
-                                               SnapsToDevicePixels="True" CornerRadius="8" Background="{Binding Color, Converter={StaticResource HexRgbToLabelBackground}}" Margin="2">
-                                            <TextBlock Text="{Binding Name}"
-                                                   Padding="8,0,8,0" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
-                                                   FontWeight="Bold" />
-                                        </Border>-->
                                         <Ellipse Height="22" Width="22" Margin="2,0,2,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                                                  SnapsToDevicePixels="True" ToolTip="{Binding Login}">
                                             <Ellipse.Fill>
-                                                <ImageBrush ImageSource="{Binding AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                                <ImageBrush ImageSource="{Binding AvatarUrl}"
+                                                            RenderOptions.BitmapScalingMode="HighQuality" />
                                             </Ellipse.Fill>
                                         </Ellipse>
                                     </StackPanel>
@@ -170,10 +204,15 @@
 
                             <ListView.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}">
-                                    <MenuItem Header="Remove Label" Style="{StaticResource MenuItem}" Command="{Binding RemoveLabelCommand}">
+                                    <MenuItem  Style="{StaticResource MenuItem}"
+
+                                               Command="{Binding UnassignUserCommand}">
+                                        <MenuItem.Header>
+                                            <TextBlock Text="{Binding Path=SelectedAssignee.Login, StringFormat='Unassign {0}'}"></TextBlock>
+                                        </MenuItem.Header>
                                         <MenuItem.Icon>
-                                            <ContentControl Width="16" Content="{StaticResource UiLabelImage}"
-                                                            d:Content="{StaticResource UiLabelImageDT}" />
+                                            <ContentControl Width="16" Content="{StaticResource UiUnassignUserImage}"
+                                                            d:Content="{StaticResource UiUnassignUserImageDT}" />
                                         </MenuItem.Icon>
                                     </MenuItem>
                                 </ContextMenu>
@@ -207,12 +246,12 @@
 
                         <!-- Add Label -->
 
-                        <ToggleButton x:Name="DueByBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                        <ToggleButton x:Name="AddLabelBT" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
                                       Content="{DynamicResource UiAddLabelImage}"
                                     d:Content="{DynamicResource UiAddLabelImageDT}" ToolTip="Add Label" />
 
-                        <Popup x:Name="ContextPopup" PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
-                               IsOpen="{Binding ElementName=DueByBT, Path=IsChecked}">
+                        <Popup x:Name="AddLabelPopup" PlacementTarget="{Binding ElementName=AddLabelBT}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=AddLabelBT, Path=IsChecked}" MinWidth="150">
                             <ListView x:Name="NewLabelLV"  ItemsSource="{Binding RepositoryLabels}"
                                       SelectedItem="{Binding SelectedNewLabel}" DisplayMemberPath="Name">
                             </ListView>
@@ -266,8 +305,8 @@
                                       Content="{DynamicResource UiMilestoneImage}"
                                     d:Content="{DynamicResource UiMilestoneImageDT}" ToolTip="Change Milestone" />
 
-                            <Popup  PlacementTarget="{Binding ElementName=OpenPopup}" StaysOpen="False"
-                               IsOpen="{Binding ElementName=ChangeMilestoneDDB, Path=IsChecked}">
+                            <Popup  PlacementTarget="{Binding ElementName=ChangeMilestoneDDB}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=ChangeMilestoneDDB, Path=IsChecked}" MinWidth="150">
                                 <ListView ItemsSource="{Binding RepositoryMilestonesVMs}" DisplayMemberPath="Title"
                                       SelectedItem="{Binding SelectedMilestoneVM}">
                                 </ListView>
@@ -292,7 +331,7 @@
                             </TabItem.Header>
                             <TabItem.Content>
                                 <md:MarkdownViewer Markdown="{Binding SelectedIssueViewModel.Body}" Style="{StaticResource MarkdownViewer}"
-                                                   d:Markdown="## Markdown Text">
+                                                   d:Markdown="**Markdown** *here*" Hyperlink.RequestNavigate="MarkdownViewer_RequestNavigate">
                                 </md:MarkdownViewer>
                             </TabItem.Content>
                         </TabItem>
@@ -309,6 +348,93 @@
                                         Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
                                         d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
                                 </ScrollViewer>
+                            </TabItem.Content>
+                        </TabItem>
+
+                        <!-- Comments -->
+
+                        <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Edit/Text">
+
+                            <TabItem.Header>
+                                <ContentControl Width="24" Content="{StaticResource UiCommentsImage}" d:Content="{StaticResource UiCommentsImageDT}" />
+                            </TabItem.Header>
+
+                            <TabItem.Content>
+
+                                <ListView x:Name="CommentsLV"  ItemsSource="{Binding IssueCommentsVM.RepositoryIssueCommentsVMs}"
+                                   BorderThickness="0" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="false"
+                                   ItemContainerStyle="{StaticResource LvItemStyleComments}"
+                                   d:Width="auto" d:Background="Transparent" d:BorderThickness="0">
+
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical" />
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderThickness="1" BorderBrush="#80808080" Margin="2,2,2,4">
+                                                <StackPanel Orientation="Vertical">
+
+                                                    <!-- Header row -->
+                                                    <DockPanel x:Name="CommentsHeader" LastChildFill="true" Background="#20808080">
+
+                                                        <!-- User Image -->
+                                                        <Ellipse Height="22" Width="22" Margin="2,0,2,0" DockPanel.Dock="Left"
+                                                                 Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                                                                SnapsToDevicePixels="True">
+                                                            <Ellipse.Fill>
+                                                                <ImageBrush ImageSource="{Binding Author.AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                                            </Ellipse.Fill>
+                                                        </Ellipse>
+
+                                                        <!-- Buttons -->
+                                                        <ToggleButton x:Name="CommentEditBT" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}" DockPanel.Dock="Right"
+                                                                Content="{DynamicResource UiPecilImage}" Width="24">
+                                                        </ToggleButton>
+
+                                                        <!-- author text -->
+                                                        <TextBlock Padding="4,0,0,4" VerticalAlignment="Center">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{} {0} commented on {1}">
+                                                                    <Binding Path="Author.Login" />
+                                                                    <Binding Path="CreatedAt" Converter="{StaticResource DateOffsetToDateConverter}" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </DockPanel>
+
+                                                    <!-- Body Text -->
+                                                    <!--<Grid x:Name="BodyTextGrid">-->
+                                                    <TextBox Text="{Binding Body}" Padding="4" AcceptsReturn="true"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=CommentsHeader}"
+                                                                     Visibility="{Binding ElementName=CommentEditBT, Path=IsChecked,
+                                                                        Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                                    <md:MarkdownViewer Markdown="{Binding Body}" Style="{StaticResource MarkdownViewer}"
+                                                                            PreviewMouseWheel="MarkdownViewer_PreviewMouseWheel"
+                                                                            Width="{Binding ActualWidth, ElementName=CommentsHeader}"
+                                                                            Visibility="{Binding ElementName=CommentEditBT,
+                                                                            Path=IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                                    </md:MarkdownViewer>
+                                                    <!--</Grid>-->
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <!--<ListView.ContextMenu>
+
+                                        <ContextMenu Style="{StaticResource ContextMenu}">
+                                            <MenuItem Header="Remove Label" Style="{StaticResource MenuItem}" Command="{Binding RemoveLabelCommand}">
+                                                <MenuItem.Icon>
+                                                    <ContentControl Width="16" Content="{StaticResource UiLabelImage}"
+                                                            d:Content="{StaticResource UiLabelImageDT}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>-->
+                                </ListView>
                             </TabItem.Content>
                         </TabItem>
                     </TabControl>

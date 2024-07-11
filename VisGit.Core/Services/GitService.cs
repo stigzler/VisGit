@@ -4,6 +4,7 @@ using Octokit;
 using VisGitCore.Data;
 using System;
 using VisGitCore.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace VisGitCore.Services
 {
@@ -40,6 +41,13 @@ namespace VisGitCore.Services
         internal void Logout()
         {
             gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
+        }
+
+        internal async Task<SearchUsersResult> SearchUsersAsync(string loginName)
+        {
+            SearchUsersRequest searchUsersRequest = new SearchUsersRequest(loginName);
+            searchUsersRequest.In = new List<UserInQualifier>() { UserInQualifier.Username };
+            return await gitHubClient.Search.SearchUsers(searchUsersRequest);
         }
 
         // Repositories ==============================================================================================
@@ -123,6 +131,11 @@ namespace VisGitCore.Services
         internal async Task<IReadOnlyList<Issue>> GetAllIssuesForRepositoryAsync(long repositoryId)
         {
             return await gitHubClient.Issue.GetAllForRepository(repositoryId);
+        }
+
+        internal async Task<IReadOnlyList<IssueComment>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
+        {
+            return await gitHubClient.Issue.Comment.GetAllForIssue(repositoryId, issueNumber);
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

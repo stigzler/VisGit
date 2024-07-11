@@ -83,6 +83,8 @@
     <Compile Include="Services\GitService.cs" />
     <Compile Include="Services\Math.cs" />
     <Compile Include="Services\UserSettings.cs" />
+    <Compile Include="ViewModels\IssueCommentsViewModel.cs" />
+    <Compile Include="ViewModels\IssueCommentViewModel.cs" />
     <Compile Include="ViewModels\IssuesViewModel.cs" />
     <Compile Include="ViewModels\IssueViewModel.cs" />
     <Compile Include="ViewModels\LabelsViewModel.cs" />

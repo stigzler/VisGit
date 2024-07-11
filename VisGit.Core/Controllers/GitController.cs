@@ -31,6 +31,8 @@ namespace VisGitCore.Controllers
             { Exception = exception, AssociatedObject = associatedObject });
         }
 
+        #region Users =========================================================================================
+
         internal async Task<bool> AuthenticateUserAsync(string personalAccessToken)
         {
             try
@@ -46,6 +48,18 @@ namespace VisGitCore.Controllers
             catch (Exception ex) { SendOperationErrorMessage("Error authenticating PAT", ex); }
             return false;
         }
+
+        internal async Task<SearchUsersResult> SearchUsersAsync(string loginname)
+        {
+            try
+            {
+                return await gitService.SearchUsersAsync(loginname);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error searching users", ex); }
+            return null;
+        }
+
+        #endregion End: Users ---------------------------------------------------------------------------------
 
         internal async Task<ObservableCollection<RepositoryViewModel>> GetAllRepositoriesAsync()
         {
@@ -205,10 +219,24 @@ namespace VisGitCore.Controllers
 
                 return issueViewModels;
             }
-            catch (Exception ex)
+            catch (Exception ex) { SendOperationErrorMessage("Error loading Issues", ex); }
+            return null;
+        }
+
+        internal async Task<ObservableCollection<IssueCommentViewModel>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
+        {
+            ObservableCollection<IssueCommentViewModel> issueCommentViewModels = new ObservableCollection<IssueCommentViewModel>();
+
+            try
             {
-                SendOperationErrorMessage("Error loading Issues", ex);
+                IReadOnlyList<IssueComment> repositoryIssueComments = await gitService.GetAllCommentsForIssueAsync(repositoryId, issueNumber);
+                foreach (IssueComment issueComment in repositoryIssueComments)
+                {
+                    issueCommentViewModels.Add(new IssueCommentViewModel(this, issueComment, repositoryId));
+                }
+                return issueCommentViewModels;
             }
+            catch (Exception ex) { SendOperationErrorMessage("Error loading Issue Comments", ex); }
             return null;
         }
 

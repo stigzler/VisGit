@@ -10,6 +10,8 @@
     <!-- Stores all UiImages plus a design-time version due to MS bug with monikers -->
     <!-- See for details: https://stackoverflow.com/questions/78297622/wpf-moniker-images-not-showing-in-design-view -->
 
+    <!-- CrispImages -->
+
     <imaging:CrispImage x:Key="UiLogInUserImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
     <Image              x:Key="UILogInUserImageDT" x:Shared="false" Width="16" Height="16" Source="Images/LoginUser.png" />
 
@@ -63,4 +65,19 @@
 
     <imaging:CrispImage x:Key="UiPecilImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Edit}" />
     <Image              x:Key="UiPecilImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Edit.png" />
+
+    <imaging:CrispImage x:Key="UiSearchImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Search}" />
+    <Image              x:Key="UiSearchImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Search.png" />
+
+    <imaging:CrispImage x:Key="UiAssignees" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.AddTeamProject}" />
+    <Image              x:Key="UiAssigneesDT" x:Shared="false" Width="16" Height="16" Source="Images/AddTeamProject.png" />
+
+    <imaging:CrispImage x:Key="UiUnassignUserImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.TeamProjectCollectionOffline}" />
+    <Image              x:Key="UiUnassignUserImageDT" x:Shared="false" Width="16" Height="16" Source="Images/TeamProjectCollectionOffline.png" />
+
+    <imaging:CrispImage x:Key="UiCommentImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Comment}" />
+    <Image              x:Key="UiCommentImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Comment.png" />
+
+    <imaging:CrispImage x:Key="UiCommentsImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentGroup}" />
+    <Image              x:Key="UiCommentsImageDT" x:Shared="false" Width="16" Height="16" Source="Images/CommentGroup.png" />
 </ResourceDictionary>

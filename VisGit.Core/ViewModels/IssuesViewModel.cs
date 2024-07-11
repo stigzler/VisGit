@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.Design.WebControls;
 using System.Windows.Data;
 using VisGitCore.Controllers;
 using VisGitCore.Messages;
@@ -53,6 +54,12 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private User _selectedAssignee;
 
+        [ObservableProperty]
+        private SearchUsersResult _searchUserResult;
+
+        [ObservableProperty]
+        private IssueCommentsViewModel _issueCommentsVM;
+
         #endregion End: Properties ---------------------------------------------------------------------------------
 
         #region Operational Vars =========================================================================================
@@ -78,6 +85,17 @@ namespace VisGitCore.ViewModels
             // Subtract 1 from open issues
         }
 
+        partial void OnSelectedIssueViewModelChanged(IssueViewModel oldValue, IssueViewModel newValue)
+        {
+            _ = UpdateIssueCommentsAsync(newValue);
+        }
+
+        private async Task UpdateIssueCommentsAsync(IssueViewModel issueViewModel)
+        {
+            IssueCommentsVM.RepositoryIssueCommentsVMs = await gitController.GetAllCommentsForIssueAsync(gitRepositoryVm.GitRepository.Id,
+                issueViewModel.GitIssue.Number);
+        }
+
         #endregion End: Property Changed Events ---------------------------------------------------------------------------------
 
         #region Commands =========================================================================================
@@ -87,6 +105,29 @@ namespace VisGitCore.ViewModels
         {
             if (SelectedIssueViewModel == null) return;
             SelectedIssueViewModel.Labels.Remove(SelectedExistingLabel);
+        }
+
+        [RelayCommand]
+        private async Task SearchUsersAsync(string loginName)
+        {
+            SearchUserResult = await gitController.SearchUsersAsync(loginName);
+        }
+
+        [RelayCommand]
+        private void AssignUser(User user)
+        {
+            if (SelectedIssueViewModel.Assignees.Count() < 10
+                && !SelectedIssueViewModel.Assignees.Contains(user)
+                && user != null)
+            {
+                SelectedIssueViewModel.Assignees.Add(user);
+            }
+        }
+
+        [RelayCommand]
+        private void UnassignUser()
+        {
+            SelectedIssueViewModel.Assignees.Remove(SelectedAssignee);
         }
 
         #endregion End: Commands ---------------------------------------------------------------------------------
@@ -99,6 +140,7 @@ namespace VisGitCore.ViewModels
             this.gitController = gitController;
             this.gitRepositoryVm = gitRepositoryVm;
             _repositoryLabels = repositoryLabels;
+            IssueCommentsVM = new IssueCommentsViewModel(gitController, gitRepositoryVm);
         }
 
         public async Task GetAllIssuesForRepoAsync()

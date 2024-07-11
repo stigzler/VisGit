@@ -28,4 +28,5 @@
     <converters:IssueStatusToOpacityConverter x:Key="IssueStatusToOpacityConverter" />
     <converters:IssueToKeyDatesConverter x:Key="IssueToKeyDatesConverter" />
     <converters:IssueStatusToIconConverter x:Key="IssueStatusToIconConverter" />
+    <converters:ActualWidthMinusScrollbarConverter x:Key="ActualWidthMinusScrollbarConverter" />
 </ResourceDictionary>

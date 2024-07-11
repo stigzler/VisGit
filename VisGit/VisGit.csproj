@@ -50,6 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controls\ToolBar.cs" />
+    <Compile Include="Converters\ActualWidthMinusScrollbarConverter.cs" />
     <Compile Include="Converters\GitMilestoneTitleConverter.cs" />
     <Compile Include="Converters\GitLabelNameConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
@@ -102,6 +103,12 @@
     <Content Include="Resources\Media\Images\Add.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\AddTeamProject.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Assignees.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\Bug.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -115,6 +122,12 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\ColorDialog.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Comment.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\CommentGroup.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Delete.png">
@@ -144,6 +157,9 @@
     <Content Include="Resources\Media\Images\Save.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Search.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\SendSignalAction.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -157,6 +173,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Visible.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\WillyRound32.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="VisGit.Core.dll">

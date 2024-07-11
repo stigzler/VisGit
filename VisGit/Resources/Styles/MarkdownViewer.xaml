@@ -21,7 +21,7 @@
     <Style TargetType="{x:Type Paragraph}" x:Key="{x:Static markdig:Styles.CodeBlockStyleKey}">
         <Setter Property="Background" Value="#40808080" />
         <Setter Property="FontFamily" Value="Consolas, Lucida Sans Typewriter, Courier New" />
-        <Setter Property="Padding" Value="10" />
+        <Setter Property="Padding" Value="6" />
     </Style>
     <Style TargetType="{x:Type Run}" x:Key="{x:Static markdig:Styles.CodeStyleKey}">
         <Setter Property="Background" Value="#40808080" />
