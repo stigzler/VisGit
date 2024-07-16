@@ -92,6 +92,8 @@ namespace VisGitCore.ViewModels
 
         private async Task UpdateIssueCommentsAsync(IssueViewModel issueViewModel)
         {
+            if (issueViewModel == null) return;
+
             IssueCommentsVM.RepositoryIssueCommentsVMs = await gitController.GetAllCommentsForIssueAsync(gitRepositoryVm.GitRepository.Id,
                 issueViewModel.GitIssue.Number);
         }

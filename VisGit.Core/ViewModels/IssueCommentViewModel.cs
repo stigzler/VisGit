@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VisGitCore.Controllers;
 using Octokit;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace VisGitCore.ViewModels
 {
@@ -32,6 +33,9 @@ namespace VisGitCore.ViewModels
 
         // Operational ==============================================================================================
 
+        [ObservableProperty]
+        private bool _hasChanges;
+
         public IssueComment GitIssueComment { get; set; }
 
         #endregion End: Properties ---------------------------------------------------------------------------------
@@ -43,16 +47,45 @@ namespace VisGitCore.ViewModels
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
+        #region Property Events =========================================================================================
+
+        partial void OnBodyChanged(string oldValue, string newValue)
+        {
+            HasChanges = ChangesMade();
+        }
+
+        partial void OnReactionsChanged(ReactionSummary oldValue, ReactionSummary newValue)
+        {
+            HasChanges = ChangesMade();
+        }
+
+        #endregion End: Property Events ---------------------------------------------------------------------------------
+
+        #region Public Methods =========================================================================================
+
         internal IssueCommentViewModel(GitController gitController, IssueComment comment, long repositoryId)
         {
             this.gitController = gitController;
             this.RepositoryId = repositoryId;
-            _ = UpdateViewmodelProperties(comment);
+            UpdateViewmodelProperties(comment);
+        }
+
+        #endregion End: Public Methods ---------------------------------------------------------------------------------
+
+        [RelayCommand]
+        private async Task SaveCommentAsync()
+        {
+            IssueComment comment = await gitController.SaveIssueCommentAsync(RepositoryId, GitIssueComment.Id, Body);
+            if (comment != null)
+            {
+                UpdateViewmodelProperties(comment);
+                HasChanges = false;
+            }
         }
 
         #region Private Methods =========================================================================================
 
-        private async Task UpdateViewmodelProperties(IssueComment comment)
+        private void UpdateViewmodelProperties(IssueComment comment)
         {
             GitIssueComment = comment;
 
@@ -61,8 +94,18 @@ namespace VisGitCore.ViewModels
             _createdAt = comment.CreatedAt;
             _updatedAt = comment.UpdatedAt;
             _reactions = comment.Reactions;
+        }
 
-            #endregion End: Private Methods ---------------------------------------------------------------------------------
+        #endregion End: Private Methods ---------------------------------------------------------------------------------
+
+        private bool ChangesMade()
+        {
+            bool hasChanges = false;
+
+            if (Body != GitIssueComment.Body) hasChanges = true;
+            if (Reactions != GitIssueComment.Reactions) hasChanges = true;
+
+            return hasChanges;
         }
     }
 }

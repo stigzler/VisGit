@@ -240,6 +240,16 @@ namespace VisGitCore.Controllers
             return null;
         }
 
+        internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
+        {
+            try
+            {
+                return await gitService.SaveIssueCommentAsync(repositoryId, commentId, body);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error saving Comments", ex); }
+            return null;
+        }
+
         #endregion End: Issues ---------------------------------------------------------------------------------
     }
 }

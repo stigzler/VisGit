@@ -138,6 +138,11 @@ namespace VisGitCore.Services
             return await gitHubClient.Issue.Comment.GetAllForIssue(repositoryId, issueNumber);
         }
 
+        internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
+        {
+            return await gitHubClient.Issue.Comment.Update(repositoryId, commentId, body);
+        }
+
         #endregion End: Issues ---------------------------------------------------------------------------------
     }
 }

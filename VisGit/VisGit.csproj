@@ -50,6 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controls\ToolBar.cs" />
+    <Compile Include="Converters\ActualHeightMinusScrollbarConverter.cs" />
     <Compile Include="Converters\ActualWidthMinusScrollbarConverter.cs" />
     <Compile Include="Converters\GitMilestoneTitleConverter.cs" />
     <Compile Include="Converters\GitLabelNameConverter.cs" />

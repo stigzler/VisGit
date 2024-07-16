@@ -110,7 +110,7 @@
                         <!-- Below for debug - shows Milestone Number -->
                         <!--<TextBlock>#</TextBlock>
                         <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
-                        <Ellipse  Height="22" Width="22" Margin="2,0,4,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" SnapsToDevicePixels="True">
+                        <Ellipse  Height="22" Width="22" Margin="2,0,4,0" Stroke="#80808080" SnapsToDevicePixels="True">
                             <Ellipse.Fill>
                                 <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}"
                                             d:ImageSource="pack://application:,,,/VisGit;component/Resources/Media/Images/WillyRound32.png" RenderOptions.BitmapScalingMode="HighQuality" />
@@ -191,7 +191,7 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Ellipse Height="22" Width="22" Margin="2,0,2,0" Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                                        <Ellipse Height="22" Width="22" Margin="0,0,0,0" Stroke="Transparent"
                                                  SnapsToDevicePixels="True" ToolTip="{Binding Login}">
                                             <Ellipse.Fill>
                                                 <ImageBrush ImageSource="{Binding AvatarUrl}"
@@ -325,7 +325,7 @@
 
                     <TabControl TabStripPlacement="Left" Background="Transparent">
 
-                        <TabItem Style="{StaticResource TabItemStyle}" Width="30" Height="30" Margin="0" Padding="0" ToolTip="Markdown">
+                        <TabItem Style="{StaticResource TabItemStyle}" Width="30" Height="30" Margin="0" Padding="0" ToolTip="Issue">
                             <TabItem.Header>
                                 <ContentControl Width="24" Content="{StaticResource UiMarkdownImage}" d:Content="{StaticResource UiMarkdownImageDT}" />
                             </TabItem.Header>
@@ -336,7 +336,7 @@
                             </TabItem.Content>
                         </TabItem>
 
-                        <TabItem Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Edit/Text">
+                        <TabItem Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Edit">
                             <TabItem.Header>
                                 <ContentControl Width="24" Content="{StaticResource UiPecilImage}" d:Content="{StaticResource UiPecilImageDT}" />
                             </TabItem.Header>
@@ -353,7 +353,7 @@
 
                         <!-- Comments -->
 
-                        <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Edit/Text">
+                        <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Comments">
 
                             <TabItem.Header>
                                 <ContentControl Width="24" Content="{StaticResource UiCommentsImage}" d:Content="{StaticResource UiCommentsImageDT}" />
@@ -380,7 +380,15 @@
                                                     <!-- Header row -->
                                                     <DockPanel x:Name="CommentsHeader" LastChildFill="true" Background="#20808080">
 
+                                                        <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
+                                                              Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
+                                                              Style="{StaticResource ButtonStyle}" Command="{Binding SaveCommentCommand}"
+                                                              Visibility="{Binding HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
+                                                             ToolTip="Save Changes">
+                                                        </Button>
+
                                                         <!-- User Image -->
+
                                                         <Ellipse Height="22" Width="22" Margin="2,0,2,0" DockPanel.Dock="Left"
                                                                  Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                                                                 SnapsToDevicePixels="True">
@@ -390,12 +398,22 @@
                                                         </Ellipse>
 
                                                         <!-- Buttons -->
-                                                        <ToggleButton x:Name="CommentEditBT" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}" DockPanel.Dock="Right"
+
+                                                        <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Content="{DynamicResource UiDeleteImage}" Width="24" />
+
+                                                        <ToggleButton x:Name="CommentEditBT" DockPanel.Dock="Right" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}"
                                                                 Content="{DynamicResource UiPecilImage}" Width="24">
                                                         </ToggleButton>
 
+                                                        <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="#80808080"
+                                                                   SnapsToDevicePixels="True" CornerRadius="10" Height="18" Margin="0,0,4,0">
+                                                            <TextBlock Text="{Binding GitIssueComment.AuthorAssociation.StringValue}"
+                                                                       VerticalAlignment="Center"
+                                                                     Padding="4,0,4,0" Foreground="#d0808080" FontWeight="Bold" />
+                                                        </Border>
+
                                                         <!-- author text -->
-                                                        <TextBlock Padding="4,0,0,4" VerticalAlignment="Center">
+                                                        <TextBlock  Padding="4,0,0,4" VerticalAlignment="Center">
                                                             <TextBlock.Text>
                                                                 <MultiBinding StringFormat="{} {0} commented on {1}">
                                                                     <Binding Path="Author.Login" />
@@ -407,10 +425,11 @@
 
                                                     <!-- Body Text -->
                                                     <!--<Grid x:Name="BodyTextGrid">-->
-                                                    <TextBox Text="{Binding Body}" Padding="4" AcceptsReturn="true"
+                                                    <TextBox Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="true" TextWrapping="Wrap"
                                                                     MaxWidth="{Binding ActualWidth, ElementName=CommentsHeader}"
                                                                      Visibility="{Binding ElementName=CommentEditBT, Path=IsChecked,
-                                                                        Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                        Converter={StaticResource BoolToVisibilityConverter}}"
+                                                             HorizontalScrollBarVisibility="auto" MaxHeight="{Binding ActualHeight, ElementName=CommentsLV}" />
 
                                                     <md:MarkdownViewer Markdown="{Binding Body}" Style="{StaticResource MarkdownViewer}"
                                                                             PreviewMouseWheel="MarkdownViewer_PreviewMouseWheel"

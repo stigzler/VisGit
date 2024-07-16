@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using VisGitCore.Comparers;
 using VisGitCore.Controllers;
 using VisGitCore.Helpers;
 
@@ -22,9 +23,11 @@ namespace VisGitCore.ViewModels
         // Model related ==============================================================================================
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
         private string _title;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
         private bool _open;
 
         [ObservableProperty]
@@ -34,12 +37,14 @@ namespace VisGitCore.ViewModels
         private DateTimeOffset? _closedAt;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
         private string _body;
 
         [ObservableProperty]
         private ObservableCollection<Label> _labels = new ObservableCollection<Label>();
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
         private Milestone _milestone;
 
         [ObservableProperty]
@@ -84,8 +89,14 @@ namespace VisGitCore.ViewModels
 
         // Operational ==============================================================================================
 
-        [ObservableProperty]
-        private bool _hasChanges;
+        //[ObservableProperty]
+        public bool HasChanges => ChangesMade();
+
+        //public bool HasChanges
+        //{
+        //    get { return _hasChanges; }
+        //    set { _hasChanges = ChangesMade(); }
+        //}
 
         public Issue GitIssue;
 
@@ -100,6 +111,26 @@ namespace VisGitCore.ViewModels
 
         #region Property Events =========================================================================================
 
+        //partial void OnTitleChanged(string oldValue, string newValue)
+        //{
+        //    HasChanges = ChangesMade();
+        //}
+
+        //partial void OnBodyChanged(string oldValue, string newValue)
+        //{
+        //    HasChanges = ChangesMade();
+        //}
+
+        //partial void OnMilestoneChanged(Milestone oldValue, Milestone newValue)
+        //{
+        //    HasChanges = ChangesMade();
+        //}
+
+        //partial void OnLabelsChanged(ObservableCollection<Label> oldValue, ObservableCollection<Label> newValue)
+        //{
+        //    HasChanges = ChangesMade();
+        //}
+
         partial void OnOpenChanged(bool value)
         {
             if (!Open)
@@ -112,6 +143,9 @@ namespace VisGitCore.ViewModels
                 ClosedBy = null;
                 ClosedAt = null;
             }
+
+            //HasChanges = ChangesMade();
+
             // ToDo: Do I need to change any respective milestone? i.e. -1 from open issues and +1 to closed issues?
             // May have to refactor MilestoneVM as these numbers are gained form the GitMilestone, not an individ property
         }
@@ -127,6 +161,14 @@ namespace VisGitCore.ViewModels
             this.gitController = gitController;
             RepositoryId = repositoryId;
             UpdateViewmodelProperties(issue);
+
+            Labels.CollectionChanged += (s, e) => OnPropertyChanged(nameof(HasChanges));
+            Assignees.CollectionChanged += (s, e) => OnPropertyChanged(nameof(HasChanges));
+        }
+
+        private void Assignees_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
@@ -151,6 +193,29 @@ namespace VisGitCore.ViewModels
 
             if (GitIssue.State == ItemState.Open) _open = true;
             else _open = false;
+        }
+
+        private bool ChangesMade()
+        {
+            bool hasChanges = false;
+
+            if (Body != GitIssue.Body) hasChanges = true;
+            if (Title.Trim() != GitIssue.Title) hasChanges = true;
+            if (Milestone != null && Milestone.Id != GitIssue.Milestone.Id) hasChanges = true;
+
+            if (Open && GitIssue.State == ItemState.Closed) hasChanges = true;
+            if (!Open && GitIssue.State == ItemState.Open) hasChanges = true;
+
+            // get any labels additional to those in GitIssue.Labels
+            var additonalLabels = Labels.Except(GitIssue.Labels, new LabelIdComparer()).ToList();
+            // set changes to true if any additional labels or label counts don't match (this detects removed labels from GitIssue.Labels)
+            if (additonalLabels.Count > 0 || GitIssue.Labels.Count != Labels.Count) hasChanges = true;
+
+            // same approach as above for Assignees
+            var additonalAssignees = Assignees.Except(GitIssue.Assignees, new AssigneeIdComparer()).ToList();
+            if (additonalAssignees.Count > 0 || GitIssue.Assignees.Count != Assignees.Count) hasChanges = true;
+
+            return hasChanges;
         }
     }
 

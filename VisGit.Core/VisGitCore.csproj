@@ -57,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparers\AssigneeIdComparer.cs" />
+    <Compile Include="Comparers\LabelIdComparer.cs" />
     <Compile Include="Controllers\GitController.cs" />
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Data\Models\SortType.cs" />
@@ -115,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="Monikers.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
