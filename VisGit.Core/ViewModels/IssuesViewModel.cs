@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -174,6 +175,32 @@ namespace VisGitCore.ViewModels
             SelectedIssueViewModel.LockReason = lockReasonMap.LockReason;
         }
 
+        [RelayCommand]
+        private void GoToIssueLink(string url)
+        {
+            Process.Start(url);
+        }
+
+        [RelayCommand]
+        private async Task CreateNewIssueCommentAsync()
+        {
+            IssueComment newIssueComment = await gitController.CreateNewIssueCommentAsync(gitRepositoryVm.GitRepository.Id,
+                SelectedIssueViewModel, $"New comment");
+
+            if (newIssueComment == null) return;
+
+            IssueCommentViewModel newIssueCommentViewModel = new IssueCommentViewModel(gitController, newIssueComment, gitRepositoryVm.GitRepository.Id);
+            IssueCommentsVM.RepositoryIssueCommentsVMs.Add(newIssueCommentViewModel);
+
+            return;
+
+            //if (newIssue == null) return false;
+
+            //IssueViewModel newIssueViewModel = new IssueViewModel(gitController, newIssue, gitRepositoryVm.GitRepository.Id);
+            //RepositoryIssuesVMs.Add(newIssueViewModel);
+            //return true;
+        }
+
         #endregion End: Commands ---------------------------------------------------------------------------------
 
         #region Public Methods =========================================================================================
@@ -192,6 +219,22 @@ namespace VisGitCore.ViewModels
             RepositoryIssuesVMs.Clear();
             RepositoryIssuesVMs = await gitController.GetAllIssuesForRepoAsync(gitRepositoryVm.GitRepository.Id);
             RepositoryIssuesView = CollectionViewSource.GetDefaultView(RepositoryIssuesVMs);
+        }
+
+        internal async Task<bool> CreateNewIssueAsync()
+        {
+            // Construct unique name
+            int count = 1;
+            while (RepositoryIssuesVMs.Any(l => l.Title == "Issue " + count)) count += 1;
+            string title = "Issue " + count;
+
+            Issue newIssue = await gitController.CreateNewIssueAsync(gitRepositoryVm.GitRepository.Id, title);
+
+            if (newIssue == null) return false;
+
+            IssueViewModel newIssueViewModel = new IssueViewModel(gitController, newIssue, gitRepositoryVm.GitRepository.Id);
+            RepositoryIssuesVMs.Add(newIssueViewModel);
+            return true;
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------

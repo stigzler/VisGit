@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using VisGitCore.Messages;
 using VisGitCore.Services;
 using VisGitCore.ViewModels;
@@ -204,6 +205,13 @@ namespace VisGitCore.Controllers
 
         #region Issues =========================================================================================
 
+        internal async Task<Issue> CreateNewIssueAsync(long repositoryId, string title)
+        {
+            try { return await gitService.CreateNewIssueAsync(repositoryId, title); }
+            catch (Exception ex) { SendOperationErrorMessage("Error creating new Issue", ex); }
+            return null;
+        }
+
         internal async Task<ObservableCollection<IssueViewModel>> GetAllIssuesForRepoAsync(long repositoryId)
         {
             ObservableCollection<IssueViewModel> issueViewModels = new ObservableCollection<IssueViewModel>();
@@ -222,6 +230,22 @@ namespace VisGitCore.Controllers
             catch (Exception ex) { SendOperationErrorMessage("Error loading Issues", ex); }
             return null;
         }
+
+        internal async Task<Issue> SaveIssueAsync(long repositoryId, IssueViewModel issueViewModel)
+        {
+            try
+            {
+                return await gitService.SaveIssueAsync(repositoryId, issueViewModel.GitIssue.Number, issueViewModel.Title,
+                    issueViewModel.Body,
+                    issueViewModel.Open, issueViewModel.ItemStateReason,
+                    issueViewModel.Locked, issueViewModel.LockReason,
+                    issueViewModel.Milestone, issueViewModel.Labels, issueViewModel.Assignees);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error saving Issue", ex); }
+            return null;
+        }
+
+        // Comments ==============================================================================================
 
         internal async Task<ObservableCollection<IssueCommentViewModel>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
         {
@@ -250,17 +274,13 @@ namespace VisGitCore.Controllers
             return null;
         }
 
-        internal async Task<Issue> SaveIssueAsync(long repositoryId, IssueViewModel issueViewModel)
+        internal async Task<IssueComment> CreateNewIssueCommentAsync(long repositoryId, IssueViewModel issueViewModel, string comment)
         {
             try
             {
-                return await gitService.SaveIssueAsync(repositoryId, issueViewModel.GitIssue.Number, issueViewModel.Title,
-                    issueViewModel.Body,
-                    issueViewModel.Open, issueViewModel.ItemStateReason,
-                    issueViewModel.Locked, issueViewModel.LockReason,
-                    issueViewModel.Milestone, issueViewModel.Labels, issueViewModel.Assignees);
+                return await gitService.CreateNewCommentAsync(repositoryId, issueViewModel.IssueNumber, comment);
             }
-            catch (Exception ex) { SendOperationErrorMessage("Error saving Issue", ex); }
+            catch (Exception ex) { SendOperationErrorMessage("Error creating new Comment", ex); }
             return null;
         }
 

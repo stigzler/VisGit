@@ -68,6 +68,10 @@ namespace VisGitCore.ViewModels
 
         // View Related ==============================================================================================
 
+        public int IssueNumber { get => GitIssue.Number; }
+
+        public string IssueUrl { get => GitIssue.HtmlUrl; }
+
         public string IssuesStatus
         {
             get

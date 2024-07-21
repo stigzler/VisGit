@@ -109,10 +109,16 @@
     <Content Include="Resources\Media\Images\Add.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\AddComment.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\AddTeamProject.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Assignees.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\BrowserLink.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Bug.png">
@@ -148,7 +154,12 @@
     <Content Include="Resources\Media\Images\Filter.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\Media\Images\Lock.png" />
+    <Content Include="Resources\Media\Images\GitHub.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\Lock.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\LoginUser.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -180,7 +191,9 @@
     <Content Include="Resources\Media\Images\Time.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\Media\Images\Unlock.png" />
+    <Content Include="Resources\Media\Images\Unlock.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\Visible.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

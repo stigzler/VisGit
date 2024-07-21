@@ -82,7 +82,7 @@
                     <!-- TITLE ROW -->
                     <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
 
-                        <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
+                        <Button DockPanel.Dock="Left" Width="26" Height="26"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
                             Style="{StaticResource ButtonStyle}" Command="{Binding SelectedIssueViewModel.SaveIssueCommand}"
                             Visibility="{Binding SelectedIssueViewModel.HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
@@ -90,6 +90,12 @@
                             Opacity="{Binding SelectedIssueViewModel.HasErrors, Converter={StaticResource InverseBoolToOpacityConverter}}"
                            ToolTip="Save Changes">
                         </Button>
+
+                        <!-- Below for debug - shows Milestone Number -->
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Opacity="0.7">
+                            <TextBlock Text="# " />
+                            <TextBlock Text="{Binding SelectedIssueViewModel.IssueNumber}" />
+                        </StackPanel>
 
                         <!--<TextBox x:Name="LabelGitNameTB" DockPanel.Dock="Right" HorizontalAlignment="Right" Opacity="0.5" Style="{StaticResource TextBoxStyle}"
                                 FontStyle="Italic" Text="{Binding SelectedIssueViewModel.GitIssue.Title, Mode=OneWay,
@@ -105,189 +111,185 @@
                     <Separator DockPanel.Dock="Top" Background="Gray"></Separator>
 
                     <!-- DATES AND COMMANDS ROW -->
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="24">
+                    <DockPanel DockPanel.Dock="Top" Height="24" LastChildFill="True">
 
-                        <!-- Below for debug - shows Milestone Number -->
-                        <!--<TextBlock>#</TextBlock>
-                        <TextBlock Text="{Binding SelectedMilestoneViewModel.Number}" />-->
-                        <Ellipse  Height="22" Width="22" Margin="2,0,4,0" Stroke="#80808080" SnapsToDevicePixels="True">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}"
+                        <!-- Left Docking Info and Commands -->
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+
+                            <!-- User Avatar -->
+                            <Ellipse  Height="22" Width="22" Margin="2,0,4,0" Stroke="#80808080" SnapsToDevicePixels="True">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding SelectedIssueViewModel.Author.AvatarUrl}"
                                             d:ImageSource="pack://application:,,,/VisGit;component/Resources/Media/Images/WillyRound32.png" RenderOptions.BitmapScalingMode="HighQuality" />
-                            </Ellipse.Fill>
-                        </Ellipse>
+                                </Ellipse.Fill>
+                            </Ellipse>
 
-                        <!--<ContentControl Width="24" Content="{StaticResource UiCalendarImage}" d:Content="{StaticResource UiCalendarImageDT}" />-->
-
-                        <!--<Image Margin="2" Source="{Binding SelectedIssueViewModel.Author.AvatarUrl}" Stretch="UniformToFill"
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               ToolTip="{Binding SelectedIssueViewModel.Author.Login}" />-->
-
-                        <TextBlock x:Name="DatesTB" VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel,
+                            <!-- Opened/Closed by Text-->
+                            <TextBlock x:Name="DatesTB" VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel,
                                 Converter={StaticResource IssueToKeyDatesConverter}}" d:Text="Opened: June 23, 2024 Closed: June 30, 2024 by Dave"
                                    d:Foreground="White" />
 
-                        <!-- Open/Closed DropDown -->
+                            <!-- Open/Closed DropDown -->
 
-                        <ToggleButton x:Name="OpenCloseIssueDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                            <ToggleButton x:Name="OpenCloseIssueDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
                                       d:Content="{DynamicResource UiInvisibleImageDT}" ToolTip="Set Open/Closed State">
-                            <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Open,
+                                <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Open,
                                 Converter={StaticResource OpenStatusToImageConverter}}" />
-                        </ToggleButton>
-                        <Popup x:Name="OpenCloseIssuePopup" PlacementTarget="{Binding ElementName=OpenCloseIssueDDB}" StaysOpen="False"
+                            </ToggleButton>
+                            <Popup x:Name="OpenCloseIssuePopup" PlacementTarget="{Binding ElementName=OpenCloseIssueDDB}" StaysOpen="False"
                                IsOpen="{Binding ElementName=OpenCloseIssueDDB, Path=IsChecked}" MinWidth="150"
                                Closed="OpenCloseIssuePopup_Closed">
-                            <ListView x:Name="OpenCloseIssueLV" SelectionChanged="CloseIssueLV_SelectionChanged" Padding="2"
+                                <ListView x:Name="OpenCloseIssueLV" SelectionChanged="CloseIssueLV_SelectionChanged" Padding="2"
                                      ItemsSource="{Binding ItemStateReasons}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedIssueViewModel.LockReason}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=OpenCloseIssueLV}">
-                                        <i:InvokeCommandAction Command="{Binding CloseIssueCommand}"
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=OpenCloseIssueLV}">
+                                            <i:InvokeCommandAction Command="{Binding CloseIssueCommand}"
                                                                CommandParameter="{Binding ElementName=OpenCloseIssueLV, Path=SelectedItem}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </ListView>
-                        </Popup>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ListView>
+                            </Popup>
 
-                        <!-- Issue STatus Text -->
-                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.ItemStateReason,
+                            <!-- Open/Closed Status Text -->
+                            <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.ItemStateReason,
                             Converter={StaticResource IssueStatusReasonToTextConverter}}"
                             d:Text="Open" d:Foreground="White" />
 
-                        <!-- Lock DropDown -->
-                        <ToggleButton x:Name="LockDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                            <!-- Lock DropDown -->
+                            <ToggleButton x:Name="LockDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
                                       d:Content="{DynamicResource UiLockedImageDT}" ToolTip="Set Locked State">
-                            <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Locked,
+                                <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Locked,
                                 Converter={StaticResource LockStatusToImageConverter}}" />
-                        </ToggleButton>
-                        <Popup x:Name="LockIssuePopup" Closed="LockIssuePopup_Closed" PlacementTarget="{Binding ElementName=LockDDB}" StaysOpen="False"
+                            </ToggleButton>
+                            <Popup x:Name="LockIssuePopup" Closed="LockIssuePopup_Closed" PlacementTarget="{Binding ElementName=LockDDB}" StaysOpen="False"
                                IsOpen="{Binding ElementName=LockDDB, Path=IsChecked}" MinWidth="150">
-                            <ListView x:Name="LockIssueLV" SelectionChanged="LockIssueLV_SelectionChanged"
+                                <ListView x:Name="LockIssueLV" SelectionChanged="LockIssueLV_SelectionChanged"
 
                                       Padding="2"
                                      ItemsSource="{Binding LockStateReasons}" DisplayMemberPath="Name">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=LockIssueLV}">
-                                        <i:InvokeCommandAction Command="{Binding LockIssueCommand}"
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=LockIssueLV}">
+                                            <i:InvokeCommandAction Command="{Binding LockIssueCommand}"
                                                                CommandParameter="{Binding ElementName=LockIssueLV, Path=SelectedItem}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </ListView>
-                        </Popup>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ListView>
+                            </Popup>
 
-                        <!-- Lock Status Text -->
-                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.LockReason,
+                            <!-- Lock Status Text -->
+                            <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.LockReason,
                             Converter={StaticResource LockStatusToTextConverter}}"
                             d:Text="Locked: Off Topic" d:Foreground="White" />
 
-                        <!-- Original Open/Closed -->
+                            <!-- Assignees -->
 
-                        <!--<ToggleButton Width="24" MinWidth="10" Padding="0" Style="{StaticResource ToggleButtonBorderlessStyle}"
-                            d:Content="{DynamicResource UiVisibleImageDT}" Margin="4,0,0,0"
-                            ToolTip="Toggle Open/Closed" IsChecked="{Binding SelectedIssueViewModel.Open, Mode=TwoWay}">
-                            <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Open,
-                                Converter={StaticResource OpenStatusToImageConverter}}" />
-                        </ToggleButton>-->
-
-                        <!-- Assignees -->
-
-                        <ToggleButton x:Name="AssignUserDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                            <ToggleButton x:Name="AssignUserDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
                                       Content="{DynamicResource UiAssignees}" Margin="4,0,0,0"
                                     d:Content="{DynamicResource UiAssigneesDT}" ToolTip="Assign/ed Users" />
 
-                        <Popup x:Name="AssignUserPopup" PlacementTarget="{Binding ElementName=AssignUserDDB}" StaysOpen="False"
+                            <Popup x:Name="AssignUserPopup" PlacementTarget="{Binding ElementName=AssignUserDDB}" StaysOpen="False"
                                IsOpen="{Binding ElementName=AssignUserDDB, Path=IsChecked}" MinWidth="150">
-                            <Border BorderThickness="1" BorderBrush="Gray">
-                                <StackPanel Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
-                                    <DockPanel LastChildFill="True" Height="26">
-                                        <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Height="24" Width="24"
+                                <Border BorderThickness="1" BorderBrush="Gray">
+                                    <StackPanel Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
+                                        <DockPanel LastChildFill="True" Height="26">
+                                            <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Height="24" Width="24"
                                                 Margin="1" Command="{Binding SearchUsersCommand}"
                                                 CommandParameter="{Binding ElementName=UserSearchTB, Path=Text}">
-                                            <ContentControl Background="Transparent" Width="26" Content="{StaticResource UiSearchImage}" d:Content="{StaticResource UiSearchImageDT}" />
-                                        </Button>
-                                        <TextBox x:Name="UserSearchTB" Style="{StaticResource TextBoxStyle}"
+                                                <ContentControl Background="Transparent" Width="26" Content="{StaticResource UiSearchImage}" d:Content="{StaticResource UiSearchImageDT}" />
+                                            </Button>
+                                            <TextBox x:Name="UserSearchTB" Style="{StaticResource TextBoxStyle}"
                                                  Height="26" Margin="4" AcceptsReturn="false">
-                                            <TextBox.InputBindings>
-                                                <KeyBinding Key="Enter" Command="{Binding SearchUsersCommand}"
+                                                <TextBox.InputBindings>
+                                                    <KeyBinding Key="Enter" Command="{Binding SearchUsersCommand}"
                                                             CommandParameter="{Binding ElementName=UserSearchTB, Path=Text}" />
-                                            </TextBox.InputBindings>
-                                        </TextBox>
-                                    </DockPanel>
-                                    <ListView x:Name="AssignUserLV"  ItemsSource="{Binding SearchUserResult.Items}"
+                                                </TextBox.InputBindings>
+                                            </TextBox>
+                                        </DockPanel>
+                                        <ListView x:Name="AssignUserLV"  ItemsSource="{Binding SearchUserResult.Items}"
                                             DisplayMemberPath="Login"
                                             MinHeight="100" MaxHeight="300" BorderThickness="0"
                                             ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=AssignUserLV}">
-                                                <i:InvokeCommandAction Command="{Binding AssignUserCommand}"
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=AssignUserLV}">
+                                                    <i:InvokeCommandAction Command="{Binding AssignUserCommand}"
                                                                        CommandParameter="{Binding ElementName=AssignUserLV, Path=SelectedItem}" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </ListView>
-                                </StackPanel>
-                            </Border>
-                        </Popup>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </ListView>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
 
-                        <ListView x:Name="AssignedUsersLV" ItemsSource="{Binding SelectedIssueViewModel.Assignees}"
+                            <ListView x:Name="AssignedUsersLV" ItemsSource="{Binding SelectedIssueViewModel.Assignees}"
                                    BorderThickness="0" SelectedItem="{Binding SelectedAssignee}"
                                    ItemContainerStyle="{StaticResource LvItemStyle}"
                                    d:Width="50" d:Background="Transparent" d:BorderThickness="0" SelectionChanged="AssignedUsersLV_SelectionChanged">
 
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Ellipse Height="22" Width="22" Margin="0,0,0,0" Stroke="Transparent"
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Height="22" Width="22" Margin="0,0,0,0" Stroke="Transparent"
                                                  SnapsToDevicePixels="True" ToolTip="{Binding Login}">
-                                            <Ellipse.Fill>
-                                                <ImageBrush ImageSource="{Binding AvatarUrl}"
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding AvatarUrl}"
                                                             RenderOptions.BitmapScalingMode="HighQuality" />
-                                            </Ellipse.Fill>
-                                        </Ellipse>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
 
-                            <ListView.ContextMenu>
-                                <ContextMenu Style="{StaticResource ContextMenu}">
-                                    <MenuItem  Style="{StaticResource MenuItem}"
+                                <ListView.ContextMenu>
+                                    <ContextMenu Style="{StaticResource ContextMenu}">
+                                        <MenuItem  Style="{StaticResource MenuItem}"
 
                                                Command="{Binding UnassignUserCommand}">
-                                        <MenuItem.Header>
-                                            <TextBlock Text="{Binding Path=SelectedAssignee.Login, StringFormat='Unassign {0}'}"></TextBlock>
-                                        </MenuItem.Header>
-                                        <MenuItem.Icon>
-                                            <ContentControl Width="16" Content="{StaticResource UiUnassignUserImage}"
+                                            <MenuItem.Header>
+                                                <TextBlock Text="{Binding Path=SelectedAssignee.Login, StringFormat='Unassign {0}'}"></TextBlock>
+                                            </MenuItem.Header>
+                                            <MenuItem.Icon>
+                                                <ContentControl Width="16" Content="{StaticResource UiUnassignUserImage}"
                                                             d:Content="{StaticResource UiUnassignUserImageDT}" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                        </ListView>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+                        </StackPanel>
 
-                        <Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
+                        <!-- Right Docking Info and Commands -->
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24">
+
+                            <!-- Add Comment -->
+
+                            <Button x:Name="AddCommentBT" Width="24" MinHeight="24"
+                               Content="{DynamicResource UiAddCommentImage}" d:Content="{DynamicResource UiAddCommentImageDT}"
+                               Style="{StaticResource ButtonStyle}" ToolTip="Add new Comment" Command="{Binding CreateNewIssueCommentCommand}"
+                                    Click="AddCommentBT_Click">
+                            </Button>
+
+                            <!-- Open Issue URL -->
+
+                            <Button Width="24" MinHeight="24"
+                             Content="{DynamicResource UiBrowserLinkImage}" d:Content="{DynamicResource UiBrowserLinkImageDT}"
+                             Style="{StaticResource ButtonStyle}" ToolTip="Open in Github" Command="{Binding GoToIssueLinkCommand}"
+                                    CommandParameter="{Binding SelectedIssueViewModel.IssueUrl}">
+                            </Button>
+
+                            <!-- Delete Issue -->
+
+                            <Button Width="24" MinHeight="24"
                              Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
                              Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding DeleteMilestoneCommand}">
-                        </Button>
-
-                        <!--<Button Width="24" MinWidth="10" Padding="0" Margin="4,0,0,0"
-                            Content="{DynamicResource UiTestImage}" d:Content="{DynamicResource UiTestImageDT}"
-                            Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding RunTestCommand}">
-                        </Button>-->
-
-                        <!--<ContentControl DockPanel.Dock="Right" Width="24" Content="{Binding SelectedMilestoneViewModel.Open,
-                            Converter={StaticResource OpenStatusToImageConverter}}" d:Content="{StaticResource UiVisibleImageDT}" />-->
-
-                        <!--<ContentControl DockPanel.Dock="Right" Width="24" Margin="6,0,0,0"
-                                        Content="{StaticResource UiSaveImage}" d:Content="{StaticResource UiSaveImageDT}"
-                                        Visibility="{Binding SelectedMilestoneViewModel.HasChanges,
-                                        Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible"
-                                        ToolTip="Has changes." />-->
-                    </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
 
                     <!-- ISSUES AND LABELS ROW -->
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -401,7 +403,7 @@
                             </TabItem.Content>
                         </TabItem>
 
-                        <!-- Comments -->
+                        <!-- COMMENTS -->
 
                         <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Comments">
 

@@ -86,4 +86,13 @@
 
     <imaging:CrispImage x:Key="UiUnlockedImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Unlock}" />
     <Image              x:Key="UiUnlockedImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Unlock.png" />
+
+    <imaging:CrispImage x:Key="UiBrowserLinkImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.BrowserLink}" />
+    <Image              x:Key="UiBrowserLinkImageDT" x:Shared="false" Width="16" Height="16" Source="Images/BrowserLink.png" />
+
+    <imaging:CrispImage x:Key="UiAddCommentImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.AddComment}" />
+    <Image              x:Key="UiAddCommentImageDT" x:Shared="false" Width="16" Height="16" Source="Images/AddComment.png" />
+
+    <imaging:CrispImage x:Key="UiGithubImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.GitHub}" />
+    <Image              x:Key="UiGithubImageDT" x:Shared="false" Width="16" Height="16" Source="Images/GitHub.png" />
 </ResourceDictionary>

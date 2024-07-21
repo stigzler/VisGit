@@ -111,5 +111,18 @@ namespace VisGit.Views
         {
             OpenCloseIssueLV.SelectedItem = null;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void AddCommentBT_Click(object sender, RoutedEventArgs e)
+        {
+            //CommentsLV.SelectedIndex = Math.Max(CommentsLV.Items.Count - 1, 0);
+            //CommentsLV.Items.MoveCurrentToLast();
+            //CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
+            CommentsLV.Items.MoveCurrentToLast();
+            CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
+        }
     }
 }

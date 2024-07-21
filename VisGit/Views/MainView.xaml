@@ -50,7 +50,7 @@
     <DockPanel x:Name="MainDP" LastChildFill="True">
 
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
-            <ToolBarTray x:Name="TopTBT" Style="{StaticResource ToolBarTrayStyle}">
+            <ToolBarTray x:Name="TopTBT" Style="{StaticResource ToolBarTrayStyle}"  MinHeight="24">
 
                 <!-- UNAUTHENTICATED TOOLBAR  -->
                 <controls:ToolBar x:Name="UnauthenticatedTBar" Style="{StaticResource ToolBarStyle}"
@@ -68,6 +68,9 @@
                                    VerticalAlignment="Center" ToolBarTray.IsLocked="true"
                                   Visibility="{Binding UserAuthenicated, Converter={StaticResource BoolToVisibilityConverter}}"
                                   d:Visibility="Visible">
+
+                    <ContentControl Width="24" Height="24" Content="{StaticResource UiGithubImage}" ToolTip="Repository"
+                                    d:Content="{StaticResource UiGithubImageDT}" />
 
                     <ComboBox x:Name="RepositoryCB" Style="{DynamicResource ComboBoxStyle}" Margin="2,0,2,0"
                               Width="{Binding RepositoryDropDownWidth}" d:Width="100"

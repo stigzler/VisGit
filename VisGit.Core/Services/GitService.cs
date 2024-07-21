@@ -128,6 +128,12 @@ namespace VisGitCore.Services
 
         #region Issues =========================================================================================
 
+        internal async Task<Issue> CreateNewIssueAsync(long repositoryId, string title)
+        {
+            NewIssue newIssue = new NewIssue(title);
+            return await gitHubClient.Issue.Create(repositoryId, newIssue);
+        }
+
         internal async Task<IReadOnlyList<Issue>> GetAllIssuesForRepositoryAsync(long repositoryId)
         {
             return await gitHubClient.Issue.GetAllForRepository(repositoryId);
@@ -136,13 +142,6 @@ namespace VisGitCore.Services
         internal async Task<IReadOnlyList<IssueComment>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
         {
             return await gitHubClient.Issue.Comment.GetAllForIssue(repositoryId, issueNumber);
-        }
-
-        internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
-        {
-            IIssueCommentsClient issueCommentsClient = gitHubClient.Issue.Comment;
-
-            return await gitHubClient.Issue.Comment.Update(repositoryId, commentId, body);
         }
 
         internal async Task<Issue> SaveIssueAsync(long repositoryId, int issueNumber, string title, string body,
@@ -193,6 +192,19 @@ namespace VisGitCore.Services
             var returnedIssue = await gitHubClient.Issue.Update(repositoryId, issueNumber, issueUpdate);
 
             return returnedIssue;
+        }
+
+        // Comments ==============================================================================================
+
+        internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
+        {
+            IIssueCommentsClient issueCommentsClient = gitHubClient.Issue.Comment;
+            return await gitHubClient.Issue.Comment.Update(repositoryId, commentId, body);
+        }
+
+        internal async Task<IssueComment> CreateNewCommentAsync(long repositoryId, int issueNumber, string body)
+        {
+            return await gitHubClient.Issue.Comment.Create(repositoryId, issueNumber, body);
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

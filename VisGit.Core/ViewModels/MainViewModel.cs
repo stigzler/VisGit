@@ -237,6 +237,12 @@ namespace VisGitCore.ViewModels
                     success = await labelsViewModel.CreateNewLabelAsync();
                     if (success) FinishOperation("New Label Created");
                     break;
+
+                case IssuesViewModel:
+                    StartOperation("Creating new Issue");
+                    success = await issuesViewModel.CreateNewIssueAsync();
+                    if (success) FinishOperation("New Issue Created");
+                    break;
             }
         }
 
