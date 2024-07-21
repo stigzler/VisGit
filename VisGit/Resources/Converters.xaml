@@ -30,4 +30,9 @@
     <converters:IssueStatusToIconConverter x:Key="IssueStatusToIconConverter" />
     <converters:ActualWidthMinusScrollbarConverter x:Key="ActualWidthMinusScrollbarConverter" />
     <converters:ActualHeightMinusScrollbarConverter x:Key="ActualHeightMinusScrollbarConverter" />
+    <converters:BoolToIssueStatusReasonItemsConverter x:Key="BoolToIssueStatusReasonItemsConverter" />
+    <converters:ItemStatusReasonConverter x:Key="ItemStatusReasonConverter" />
+    <converters:IssueStatusReasonToTextConverter x:Key="IssueStatusReasonToTextConverter" />
+    <converters:LockStatusToImageConverter x:Key="LockStatusToImageConverter" />
+    <converters:LockStatusToTextConverter x:Key="LockStatusToTextConverter" />
 </ResourceDictionary>

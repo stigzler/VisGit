@@ -52,6 +52,7 @@
     <Compile Include="Controls\ToolBar.cs" />
     <Compile Include="Converters\ActualHeightMinusScrollbarConverter.cs" />
     <Compile Include="Converters\ActualWidthMinusScrollbarConverter.cs" />
+    <Compile Include="Converters\BoolToIssueStatusReasonItemsConverter.cs" />
     <Compile Include="Converters\GitMilestoneTitleConverter.cs" />
     <Compile Include="Converters\GitLabelNameConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
@@ -63,13 +64,17 @@
     <Compile Include="Converters\HexRgbToLabelForeground.cs" />
     <Compile Include="Converters\HexRgbToLabelBackground.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\LockStatusToTextConverter.cs" />
+    <Compile Include="Converters\IssueStatusResonToTextConverter.cs" />
     <Compile Include="Converters\IssueStatusToIconConverter.cs" />
     <Compile Include="Converters\IssueStatusToOpacityConverter.cs" />
     <Compile Include="Converters\IssueToKeyDatesConverter.cs" />
+    <Compile Include="Converters\ItemStatusReasonConverter.cs" />
     <Compile Include="Converters\LastUpdatedConverter.cs" />
     <Compile Include="Converters\DueByConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\LockStatusToImageConverter.cs" />
     <Compile Include="Converters\OpenStatusToImageConverter.cs" />
     <Compile Include="Converters\OpenStatusToOpacityConverter.cs" />
     <Compile Include="Converters\SortDirectionToIconConverter.cs" />
@@ -143,6 +148,7 @@
     <Content Include="Resources\Media\Images\Filter.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Lock.png" />
     <Content Include="Resources\Media\Images\LoginUser.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -170,9 +176,11 @@
     <Content Include="Resources\Media\Images\SortAscending.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\TeamProjectCollectionOffline.png" />
     <Content Include="Resources\Media\Images\Time.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Unlock.png" />
     <Content Include="Resources\Media\Images\Visible.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

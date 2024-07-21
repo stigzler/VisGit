@@ -140,7 +140,59 @@ namespace VisGitCore.Services
 
         internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
         {
+            IIssueCommentsClient issueCommentsClient = gitHubClient.Issue.Comment;
+
             return await gitHubClient.Issue.Comment.Update(repositoryId, commentId, body);
+        }
+
+        internal async Task<Issue> SaveIssueAsync(long repositoryId, int issueNumber, string title, string body,
+            bool open, StringEnum<ItemStateReason>? itemStateReason,
+            bool locked, StringEnum<LockReason>? lockReason,
+            Milestone milestone, ObservableCollection<Label> labels, ObservableCollection<User> assignees)
+        {
+            IssueUpdate issueUpdate = new IssueUpdate();
+
+            issueUpdate.ClearAssignees();
+            issueUpdate.ClearLabels();
+
+            issueUpdate.Title = title;
+            issueUpdate.Body = body;
+
+            if (milestone != null) issueUpdate.Milestone = milestone.Number;
+
+            if (open) issueUpdate.State = ItemState.Open;
+            else issueUpdate.State = ItemState.Closed;
+
+            if (itemStateReason != null)
+            {
+                ItemStateReason stateReason;
+                itemStateReason.Value.TryParse(out stateReason);
+                issueUpdate.StateReason = stateReason;
+            }
+
+            foreach (Label label in labels) issueUpdate.AddLabel(label.Name);
+
+            foreach (User assignee in assignees) issueUpdate.AddAssignee(assignee.Login);
+
+            // Process any lock
+            ILockUnlockClient lockUnlockClient = gitHubClient.Issue.LockUnlock;
+
+            if (locked)
+            {
+                LockReason lockReasonEnum;
+                lockReason.Value.TryParse(out lockReasonEnum);
+                await lockUnlockClient.Lock(repositoryId, issueNumber, lockReasonEnum);
+            }
+            else
+            {
+                await lockUnlockClient.Unlock(repositoryId, issueNumber);
+            }
+
+            // Update issue and return new model data
+
+            var returnedIssue = await gitHubClient.Issue.Update(repositoryId, issueNumber, issueUpdate);
+
+            return returnedIssue;
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

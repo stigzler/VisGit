@@ -250,6 +250,20 @@ namespace VisGitCore.Controllers
             return null;
         }
 
+        internal async Task<Issue> SaveIssueAsync(long repositoryId, IssueViewModel issueViewModel)
+        {
+            try
+            {
+                return await gitService.SaveIssueAsync(repositoryId, issueViewModel.GitIssue.Number, issueViewModel.Title,
+                    issueViewModel.Body,
+                    issueViewModel.Open, issueViewModel.ItemStateReason,
+                    issueViewModel.Locked, issueViewModel.LockReason,
+                    issueViewModel.Milestone, issueViewModel.Labels, issueViewModel.Assignees);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error saving Issue", ex); }
+            return null;
+        }
+
         #endregion End: Issues ---------------------------------------------------------------------------------
     }
 }

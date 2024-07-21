@@ -80,4 +80,10 @@
 
     <imaging:CrispImage x:Key="UiCommentsImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentGroup}" />
     <Image              x:Key="UiCommentsImageDT" x:Shared="false" Width="16" Height="16" Source="Images/CommentGroup.png" />
+
+    <imaging:CrispImage x:Key="UiLockedImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Lock}" />
+    <Image              x:Key="UiLockedImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Lock.png" />
+
+    <imaging:CrispImage x:Key="UiUnlockedImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Unlock}" />
+    <Image              x:Key="UiUnlockedImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Unlock.png" />
 </ResourceDictionary>

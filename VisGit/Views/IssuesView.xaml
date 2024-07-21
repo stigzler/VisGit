@@ -84,7 +84,7 @@
 
                         <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
-                            Style="{StaticResource ButtonStyle}" Command="{Binding SelectedMilestoneViewModel.SaveMilestoneCommand}"
+                            Style="{StaticResource ButtonStyle}" Command="{Binding SelectedIssueViewModel.SaveIssueCommand}"
                             Visibility="{Binding SelectedIssueViewModel.HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
                             IsEnabled="{Binding SelectedIssueViewModel.HasErrors, Converter={StaticResource InverseBoolConverter}}"
                             Opacity="{Binding SelectedIssueViewModel.HasErrors, Converter={StaticResource InverseBoolToOpacityConverter}}"
@@ -127,16 +127,66 @@
                                 Converter={StaticResource IssueToKeyDatesConverter}}" d:Text="Opened: June 23, 2024 Closed: June 30, 2024 by Dave"
                                    d:Foreground="White" />
 
-                        <ToggleButton Width="24" MinWidth="10" Padding="0" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                        <!-- Open/Closed DropDown -->
+
+                        <ToggleButton x:Name="OpenCloseIssueDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      d:Content="{DynamicResource UiInvisibleImageDT}" ToolTip="Set Open/Closed State">
+                            <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Open,
+                                Converter={StaticResource OpenStatusToImageConverter}}" />
+                        </ToggleButton>
+                        <Popup x:Name="OpenCloseIssuePopup" PlacementTarget="{Binding ElementName=OpenCloseIssueDDB}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=OpenCloseIssueDDB, Path=IsChecked}" MinWidth="150"
+                               Closed="OpenCloseIssuePopup_Closed">
+                            <ListView x:Name="OpenCloseIssueLV" SelectionChanged="CloseIssueLV_SelectionChanged" Padding="2"
+                                     ItemsSource="{Binding ItemStateReasons}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedIssueViewModel.LockReason}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=OpenCloseIssueLV}">
+                                        <i:InvokeCommandAction Command="{Binding CloseIssueCommand}"
+                                                               CommandParameter="{Binding ElementName=OpenCloseIssueLV, Path=SelectedItem}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ListView>
+                        </Popup>
+
+                        <!-- Issue STatus Text -->
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.ItemStateReason,
+                            Converter={StaticResource IssueStatusReasonToTextConverter}}"
+                            d:Text="Open" d:Foreground="White" />
+
+                        <!-- Lock DropDown -->
+                        <ToggleButton x:Name="LockDDB" Width="24" Style="{StaticResource ToggleButtonBorderlessStyle}"
+                                      d:Content="{DynamicResource UiLockedImageDT}" ToolTip="Set Locked State">
+                            <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Locked,
+                                Converter={StaticResource LockStatusToImageConverter}}" />
+                        </ToggleButton>
+                        <Popup x:Name="LockIssuePopup" Closed="LockIssuePopup_Closed" PlacementTarget="{Binding ElementName=LockDDB}" StaysOpen="False"
+                               IsOpen="{Binding ElementName=LockDDB, Path=IsChecked}" MinWidth="150">
+                            <ListView x:Name="LockIssueLV" SelectionChanged="LockIssueLV_SelectionChanged"
+
+                                      Padding="2"
+                                     ItemsSource="{Binding LockStateReasons}" DisplayMemberPath="Name">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=LockIssueLV}">
+                                        <i:InvokeCommandAction Command="{Binding LockIssueCommand}"
+                                                               CommandParameter="{Binding ElementName=LockIssueLV, Path=SelectedItem}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ListView>
+                        </Popup>
+
+                        <!-- Lock Status Text -->
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.LockReason,
+                            Converter={StaticResource LockStatusToTextConverter}}"
+                            d:Text="Locked: Off Topic" d:Foreground="White" />
+
+                        <!-- Original Open/Closed -->
+
+                        <!--<ToggleButton Width="24" MinWidth="10" Padding="0" Style="{StaticResource ToggleButtonBorderlessStyle}"
                             d:Content="{DynamicResource UiVisibleImageDT}" Margin="4,0,0,0"
                             ToolTip="Toggle Open/Closed" IsChecked="{Binding SelectedIssueViewModel.Open, Mode=TwoWay}">
                             <imaging:CrispImage Moniker="{Binding SelectedIssueViewModel.Open,
                                 Converter={StaticResource OpenStatusToImageConverter}}" />
-                        </ToggleButton>
-
-                        <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.Open,
-                            Converter={StaticResource BoolToOpenClosedConverter}}"
-                            d:Text="Open" d:Foreground="White" />
+                        </ToggleButton>-->
 
                         <!-- Assignees -->
 

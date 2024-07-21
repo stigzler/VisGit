@@ -1,5 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Octokit;
 using System;
@@ -29,6 +30,18 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasChanges))]
         private bool _open;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
+        private StringEnum<ItemStateReason>? _itemStateReason = null;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
+        private bool _locked;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
+        private StringEnum<LockReason>? _lockReason;
 
         [ObservableProperty]
         private User _closedBy;
@@ -89,16 +102,11 @@ namespace VisGitCore.ViewModels
 
         // Operational ==============================================================================================
 
-        //[ObservableProperty]
         public bool HasChanges => ChangesMade();
 
-        //public bool HasChanges
-        //{
-        //    get { return _hasChanges; }
-        //    set { _hasChanges = ChangesMade(); }
-        //}
-
         public Issue GitIssue;
+
+        public bool DoNotMonitorChanges = false;
 
         #endregion End: Properties ---------------------------------------------------------------------------------
 
@@ -110,26 +118,6 @@ namespace VisGitCore.ViewModels
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
         #region Property Events =========================================================================================
-
-        //partial void OnTitleChanged(string oldValue, string newValue)
-        //{
-        //    HasChanges = ChangesMade();
-        //}
-
-        //partial void OnBodyChanged(string oldValue, string newValue)
-        //{
-        //    HasChanges = ChangesMade();
-        //}
-
-        //partial void OnMilestoneChanged(Milestone oldValue, Milestone newValue)
-        //{
-        //    HasChanges = ChangesMade();
-        //}
-
-        //partial void OnLabelsChanged(ObservableCollection<Label> oldValue, ObservableCollection<Label> newValue)
-        //{
-        //    HasChanges = ChangesMade();
-        //}
 
         partial void OnOpenChanged(bool value)
         {
@@ -151,6 +139,20 @@ namespace VisGitCore.ViewModels
         }
 
         #endregion End: Property Events ---------------------------------------------------------------------------------
+
+        #region Commands =========================================================================================
+
+        [RelayCommand]
+        private async Task SaveIssueAsync()
+        {
+            Issue issue = await gitController.SaveIssueAsync(RepositoryId, this);
+            if (issue != null)
+            {
+                UpdateViewmodelProperties(issue);
+            }
+        }
+
+        #endregion End: Commands ---------------------------------------------------------------------------------
 
         #region Public Methods =========================================================================================
 
@@ -187,24 +189,35 @@ namespace VisGitCore.ViewModels
             _author = GitIssue.User;
             _assignees = new ObservableCollection<User>(GitIssue.Assignees);
 
+            if (GitIssue.State == ItemState.Open) _open = true;
+            else _open = false;
+            _itemStateReason = GitIssue.StateReason;
+
+            _locked = GitIssue.Locked;
+            _lockReason = GitIssue.ActiveLockReason;
+
             _labels.Clear();
             foreach (var label in GitIssue.Labels)
                 _labels.Add(label);
-
-            if (GitIssue.State == ItemState.Open) _open = true;
-            else _open = false;
         }
 
         private bool ChangesMade()
         {
+            if (DoNotMonitorChanges) return false;
+
             bool hasChanges = false;
 
             if (Body != GitIssue.Body) hasChanges = true;
             if (Title.Trim() != GitIssue.Title) hasChanges = true;
-            if (Milestone != null && Milestone.Id != GitIssue.Milestone.Id) hasChanges = true;
+            if ((GitIssue.Milestone == null && Milestone != null) || Milestone != null && Milestone.Id != GitIssue.Milestone.Id) hasChanges = true;
 
             if (Open && GitIssue.State == ItemState.Closed) hasChanges = true;
             if (!Open && GitIssue.State == ItemState.Open) hasChanges = true;
+
+            if (ItemStateReason != GitIssue.StateReason) hasChanges = true;
+
+            if (Locked != GitIssue.Locked) hasChanges = true;
+            if (LockReason != GitIssue.ActiveLockReason) hasChanges = true;
 
             // get any labels additional to those in GitIssue.Labels
             var additonalLabels = Labels.Except(GitIssue.Labels, new LabelIdComparer()).ToList();

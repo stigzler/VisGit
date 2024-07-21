@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.VisualStudio.TaskRunnerExplorer;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.Design.WebControls;
+using System.Windows.Controls;
 using System.Windows.Data;
 using VisGitCore.Controllers;
+using VisGitCore.Data.Models;
 using VisGitCore.Messages;
+using Label = Octokit.Label;
 
 namespace VisGitCore.ViewModels
 {
@@ -28,6 +32,12 @@ namespace VisGitCore.ViewModels
 
         [ObservableProperty]
         private IssueViewModel _selectedIssueViewModel;
+
+        [ObservableProperty]
+        private List<ItemStateReasonMap> _itemStateReasons = ItemStateReasonMap.ItemStateReasons();
+
+        [ObservableProperty]
+        private List<LockReasonMap> _lockStateReasons = LockReasonMap.LockReasonItems();
 
         // Labels ==============================================================================================
 
@@ -66,6 +76,11 @@ namespace VisGitCore.ViewModels
 
         internal GitController gitController;
         internal RepositoryViewModel gitRepositoryVm;
+
+        public ObservableCollection<ItemStateReason?> ClosedReasons => new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Completed, ItemStateReason.NotPlanned };
+
+        [ObservableProperty]
+        private ObservableCollection<ItemStateReason?> _openedReasons = new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Reopened };
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
@@ -132,6 +147,33 @@ namespace VisGitCore.ViewModels
             SelectedIssueViewModel.Assignees.Remove(SelectedAssignee);
         }
 
+        [RelayCommand]
+        private void CloseIssue(ItemStateReasonMap itemStateReasonMap)
+        {
+            SelectedIssueViewModel.ItemStateReason = itemStateReasonMap.ItemStateReason;
+
+            if (itemStateReasonMap.ItemStateReason == ItemStateReason.Completed) SelectedIssueViewModel.Open = false;
+            else if (itemStateReasonMap.ItemStateReason == ItemStateReason.NotPlanned) SelectedIssueViewModel.Open = false;
+            else if (itemStateReasonMap.ItemStateReason == ItemStateReason.Reopened) SelectedIssueViewModel.Open = true;
+        }
+
+        [RelayCommand]
+        private void LockIssue(LockReasonMap lockReasonMap)
+        {
+            //SelectedIssueViewModel.DoNotMonitorChanges = true; // this stops HasChanges check firing twice due to setting two properties in this method
+
+            if (lockReasonMap.LockReason == LockReason.OffTopic) SelectedIssueViewModel.Locked = true;
+            else if (lockReasonMap.LockReason == LockReason.Resolved) SelectedIssueViewModel.Locked = true;
+            else if (lockReasonMap.LockReason == LockReason.Spam) SelectedIssueViewModel.Locked = true;
+            else if (lockReasonMap.LockReason == LockReason.TooHeated) SelectedIssueViewModel.Locked = true;
+            // This maps to "Unlock" in menu
+            else if (lockReasonMap.LockReason == null) SelectedIssueViewModel.Locked = false;
+
+            // SelectedIssueViewModel.DoNotMonitorChanges = false;
+
+            SelectedIssueViewModel.LockReason = lockReasonMap.LockReason;
+        }
+
         #endregion End: Commands ---------------------------------------------------------------------------------
 
         #region Public Methods =========================================================================================
@@ -153,5 +195,19 @@ namespace VisGitCore.ViewModels
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
+
+        #region Private Methods =========================================================================================
+
+        private void FilterItemStateReasons(object sender, FilterEventArgs e)
+        {
+            ItemStateReasonMap itemStateReasonMap = e.Item as ItemStateReasonMap;
+            if (itemStateReasonMap != null)
+            {
+                if (SelectedIssueViewModel.Open) e.Accepted = true;
+                else e.Accepted = false;
+            }
+        }
+
+        #endregion End: Private Methods ---------------------------------------------------------------------------------
     }
 }

@@ -87,5 +87,29 @@ namespace VisGit.Views
 
             //parent.RaiseEvent(eventArg);
         }
+
+        private void CloseIssueLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (OpenCloseIssueLV.SelectedItem == null) return;
+            OpenCloseIssuePopup.IsOpen = false;
+            //OpenCloseIssueLV.SelectedItem = null;
+        }
+
+        private void LockIssueLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (LockIssueLV.SelectedItem == null) return;
+            LockIssuePopup.IsOpen = false;
+            //LockIssueLV.SelectedItem = null;
+        }
+
+        private void LockIssuePopup_Closed(object sender, EventArgs e)
+        {
+            LockIssueLV.SelectedItem = null;
+        }
+
+        private void OpenCloseIssuePopup_Closed(object sender, EventArgs e)
+        {
+            OpenCloseIssueLV.SelectedItem = null;
+        }
     }
 }
