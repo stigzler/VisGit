@@ -133,6 +133,12 @@
     <Content Include="Resources\Media\Images\CloakOrHide.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Collapse.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\CollapseAll.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\ColorDialog.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

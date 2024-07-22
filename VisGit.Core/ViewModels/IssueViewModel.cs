@@ -1,6 +1,7 @@
 ﻿using Community.VisualStudio.Toolkit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Octokit;
 using System;
@@ -11,9 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Xml.Linq;
 using VisGitCore.Comparers;
 using VisGitCore.Controllers;
 using VisGitCore.Helpers;
+using VisGitCore.Messages;
 
 namespace VisGitCore.ViewModels
 {
@@ -153,7 +156,18 @@ namespace VisGitCore.ViewModels
             if (issue != null)
             {
                 UpdateViewmodelProperties(issue);
+                WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Issue saved successfully."));
             }
+        }
+
+        [RelayCommand]
+        private async Task DeleteIssueAsync()
+        {
+            var result = await VS.MessageBox.ShowAsync("Are you sure you wish to delete this issue:", Title,
+                                 Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING,
+                                 Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO);
+
+            if (result == Microsoft.VisualStudio.VSConstants.MessageBoxResult.IDNO) return;
         }
 
         #endregion End: Commands ---------------------------------------------------------------------------------

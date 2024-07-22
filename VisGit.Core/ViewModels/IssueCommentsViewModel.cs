@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VisGitCore.Controllers;
+using VisGitCore.Messages;
 
 namespace VisGitCore.ViewModels
 {
-    public partial class IssueCommentsViewModel : ViewModelBase
+    public partial class IssueCommentsViewModel : ViewModelBase, IRecipient<CommentDeletedMessage>
     {
         #region Properties =========================================================================================
 
@@ -37,6 +39,14 @@ namespace VisGitCore.ViewModels
         {
             this.gitController = gitController;
             this.repositoryVm = gitRepositoryVm;
+
+            WeakReferenceMessenger.Default.Register<CommentDeletedMessage>(this);
+        }
+
+        void IRecipient<CommentDeletedMessage>.Receive(CommentDeletedMessage message)
+        {
+            RepositoryIssueCommentsVMs.Remove(message.Value);
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Comment deleted successfully."));
         }
     }
 }

@@ -7,6 +7,9 @@ using VisGitCore.Controllers;
 using Octokit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using VisGitCore.Messages;
+using Community.VisualStudio.Toolkit;
 
 namespace VisGitCore.ViewModels
 {
@@ -31,12 +34,15 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private ReactionSummary _reactions;
 
-        // Operational ==============================================================================================
+        // View Related =============================================================================================
 
         [ObservableProperty]
         private bool _hasChanges;
 
-        public IssueComment GitIssueComment { get; set; }
+        [ObservableProperty]
+        private bool _collapsed = false;
+
+        public string BodyFirstLine { get => Body.Split(new[] { '\r', '\n' }).FirstOrDefault(); }
 
         #endregion End: Properties ---------------------------------------------------------------------------------
 
@@ -44,6 +50,7 @@ namespace VisGitCore.ViewModels
 
         internal GitController gitController;
         internal long RepositoryId;
+        public IssueComment GitIssueComment { get; set; }
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
@@ -63,14 +70,18 @@ namespace VisGitCore.ViewModels
 
         #region Public Methods =========================================================================================
 
-        internal IssueCommentViewModel(GitController gitController, IssueComment comment, long repositoryId)
+        internal IssueCommentViewModel(GitController gitController, IssueComment comment, long repositoryId,
+            bool startCollapsed = false)
         {
             this.gitController = gitController;
             this.RepositoryId = repositoryId;
             UpdateViewmodelProperties(comment);
+            _collapsed = startCollapsed;
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------
+
+        #region Commands =========================================================================================
 
         [RelayCommand]
         private async Task SaveCommentAsync()
@@ -80,8 +91,27 @@ namespace VisGitCore.ViewModels
             {
                 UpdateViewmodelProperties(comment);
                 HasChanges = false;
+                WeakReferenceMessenger.Default.Send(new UpdateUserMessage("Comment saved successfully."));
             }
         }
+
+        [RelayCommand]
+        private async Task DeleteCommentAsync()
+        {
+            var result = await VS.MessageBox.ShowAsync("Are you sure you wish to delete this comment?", "",
+                 Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING,
+                 Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO);
+
+            if (result == Microsoft.VisualStudio.VSConstants.MessageBoxResult.IDNO) return;
+
+            bool success = await gitController.DeleteIssueCommentAsync(RepositoryId, this);
+            if (success)
+            {
+                WeakReferenceMessenger.Default.Send(new CommentDeletedMessage(this));
+            }
+        }
+
+        #endregion End: Commands ---------------------------------------------------------------------------------
 
         #region Private Methods =========================================================================================
 
@@ -96,8 +126,6 @@ namespace VisGitCore.ViewModels
             _reactions = comment.Reactions;
         }
 
-        #endregion End: Private Methods ---------------------------------------------------------------------------------
-
         private bool ChangesMade()
         {
             bool hasChanges = false;
@@ -107,5 +135,7 @@ namespace VisGitCore.ViewModels
 
             return hasChanges;
         }
+
+        #endregion End: Private Methods ---------------------------------------------------------------------------------
     }
 }

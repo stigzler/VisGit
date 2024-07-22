@@ -264,7 +264,16 @@
                         </StackPanel>
 
                         <!-- Right Docking Info and Commands -->
+
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24">
+
+                            <!-- Collapse All Comments -->
+
+                            <ToggleButton x:Name="CollapseCommentsBT" Width="24" MinHeight="24"
+                               Content="{DynamicResource UiCollapseAllImage}" d:Content="{DynamicResource UiCollapseAllImageDT}"
+                               Style="{StaticResource ToggleButtonVisibleBorderlessStyle}" ToolTip="Collapse All Comments"
+                                Command="{Binding CollapseCommentsCommand}" IsChecked="{Binding CollapseAllComments, Mode=TwoWay}">
+                            </ToggleButton>
 
                             <!-- Add Comment -->
 
@@ -282,12 +291,12 @@
                                     CommandParameter="{Binding SelectedIssueViewModel.IssueUrl}">
                             </Button>
 
-                            <!-- Delete Issue -->
+                            <!-- Delete Issue - Removed - appears that no API function-->
 
-                            <Button Width="24" MinHeight="24"
+                            <!--<Button Width="24" MinHeight="24"
                              Content="{DynamicResource UiDeleteImage}" d:Content="{DynamicResource UiDeleteImageDT}"
                              Style="{StaticResource ButtonStyle}" ToolTip="Delete Milestone" Command="{Binding DeleteMilestoneCommand}">
-                            </Button>
+                            </Button>-->
                         </StackPanel>
                     </DockPanel>
 
@@ -429,67 +438,83 @@
                                             <Border BorderThickness="1" BorderBrush="#80808080" Margin="2,2,2,4">
                                                 <StackPanel Orientation="Vertical">
 
-                                                    <!-- Header row -->
-                                                    <DockPanel x:Name="CommentsHeader" LastChildFill="true" Background="#20808080">
+                                                    <!-- COMMENT HEADER ROW -->
+                                                    <DockPanel x:Name="CommentsHeader" LastChildFill="false"
+                                                               Background="#20808080" MaxWidth="{Binding ElementName=CommentsLV, Path=ActualWidth}">
 
-                                                        <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
+                                                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+
+                                                            <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                                                               Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
                                                               Style="{StaticResource ButtonStyle}" Command="{Binding SaveCommentCommand}"
                                                               Visibility="{Binding HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"
                                                              ToolTip="Save Changes">
-                                                        </Button>
+                                                            </Button>
 
-                                                        <!-- User Image -->
+                                                            <!-- User Image -->
 
-                                                        <Ellipse Height="22" Width="22" Margin="2,0,2,0" DockPanel.Dock="Left"
+                                                            <Ellipse Height="22" Width="22" Margin="2,0,2,0" DockPanel.Dock="Left"
                                                                  Stroke="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                                                                 SnapsToDevicePixels="True">
-                                                            <Ellipse.Fill>
-                                                                <ImageBrush ImageSource="{Binding Author.AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
-                                                            </Ellipse.Fill>
-                                                        </Ellipse>
+                                                                <Ellipse.Fill>
+                                                                    <ImageBrush ImageSource="{Binding Author.AvatarUrl}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                                                </Ellipse.Fill>
+                                                            </Ellipse>
 
-                                                        <!-- Buttons -->
+                                                            <!-- author text -->
+                                                            <TextBlock  Padding="4,0,0,4" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                                <TextBlock.Text>
+                                                                    <MultiBinding StringFormat="{} {0} commented on {1}">
+                                                                        <Binding Path="Author.Login" />
+                                                                        <Binding Path="CreatedAt" Converter="{StaticResource DateOffsetToDateConverter}" />
+                                                                    </MultiBinding>
+                                                                </TextBlock.Text>
+                                                            </TextBlock>
+                                                        </StackPanel>
 
-                                                        <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Content="{DynamicResource UiDeleteImage}" Width="24" />
+                                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
 
-                                                        <ToggleButton x:Name="CommentEditBT" DockPanel.Dock="Right" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}"
-                                                                Content="{DynamicResource UiPecilImage}" Width="24">
-                                                        </ToggleButton>
-
-                                                        <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="#80808080"
+                                                            <!-- Buttons -->
+                                                            <Border DockPanel.Dock="Right" BorderThickness="1" BorderBrush="#80808080"
                                                                    SnapsToDevicePixels="True" CornerRadius="10" Height="18" Margin="0,0,4,0">
-                                                            <TextBlock Text="{Binding GitIssueComment.AuthorAssociation.StringValue}"
+                                                                <TextBlock Text="{Binding GitIssueComment.AuthorAssociation.StringValue}"
                                                                        VerticalAlignment="Center"
                                                                      Padding="4,0,4,0" Foreground="#d0808080" FontWeight="Bold" />
-                                                        </Border>
+                                                            </Border>
 
-                                                        <!-- author text -->
-                                                        <TextBlock  Padding="4,0,0,4" VerticalAlignment="Center">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding StringFormat="{} {0} commented on {1}">
-                                                                    <Binding Path="Author.Login" />
-                                                                    <Binding Path="CreatedAt" Converter="{StaticResource DateOffsetToDateConverter}" />
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
+                                                            <ToggleButton x:Name="CollapseCommentBT" DockPanel.Dock="Right" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}"
+                                                                        Content="{DynamicResource UiCollapseImage}" Width="24" IsChecked="{Binding Collapsed}" ToolTip="Collapse Comment">
+                                                            </ToggleButton>
+
+                                                            <ToggleButton x:Name="CommentEditBT" DockPanel.Dock="Right" Style="{DynamicResource ToggleButtonVisibleBorderlessStyle}"
+                                                                Content="{DynamicResource UiPecilImage}" Width="24" ToolTip="Edit Comment">
+                                                            </ToggleButton>
+
+                                                            <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Command="{Binding DeleteCommentCommand}"
+                                                                Content="{DynamicResource UiDeleteImage}" Width="24" ToolTip="Delete Comment" />
+                                                        </StackPanel>
+
+                                                        <TextBlock Opacity="0.5" Text="{Binding BodyFirstLine}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Padding="10,0,10,0" />
                                                     </DockPanel>
 
                                                     <!-- Body Text -->
-                                                    <!--<Grid x:Name="BodyTextGrid">-->
-                                                    <TextBox Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="true" TextWrapping="Wrap"
+                                                    <Grid x:Name="BodyTextGrid" Visibility="{Binding  Collapsed,
+                                                        Converter={StaticResource InverseBoolToVisibilityConverter}}">
+
+                                                        <TextBox Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="true" TextWrapping="Wrap"
                                                                     MaxWidth="{Binding ActualWidth, ElementName=CommentsHeader}"
                                                                      Visibility="{Binding ElementName=CommentEditBT, Path=IsChecked,
                                                                         Converter={StaticResource BoolToVisibilityConverter}}"
                                                              HorizontalScrollBarVisibility="auto" MaxHeight="{Binding ActualHeight, ElementName=CommentsLV}" />
 
-                                                    <md:MarkdownViewer Markdown="{Binding Body}" Style="{StaticResource MarkdownViewer}"
+                                                        <md:MarkdownViewer Markdown="{Binding Body}" Style="{StaticResource MarkdownViewer}"
                                                                             PreviewMouseWheel="MarkdownViewer_PreviewMouseWheel"
-                                                                            Width="{Binding ActualWidth, ElementName=CommentsHeader}"
+                                                                            Width="{Binding ActualWidth, ElementName=CommentsLV}"
+                                                                            Hyperlink.RequestNavigate="MarkdownViewer_RequestNavigate"
                                                                             Visibility="{Binding ElementName=CommentEditBT,
                                                                             Path=IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                                    </md:MarkdownViewer>
-                                                    <!--</Grid>-->
+                                                        </md:MarkdownViewer>
+                                                    </Grid>
                                                 </StackPanel>
                                             </Border>
                                         </DataTemplate>

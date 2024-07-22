@@ -71,6 +71,11 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private IssueCommentsViewModel _issueCommentsVM;
 
+        // View Related =============================================================================================
+
+        [ObservableProperty]
+        private bool _collapseAllComments;
+
         #endregion End: Properties ---------------------------------------------------------------------------------
 
         #region Operational Vars =========================================================================================
@@ -89,6 +94,8 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedNewLabelChanged(LabelViewModel value)
         {
+            if (SelectedNewLabel == null) return;
+
             if (!SelectedIssueViewModel.Labels.Any(l => l.Name == SelectedNewLabel.GitLabel.Name))
                 SelectedIssueViewModel.Labels.Add(SelectedNewLabel.GitLabel);
         }
@@ -111,7 +118,7 @@ namespace VisGitCore.ViewModels
             if (issueViewModel == null) return;
 
             IssueCommentsVM.RepositoryIssueCommentsVMs = await gitController.GetAllCommentsForIssueAsync(gitRepositoryVm.GitRepository.Id,
-                issueViewModel.GitIssue.Number);
+                issueViewModel.GitIssue.Number, CollapseAllComments);
         }
 
         #endregion End: Property Changed Events ---------------------------------------------------------------------------------
@@ -189,16 +196,21 @@ namespace VisGitCore.ViewModels
 
             if (newIssueComment == null) return;
 
-            IssueCommentViewModel newIssueCommentViewModel = new IssueCommentViewModel(gitController, newIssueComment, gitRepositoryVm.GitRepository.Id);
+            IssueCommentViewModel newIssueCommentViewModel = new IssueCommentViewModel(gitController, newIssueComment, gitRepositoryVm.GitRepository.Id, CollapseAllComments);
             IssueCommentsVM.RepositoryIssueCommentsVMs.Add(newIssueCommentViewModel);
 
+            WeakReferenceMessenger.Default.Send(new UpdateUserMessage("New Comment created successfully."));
+
             return;
+        }
 
-            //if (newIssue == null) return false;
-
-            //IssueViewModel newIssueViewModel = new IssueViewModel(gitController, newIssue, gitRepositoryVm.GitRepository.Id);
-            //RepositoryIssuesVMs.Add(newIssueViewModel);
-            //return true;
+        [RelayCommand]
+        private void CollapseComments()
+        {
+            foreach (IssueCommentViewModel issueCommentViewModel in IssueCommentsVM.RepositoryIssueCommentsVMs)
+            {
+                issueCommentViewModel.Collapsed = CollapseAllComments;
+            }
         }
 
         #endregion End: Commands ---------------------------------------------------------------------------------

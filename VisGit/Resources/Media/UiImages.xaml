@@ -95,4 +95,10 @@
 
     <imaging:CrispImage x:Key="UiGithubImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.GitHub}" />
     <Image              x:Key="UiGithubImageDT" x:Shared="false" Width="16" Height="16" Source="Images/GitHub.png" />
+
+    <imaging:CrispImage x:Key="UiCollapseImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Collapse}" />
+    <Image              x:Key="UiCollapseImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Collapse.png" />
+
+    <imaging:CrispImage x:Key="UiCollapseAllImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
+    <Image              x:Key="UiCollapseAllImageDT" x:Shared="false" Width="16" Height="16" Source="Images/CollapseAll.png" />
 </ResourceDictionary>

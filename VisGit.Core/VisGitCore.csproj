@@ -73,6 +73,7 @@
     <Compile Include="Helpers\Color.cs" />
     <Compile Include="Helpers\Date.cs" />
     <Compile Include="Messages\ChangeViewMessage.cs" />
+    <Compile Include="Messages\CommentDeletedMessage.cs" />
     <Compile Include="Messages\LabelDeletedMessage.cs" />
     <Compile Include="Messages\MilestoneTitleChangingMessage.cs" />
     <Compile Include="Messages\LabelNameChangingMessage.cs" />

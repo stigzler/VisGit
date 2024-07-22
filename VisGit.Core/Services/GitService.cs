@@ -176,13 +176,13 @@ namespace VisGitCore.Services
             // Process any lock
             ILockUnlockClient lockUnlockClient = gitHubClient.Issue.LockUnlock;
 
-            if (locked)
+            if (locked && lockReason != null)
             {
                 LockReason lockReasonEnum;
                 lockReason.Value.TryParse(out lockReasonEnum);
                 await lockUnlockClient.Lock(repositoryId, issueNumber, lockReasonEnum);
             }
-            else
+            else if (!locked)
             {
                 await lockUnlockClient.Unlock(repositoryId, issueNumber);
             }
@@ -192,6 +192,11 @@ namespace VisGitCore.Services
             var returnedIssue = await gitHubClient.Issue.Update(repositoryId, issueNumber, issueUpdate);
 
             return returnedIssue;
+        }
+
+        internal async Task DeleteTaskAsync()
+        {
+            Issue issue = new Issue();
         }
 
         // Comments ==============================================================================================
@@ -205,6 +210,11 @@ namespace VisGitCore.Services
         internal async Task<IssueComment> CreateNewCommentAsync(long repositoryId, int issueNumber, string body)
         {
             return await gitHubClient.Issue.Comment.Create(repositoryId, issueNumber, body);
+        }
+
+        internal async Task DeleteIssueCommentAsync(long repositoryId, long commentId)
+        {
+            await gitHubClient.Issue.Comment.Delete(repositoryId, commentId);
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

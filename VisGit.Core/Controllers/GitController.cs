@@ -247,7 +247,8 @@ namespace VisGitCore.Controllers
 
         // Comments ==============================================================================================
 
-        internal async Task<ObservableCollection<IssueCommentViewModel>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
+        internal async Task<ObservableCollection<IssueCommentViewModel>> GetAllCommentsForIssueAsync(long repositoryId,
+            int issueNumber, bool startCollapsed)
         {
             ObservableCollection<IssueCommentViewModel> issueCommentViewModels = new ObservableCollection<IssueCommentViewModel>();
 
@@ -256,7 +257,7 @@ namespace VisGitCore.Controllers
                 IReadOnlyList<IssueComment> repositoryIssueComments = await gitService.GetAllCommentsForIssueAsync(repositoryId, issueNumber);
                 foreach (IssueComment issueComment in repositoryIssueComments)
                 {
-                    issueCommentViewModels.Add(new IssueCommentViewModel(this, issueComment, repositoryId));
+                    issueCommentViewModels.Add(new IssueCommentViewModel(this, issueComment, repositoryId, startCollapsed));
                 }
                 return issueCommentViewModels;
             }
@@ -282,6 +283,17 @@ namespace VisGitCore.Controllers
             }
             catch (Exception ex) { SendOperationErrorMessage("Error creating new Comment", ex); }
             return null;
+        }
+
+        internal async Task<bool> DeleteIssueCommentAsync(long repositoryId, IssueCommentViewModel issueCommentViewModel)
+        {
+            try
+            {
+                await gitService.DeleteIssueCommentAsync(repositoryId, issueCommentViewModel.GitIssueComment.Id);
+                return true;
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error deleting Comment", ex); }
+            return false;
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

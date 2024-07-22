@@ -76,7 +76,7 @@
 
                 <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0">
 
-                    <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
+                    <DockPanel  DockPanel.Dock="Top" LastChildFill="True" MinHeight="24">
 
                         <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
@@ -90,11 +90,10 @@
                         <TextBox x:Name="LabelGitNameTB" DockPanel.Dock="Right" HorizontalAlignment="Right" Opacity="0.5" Style="{StaticResource TextBoxStyle}"
                                  FontStyle="Italic" Text="{Binding SelectedLabelViewModel.GitLabel.Name, Mode=OneWay,
                                                             Converter={StaticResource GitLabelNameConverter}}"
-                                d:Text="(Gitname: label1)" />
+                                 d:Text="(Gitname: label1)" />
 
                         <TextBox x:Name="LabelNameTB" VerticalAlignment="Center" Margin="4,0,0,0"
                                 Text="{Binding SelectedLabelViewModel.Name, UpdateSourceTrigger=PropertyChanged}"
-
                                 FontSize="18" Style="{StaticResource TextBoxStyle}"
                                 d:Background="Transparent" d:Foreground="White" d:Text="Label Name" />
                     </DockPanel>
