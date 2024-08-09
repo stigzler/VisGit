@@ -17,6 +17,11 @@
             mc:Ignorable="d"
             d:DesignHeight="286" d:DesignWidth="1070">
 
+    <FrameworkElement.CommandBindings>
+        <CommandBinding Command="{x:Static md:Commands.Hyperlink}" Executed="OpenHyperlink" />
+        <CommandBinding Command="{x:Static md:Commands.Image}" Executed="CommandBinding_Executed" />
+    </FrameworkElement.CommandBindings>
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -392,7 +397,7 @@
                             </TabItem.Header>
                             <TabItem.Content>
                                 <md:MarkdownViewer Markdown="{Binding SelectedIssueViewModel.Body}" Style="{StaticResource MarkdownViewer}"
-                                                   d:Markdown="**Markdown** *here*" Hyperlink.RequestNavigate="MarkdownViewer_RequestNavigate">
+                                                   d:Markdown="**Markdown** *here*"   Hyperlink.RequestNavigate="MarkdownViewer_RequestNavigate">
                                 </md:MarkdownViewer>
                             </TabItem.Content>
                         </TabItem>

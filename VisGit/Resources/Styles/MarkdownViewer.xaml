@@ -9,6 +9,7 @@
                     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf">
 
     <!-- Document styles -->
+
     <Style TargetType="{x:Type FlowDocument}" x:Key="{x:Static markdig:Styles.DocumentStyleKey}">
         <Setter Property="FontFamily" Value="Calibri" />
         <Setter Property="TextAlignment" Value="Left" />
@@ -18,6 +19,7 @@
         <Setter Property="Margin" Value="40,0,0,0" />
         <Setter Property="Padding" Value="0,0,0,0" />
     </Style>
+
     <Style TargetType="{x:Type Paragraph}" x:Key="{x:Static markdig:Styles.CodeBlockStyleKey}">
         <Setter Property="Background" Value="#40808080" />
         <Setter Property="FontFamily" Value="Consolas, Lucida Sans Typewriter, Courier New" />
@@ -60,10 +62,13 @@
     </Style>
     <Style TargetType="{x:Type Hyperlink}" x:Key="{x:Static markdig:Styles.HyperlinkStyleKey}">
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="IsEnabled" Value="True" />
     </Style>
     <Style TargetType="{x:Type Image}" x:Key="{x:Static markdig:Styles.ImageStyleKey}">
         <Setter Property="MaxHeight" Value="{Binding RelativeSource={RelativeSource Self}, Path=Source.(BitmapSource.PixelHeight)}" />
         <Setter Property="MaxWidth" Value="{Binding RelativeSource={RelativeSource Self}, Path=Source.(BitmapSource.PixelWidth)}" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
     <Style TargetType="{x:Type Section}" x:Key="{x:Static markdig:Styles.QuoteBlockStyleKey}">
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.HighlightKey}}" />

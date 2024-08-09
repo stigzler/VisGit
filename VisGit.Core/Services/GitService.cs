@@ -5,6 +5,8 @@ using VisGitCore.Data;
 using System;
 using VisGitCore.ViewModels;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using Microsoft.IO;
 
 namespace VisGitCore.Services
 {
@@ -215,6 +217,92 @@ namespace VisGitCore.Services
         internal async Task DeleteIssueCommentAsync(long repositoryId, long commentId)
         {
             await gitHubClient.Issue.Comment.Delete(repositoryId, commentId);
+        }
+
+        // Attachments ==============================================================================================
+
+        internal async Task UploadFileAsync(long repositoryId, string endPath, string filePath)
+        {
+            //string base64String = GetImageBase64String(filePath);
+
+            //CreateFileRequest createFileRequest = new CreateFileRequest("Attachment", base64String);
+            //var result = await gitHubClient.Repository.Content.CreateFile(repositoryId, endPath, createFileRequest);
+            //Debug.WriteLine(result.ToString());
+
+            //using (var fileContents = File.OpenRead(filePath))
+            //{
+            //    var assetUpload = new ReleaseAssetUpload()
+            //    {
+            //        FileName = endPath,
+            //        ContentType = "image/png",
+            //        RawData = fileContents
+            //    };
+            //    //var release = gitHubClient.Repository.Release.Get("octokit", "octokit.net", 1).Result;
+
+            //    var dave = new Octokit.
+
+            //    var release = await gitHubClient.Repository.Release.Get(repositoryId, 0);
+            //    var asset = await gitHubClient.Repository.Release.UploadAsset(release, assetUpload);
+            //}
+
+            var owner = "stigzler"; // Replace with the repository owner
+            var repoName = "VisGit.TestRepo"; // Replace with your repository name
+            //var filePath = "path_to_your_image.jpg"; // Replace with the path to your image
+            var commitMessage = "Adding an image";
+            var branch = "master"; // Replace with the branch you want to commit to
+
+            // Read the file content
+            var fileContent = await File.ReadAllBytesAsync(filePath.Replace(@"\\", @"\"));
+            var base64FileContent = Convert.ToBase64String(fileContent);
+
+            // Get the reference of the branch
+            var reference = await gitHubClient.Git.Reference.Get(owner, repoName, $"heads/{branch}");
+
+            // Get the latest commit on the branch
+            var latestCommit = await gitHubClient.Git.Commit.Get(owner, repoName, reference.Object.Sha);
+
+            // Get the tree of the latest commit
+            var baseTree = latestCommit.Tree.Sha;
+
+            // Create a new blob
+            var newBlob = new NewBlob
+            {
+                Content = base64FileContent,
+                Encoding = EncodingType.Base64
+            };
+            var blobRef = await gitHubClient.Git.Blob.Create(owner, repoName, newBlob);
+
+            // Create a new tree item
+            var newTreeItem = new NewTreeItem
+            {
+                Path = Path.GetFileName(filePath),
+                Mode = "100644",
+                Type = TreeType.Blob,
+                Sha = blobRef.Sha
+            };
+
+            // Create a new tree
+            var newTree = new NewTree { BaseTree = baseTree };
+            newTree.Tree.Add(newTreeItem);
+
+            var newTreeResponse = await gitHubClient.Git.Tree.Create(owner, repoName, newTree);
+
+            // Create a new commit
+            var newCommit = new NewCommit(commitMessage, newTreeResponse.Sha, reference.Object.Sha);
+            var commit = await gitHubClient.Git.Commit.Create(owner, repoName, newCommit);
+
+            // Update the reference to point to the new commit
+            var dave = await gitHubClient.Git.Reference.Update(owner, repoName, reference.Ref, new ReferenceUpdate(commit.Sha));
+
+            //await gitHubClient.Git.Reference.Update(repositoryId, reference.Ref, new ReferenceUpdate(commit.Sha));
+
+            Debug.WriteLine("Image uploaded successfully!");
+        }
+
+        static string GetImageBase64String(string imgPath)
+        {
+            byte[] imageBytes = System.IO.File.ReadAllBytes(imgPath);
+            return Convert.ToBase64String(imageBytes);
         }
 
         #endregion End: Issues ---------------------------------------------------------------------------------

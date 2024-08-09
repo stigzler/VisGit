@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.VisualStudio.Debugger.Interop;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Octokit;
 using System;
@@ -296,6 +297,15 @@ namespace VisGitCore.Controllers
             return false;
         }
 
-        #endregion End: Issues ---------------------------------------------------------------------------------
+        internal async Task TestFileUploadAsync(long repositoryId, string endPath, string fileName)
+        {
+            try
+            {
+                await gitService.UploadFileAsync(repositoryId, endPath, fileName);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error uploading file", ex); }
+
+            #endregion End: Issues ---------------------------------------------------------------------------------
+        }
     }
 }

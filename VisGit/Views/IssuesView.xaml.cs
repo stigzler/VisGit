@@ -44,11 +44,6 @@ namespace VisGit.Views
         {
         }
 
-        private void MarkdownViewer_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(e.Uri.AbsolutePath);
-        }
-
         private void MarkdownViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
@@ -123,6 +118,24 @@ namespace VisGit.Views
             //CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
             CommentsLV.Items.MoveCurrentToLast();
             CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
+        }
+
+        private void MarkdownViewer_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            //try { Process.Start(e.Uri.ToString()); }
+            //catch { }
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try { Process.Start(e.Parameter.ToString()); }
+            catch { }
+        }
+
+        private void OpenHyperlink(object sender, ExecutedRoutedEventArgs e)
+        {
+            try { Process.Start(e.Parameter.ToString()); }
+            catch { }
         }
     }
 }

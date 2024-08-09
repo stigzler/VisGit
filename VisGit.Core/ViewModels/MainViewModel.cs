@@ -178,6 +178,8 @@ namespace VisGitCore.ViewModels
             //ViewModelsController.CurrentViewModel = new MilestonesViewModel(ViewModelsController);
             // CurrentViewModel = new MilestonesViewModel();
             //RepositoryMilestonesView.SortDescriptions.Add()
+
+            _ = gitController.TestFileUploadAsync(SelectedRespositoryVM.GitRepository.Id, "TestFileDave.png", @"C:\temp\Avatar.png");
         }
 
         [RelayCommand]
