@@ -11,6 +11,7 @@ namespace VisGitCore.Data.Models
         // Issue, Milestone, Label ---------------------------------------
         None,
 
+        DateCreated,
         Alphabetially,
 
         // Issue, Milestone
@@ -29,5 +30,7 @@ namespace VisGitCore.Data.Models
 
         // Issue Only ---------------------------------------
         RecentlyAdded,
+
+        UpdatedOrClosed
     }
 }

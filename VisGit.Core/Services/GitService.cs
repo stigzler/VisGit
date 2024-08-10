@@ -138,7 +138,8 @@ namespace VisGitCore.Services
 
         internal async Task<IReadOnlyList<Issue>> GetAllIssuesForRepositoryAsync(long repositoryId)
         {
-            return await gitHubClient.Issue.GetAllForRepository(repositoryId);
+            //return await gitHubClient.Issue.GetAllForRepository(repositoryId);
+            return await gitHubClient.Issue.GetAllForRepository(repositoryId, new RepositoryIssueRequest() { State = ItemStateFilter.All });
         }
 
         internal async Task<IReadOnlyList<IssueComment>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
@@ -162,7 +163,11 @@ namespace VisGitCore.Services
             if (milestone != null) issueUpdate.Milestone = milestone.Number;
 
             if (open) issueUpdate.State = ItemState.Open;
-            else issueUpdate.State = ItemState.Closed;
+            else
+            {
+                issueUpdate.State = ItemState.Closed;
+                //issueUpdate.
+            }
 
             if (itemStateReason != null)
             {

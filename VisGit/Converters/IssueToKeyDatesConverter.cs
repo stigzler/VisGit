@@ -26,7 +26,8 @@ namespace VisGit.Converters
 
             if (closed != null)
             {
-                dates += $"  Closed: {((DateTimeOffset)closed).ToString("MMMM dd, yyyy")} by {issueVm.ClosedBy.Login}";
+                dates += $"  Closed: {((DateTimeOffset)closed).ToString("MMMM dd, yyyy")}";
+                if (issueVm.ClosedBy != null) dates += $" by {issueVm.ClosedBy.Login}";
             }
             else if (updated != null)
             {

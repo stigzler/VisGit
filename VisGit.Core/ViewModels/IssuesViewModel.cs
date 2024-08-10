@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using EnvDTE;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
 using Octokit;
 using System;
@@ -29,7 +30,7 @@ namespace VisGitCore.ViewModels
         private ObservableCollection<IssueViewModel> _repositoryIssuesVMs = new ObservableCollection<IssueViewModel>();
 
         [ObservableProperty]
-        private ICollectionView _repositoryIssuesView;
+        private ICollectionView _repositoryIssuesCollectionView;
 
         [ObservableProperty]
         private IssueViewModel _selectedIssueViewModel;
@@ -76,6 +77,9 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private bool _collapseAllComments;
 
+        [ObservableProperty]
+        private ObservableCollection<ItemStateReason?> _openedReasons = new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Reopened };
+
         #endregion End: Properties ---------------------------------------------------------------------------------
 
         #region Operational Vars =========================================================================================
@@ -84,9 +88,6 @@ namespace VisGitCore.ViewModels
         internal RepositoryViewModel gitRepositoryVm;
 
         public ObservableCollection<ItemStateReason?> ClosedReasons => new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Completed, ItemStateReason.NotPlanned };
-
-        [ObservableProperty]
-        private ObservableCollection<ItemStateReason?> _openedReasons = new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Reopened };
 
         #endregion End: Operational Vars ---------------------------------------------------------------------------------
 
@@ -102,6 +103,8 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedMilestoneVMChanged(MilestoneViewModel value)
         {
+            if (value == null) return;
+
             SelectedIssueViewModel.Milestone = value.GitMilestone;
             //TODO: This will throw out the open/closed numbers for this specific milestone. Not sure how to manage yet. Ideas:
             // Refresh entire collection - would need ot also save this
@@ -185,7 +188,7 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private void GoToIssueLink(string url)
         {
-            Process.Start(url);
+            System.Diagnostics.Process.Start(url);
         }
 
         [RelayCommand]
@@ -223,14 +226,89 @@ namespace VisGitCore.ViewModels
             this.gitController = gitController;
             this.gitRepositoryVm = gitRepositoryVm;
             _repositoryLabels = repositoryLabels;
+
+            RepositoryIssuesCollectionView = CollectionViewSource.GetDefaultView(RepositoryIssuesVMs);
             IssueCommentsVM = new IssueCommentsViewModel(gitController, gitRepositoryVm);
+        }
+
+        // Sort and Filter ==============================================================================================
+        public void SortIssues(SortType sortType, ListSortDirection sortDirection)
+        {
+            //lastSort = sortType;
+            //lastSortDirection = sortDirection;
+
+            RepositoryIssuesCollectionView.SortDescriptions.Clear();
+
+            if (sortType == SortType.Alphabetially)
+                RepositoryIssuesCollectionView.SortDescriptions.Add(new SortDescription("Title", sortDirection));
+            if (sortType == SortType.DateCreated)
+                RepositoryIssuesCollectionView.SortDescriptions.Add(new SortDescription("DateCreated", sortDirection));
+            if (sortType == SortType.UpdatedOrClosed)
+            {
+                RepositoryIssuesCollectionView.SortDescriptions.Add(new SortDescription("ClosedAt", sortDirection));
+                RepositoryIssuesCollectionView.SortDescriptions.Add(new SortDescription("DateUpdated", sortDirection));
+            }
+        }
+
+        public void FilterIssues(FilterType filterType)
+        {
+            if (filterType == FilterType.Closed)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Open == false);
+            //((labelFilter != null && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id))));
+            if (filterType == FilterType.Open)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Open == true);
+            if (filterType == FilterType.Locked)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Locked == true);
+            if (filterType == FilterType.NotLocked)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Locked == false);
+            if (filterType == FilterType.MyIssues)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).GitIssue.User.Login == gitController.User.Login);
+            if (filterType == FilterType.OtherIssues)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>
+                    (x => ((IssueViewModel)x).GitIssue.User.Login != gitController.User.Login);
+            else if (filterType == FilterType.None)
+                RepositoryIssuesCollectionView.Filter = null;
+
+            if (!RepositoryIssuesCollectionView.IsEmpty)
+            {
+                RepositoryIssuesCollectionView.MoveCurrentToFirst();
+                SelectedIssueViewModel = (IssueViewModel)RepositoryIssuesCollectionView.CurrentItem;
+            }
+        }
+
+        // ToDo: Spent 3 hours trying to merge this into one method with the above. Fuck it - life's too short.
+        public void FilterIssuesByTypeAndLabel(FilterType filterType, LabelViewModel labelFilter = null)
+        {
+            if (labelFilter == null) return;
+
+            if (filterType == FilterType.Closed)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Open == false
+                    && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            if (filterType == FilterType.Open)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Open == true && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            if (filterType == FilterType.Locked)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Locked == true && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            if (filterType == FilterType.NotLocked)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Locked == false && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            if (filterType == FilterType.MyIssues)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).GitIssue.User.Login == gitController.User.Login && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            if (filterType == FilterType.OtherIssues)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).GitIssue.User.Login != gitController.User.Login && ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+            else if (filterType == FilterType.None)
+                RepositoryIssuesCollectionView.Filter = new Predicate<object>(x => ((IssueViewModel)x).Labels.Any(l => l.Id == labelFilter.GitLabel.Id));
+
+            if (!RepositoryIssuesCollectionView.IsEmpty)
+            {
+                RepositoryIssuesCollectionView.MoveCurrentToFirst();
+                SelectedIssueViewModel = (IssueViewModel)RepositoryIssuesCollectionView.CurrentItem;
+            }
         }
 
         public async Task GetAllIssuesForRepoAsync()
         {
             RepositoryIssuesVMs.Clear();
             RepositoryIssuesVMs = await gitController.GetAllIssuesForRepoAsync(gitRepositoryVm.GitRepository.Id);
-            RepositoryIssuesView = CollectionViewSource.GetDefaultView(RepositoryIssuesVMs);
+            RepositoryIssuesCollectionView = CollectionViewSource.GetDefaultView(RepositoryIssuesVMs);
         }
 
         internal async Task<bool> CreateNewIssueAsync()

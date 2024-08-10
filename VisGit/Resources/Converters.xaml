@@ -35,4 +35,5 @@
     <converters:IssueStatusReasonToTextConverter x:Key="IssueStatusReasonToTextConverter" />
     <converters:LockStatusToImageConverter x:Key="LockStatusToImageConverter" />
     <converters:LockStatusToTextConverter x:Key="LockStatusToTextConverter" />
+    <converters:GitObjectToVisibilityConverter x:Key="GitObjectToVisibilityConverter" />
 </ResourceDictionary>

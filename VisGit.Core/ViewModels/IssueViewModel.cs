@@ -35,6 +35,12 @@ namespace VisGitCore.ViewModels
         private bool _open;
 
         [ObservableProperty]
+        private DateTimeOffset _dateCreated;
+
+        [ObservableProperty]
+        private DateTimeOffset? _dateUpdated;
+
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasChanges))]
         private StringEnum<ItemStateReason>? _itemStateReason = null;
 
@@ -46,6 +52,9 @@ namespace VisGitCore.ViewModels
         [NotifyPropertyChangedFor(nameof(HasChanges))]
         private StringEnum<LockReason>? _lockReason;
 
+        // TODO: The below is possibly redundant as gitHubClient.Issue.GetAllForRepository seems
+        // to return null for every issue.ClosedBy (should be a user). Test repositoryIssues
+        // at GitController.GetAllIssuesForRepoAsync
         [ObservableProperty]
         private User _closedBy;
 
@@ -206,6 +215,9 @@ namespace VisGitCore.ViewModels
             _milestone = GitIssue.Milestone;
             _author = GitIssue.User;
             _assignees = new ObservableCollection<User>(GitIssue.Assignees);
+
+            _dateCreated = GitIssue.CreatedAt;
+            _dateUpdated = GitIssue.UpdatedAt;
 
             if (GitIssue.State == ItemState.Open) _open = true;
             else _open = false;

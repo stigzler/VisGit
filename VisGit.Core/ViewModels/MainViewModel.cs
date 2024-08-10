@@ -4,10 +4,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Octokit;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -41,7 +43,7 @@ namespace VisGitCore.ViewModels
         private ObservableCollection<GitObject> _gitObjects = GitObject.GitObjects;
 
         [ObservableProperty]
-        private GitObject _selectedGitObject;
+        private GitObject _selectedGitObject = null;
 
         [ObservableProperty]
         public int _repositoryDropDownWidth;
@@ -63,6 +65,12 @@ namespace VisGitCore.ViewModels
 
         [ObservableProperty]
         private Filter _selectedFilter;
+
+        [ObservableProperty]
+        private LabelViewModel _selectedLabelFilter;
+
+        //[ObservableProperty]
+        //private ObservableCollection<LabelViewModel> _repoLabels = new ObservableCollection<LabelViewModel>();
 
         // Sort -------------------------------------------------------------
 
@@ -89,7 +97,8 @@ namespace VisGitCore.ViewModels
 
         private MilestonesViewModel milestonesViewModel;
 
-        private LabelsViewModel labelsViewModel;
+        [ObservableProperty]
+        private LabelsViewModel _labelsViewModel;
 
         private IssuesViewModel issuesViewModel;
 
@@ -107,18 +116,24 @@ namespace VisGitCore.ViewModels
             milestonesViewModel.gitRepositoryVm = value;
             _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
 
-            labelsViewModel.gitRepositoryVm = value;
-            _ = labelsViewModel.GetAllLabelsForRepoAsync();
+            // Label Ops
+            LabelsViewModel.gitRepositoryVm = value;
+            _ = LabelsViewModel.GetAllLabelsForRepoAsync();
 
+            // Issue Ops
             issuesViewModel.gitRepositoryVm = value;
             _ = issuesViewModel.GetAllIssuesForRepoAsync();
+            //RepoLabels.Clear();
+            //RepoLabels.Add(new LabelViewModel("All"));
+            //foreach (var item in LabelsViewModel.RepositoryLabelsVMs) RepoLabels.Add(item);
+            //if (RepoLabels.Count > 0) SelectedLabelFilter = RepoLabels.First();
         }
 
         private async Task UpdateRepositoryLabelsAsync()
         {
             RepositoryLabelsVMs.Clear();
             RepositoryLabelsVMs = await gitController.GetAllLabelsForRepoAsync(SelectedRespositoryVM.GitRepository.Id);
-            labelsViewModel.RepositoryLabelsVMs = RepositoryLabelsVMs;
+            LabelsViewModel.RepositoryLabelsVMs = RepositoryLabelsVMs;
         }
 
         //private async Task UpdateRepositoryIssuesAsync()
@@ -136,7 +151,7 @@ namespace VisGitCore.ViewModels
                     break;
 
                 case GitObjectType.Label:
-                    CurrentViewModel = labelsViewModel;
+                    CurrentViewModel = LabelsViewModel;
                     Filters = Filter.LabelFilters;
                     Sorts = Data.Models.Sort.LabelSorts;
                     break;
@@ -145,7 +160,7 @@ namespace VisGitCore.ViewModels
                     CurrentViewModel = issuesViewModel;
                     Filters = Filter.IssueFilters;
                     Sorts = Data.Models.Sort.IssueSorts;
-                    issuesViewModel.RepositoryLabels = labelsViewModel.RepositoryLabelsVMs;
+                    issuesViewModel.RepositoryLabels = LabelsViewModel.RepositoryLabelsVMs;
                     issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
                     break;
             }
@@ -155,6 +170,16 @@ namespace VisGitCore.ViewModels
         partial void OnSelectedFilterChanged(Filter oldValue, Filter newValue)
         {
             if (newValue == null) return;
+            FilterGitObjectViews();
+        }
+
+        //partial void OnSelectedLabelFilterChanged(List<LabelViewModel> oldValue, List<LabelViewModel> newValue)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        partial void OnSelectedLabelFilterChanged(LabelViewModel oldValue, LabelViewModel newValue)
+        {
             FilterGitObjectViews();
         }
 
@@ -195,7 +220,7 @@ namespace VisGitCore.ViewModels
             WeakReferenceMessenger.Default.Register<UpdateUserMessage>(this);
 
             milestonesViewModel = new MilestonesViewModel(gitController, SelectedRespositoryVM);
-            labelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
+            LabelsViewModel = new LabelsViewModel(gitController, SelectedRespositoryVM);
             issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM, RepositoryLabelsVMs);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
@@ -234,9 +259,9 @@ namespace VisGitCore.ViewModels
                     if (success) FinishOperation("New Milestone Created");
                     break;
 
-                case LabelsViewModel:
+                case ViewModels.LabelsViewModel:
                     StartOperation("Creating new Label");
-                    success = await labelsViewModel.CreateNewLabelAsync();
+                    success = await LabelsViewModel.CreateNewLabelAsync();
                     if (success) FinishOperation("New Label Created");
                     break;
 
@@ -246,6 +271,14 @@ namespace VisGitCore.ViewModels
                     if (success) FinishOperation("New Issue Created");
                     break;
             }
+        }
+
+        [RelayCommand]
+        private void ResetFilter()
+        {
+            SelectedLabelFilter = null;
+            SelectedFilter = Filters.First();
+            FilterGitObjectViews();
         }
 
         #endregion End: Commands
@@ -291,12 +324,21 @@ namespace VisGitCore.ViewModels
             if (SelectedSort == null) return;
             if (SelectedGitObject.Type == GitObjectType.Milestone)
                 milestonesViewModel.SortMilestones(SelectedSort.SortType, SortDirection);
+            if (SelectedGitObject.Type == GitObjectType.Issue)
+                issuesViewModel.SortIssues(SelectedSort.SortType, SortDirection);
         }
 
         private void FilterGitObjectViews()
         {
             if (SelectedGitObject.Type == GitObjectType.Milestone)
                 milestonesViewModel.FilterMilestones(SelectedFilter.FilterType);
+            else if (SelectedGitObject.Type == GitObjectType.Issue)
+            {
+                if (SelectedLabelFilter == null)
+                    issuesViewModel.FilterIssues(SelectedFilter.FilterType);
+                else
+                    issuesViewModel.FilterIssuesByTypeAndLabel(SelectedFilter.FilterType, SelectedLabelFilter);
+            }
         }
 
         void IRecipient<UpdateUserMessage>.Receive(UpdateUserMessage message)

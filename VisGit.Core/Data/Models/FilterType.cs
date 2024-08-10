@@ -10,6 +10,10 @@ namespace VisGitCore.Data.Models
     {
         None,
         Open,
-        Closed
+        Closed,
+        Locked,
+        NotLocked,
+        MyIssues,
+        OtherIssues
     }
 }

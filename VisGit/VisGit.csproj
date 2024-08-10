@@ -49,12 +49,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\ComboBoxNullable.cs" />
     <Compile Include="Controls\ToolBar.cs" />
     <Compile Include="Converters\ActualHeightMinusScrollbarConverter.cs" />
     <Compile Include="Converters\ActualWidthMinusScrollbarConverter.cs" />
     <Compile Include="Converters\BoolToIssueStatusReasonItemsConverter.cs" />
     <Compile Include="Converters\GitMilestoneTitleConverter.cs" />
     <Compile Include="Converters\GitLabelNameConverter.cs" />
+    <Compile Include="Converters\GitObjectToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Converters\InverseBoolToOpacityConverter.cs" />
     <Compile Include="Converters\BoolToOpacityConverter.cs" />
@@ -151,6 +153,9 @@
     <Content Include="Resources\Media\Images\Delete.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\DeleteFilter.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\DisableAllBreakpoints.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -161,6 +166,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\GitHub.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\ImportFilter.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\Lock.png">
@@ -200,7 +208,13 @@
     <Content Include="Resources\Media\Images\Unlock.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\User.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\Visible.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Media\Images\WebUserControl.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Media\Images\WillyRound32.png">

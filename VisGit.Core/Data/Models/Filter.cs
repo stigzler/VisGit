@@ -44,8 +44,13 @@ namespace VisGitCore.Data.Models
         };
 
         public static ObservableCollection<Filter> IssueFilters = new ObservableCollection<Filter>()
-        {   new Filter("Open", KnownMonikers.Visible, FilterType.Open),
+        {
+            new Filter("Open", KnownMonikers.Visible, FilterType.Open),
             new Filter("Closed", KnownMonikers.CloakOrHide, FilterType.Closed),
+            new Filter("Locked", KnownMonikers.Lock, FilterType.Locked),
+            new Filter("Not Locked", KnownMonikers.Unlock, FilterType.NotLocked),
+            new Filter("My Issues", KnownMonikers.User, FilterType.MyIssues),
+            new Filter("Other Users", KnownMonikers.WebUserControl, FilterType.OtherIssues),
             new Filter("None", KnownMonikers.DeleteFilter, FilterType.None)
         };
     }

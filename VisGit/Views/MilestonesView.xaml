@@ -68,7 +68,7 @@
 
                     <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
 
-                        <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
+                        <Button DockPanel.Dock="Left" Width="24" Height="32"  VerticalAlignment="Center"
                             Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
                             Style="{StaticResource ButtonStyle}" Command="{Binding SelectedMilestoneViewModel.SaveMilestoneCommand}"
                             Visibility="{Binding SelectedMilestoneViewModel.HasChanges,Converter={StaticResource BoolToVisibilityConverter}}"

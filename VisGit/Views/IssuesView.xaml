@@ -444,10 +444,10 @@
                                                 <StackPanel Orientation="Vertical">
 
                                                     <!-- COMMENT HEADER ROW -->
-                                                    <DockPanel x:Name="CommentsHeader" LastChildFill="false"
+                                                    <DockPanel x:Name="CommentsHeader" LastChildFill="True" VerticalAlignment="Center"
                                                                Background="#20808080" MaxWidth="{Binding ElementName=CommentsLV, Path=ActualWidth}">
 
-                                                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
 
                                                             <Button DockPanel.Dock="Left" Width="24" Height="24"  VerticalAlignment="Center"
                                                               Content="{DynamicResource UiSaveImage}" d:Content="{DynamicResource UiSaveImageDT}"
@@ -466,7 +466,7 @@
                                                                 </Ellipse.Fill>
                                                             </Ellipse>
 
-                                                            <!-- author text -->
+                                                            <!-- author + dates text -->
                                                             <TextBlock  Padding="4,0,0,4" VerticalAlignment="Center" DockPanel.Dock="Left">
                                                                 <TextBlock.Text>
                                                                     <MultiBinding StringFormat="{} {0} commented on {1}">
@@ -499,7 +499,7 @@
                                                                 Content="{DynamicResource UiDeleteImage}" Width="24" ToolTip="Delete Comment" />
                                                         </StackPanel>
 
-                                                        <TextBlock Opacity="0.5" Text="{Binding BodyFirstLine}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Padding="10,0,10,0" />
+                                                        <TextBlock Opacity="0.5" Text="{Binding BodyFirstLine}"  TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Padding="10,0,10,0" />
                                                     </DockPanel>
 
                                                     <!-- Body Text -->

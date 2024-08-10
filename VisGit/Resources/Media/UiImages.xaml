@@ -15,6 +15,12 @@
     <imaging:CrispImage x:Key="UiLogInUserImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
     <Image              x:Key="UILogInUserImageDT" x:Shared="false" Width="16" Height="16" Source="Images/LoginUser.png" />
 
+    <imaging:CrispImage x:Key="UiUserImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.User}" />
+    <Image              x:Key="UIUserImageDT" x:Shared="false" Width="16" Height="16" Source="Images/User.png" />
+
+    <imaging:CrispImage x:Key="UiOtherUsersImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.WebUserControl}" />
+    <Image              x:Key="UiOtherUsersImageDT" x:Shared="false" Width="16" Height="16" Source="Images/WebUserControl.png" />
+
     <imaging:CrispImage x:Key="UiIssueImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DisableAllBreakpoints}" />
     <Image              x:Key="UiIssueImageDT" x:Shared="false" Width="16" Height="16" Source="Images/DisableAllBreakpoints.png" />
 
@@ -53,6 +59,12 @@
 
     <imaging:CrispImage x:Key="UiFilterImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Filter}" />
     <Image              x:Key="UiFilterImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Filter.png" />
+
+    <imaging:CrispImage x:Key="UiDeleteFilterImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DeleteFilter}" />
+    <Image              x:Key="UiDeleteFilterImageDT" x:Shared="false" Width="16" Height="16" Source="Images/DeleteFilter.png" />
+
+    <imaging:CrispImage x:Key="UiResetFilterImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.ImportFilter}" />
+    <Image              x:Key="UiResetFilterImageDT" x:Shared="false" Width="16" Height="16" Source="Images/ImportFilter.png" />
 
     <imaging:CrispImage x:Key="UiSortImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
     <Image              x:Key="UiSortImageDT" x:Shared="false" Width="16" Height="16" Source="Images/SortAscending.png" />

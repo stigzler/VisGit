@@ -120,6 +120,11 @@ namespace VisGitCore.ViewModels
             UpdateViewmodelProperties(label);
         }
 
+        public LabelViewModel(string name)
+        {
+            _name = name;
+        }
+
         #endregion End: Public Methods ---------------------------------------------------------------------------------
 
         #region Private Methods =========================================================================================

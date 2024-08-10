@@ -1,5 +1,6 @@
 ﻿// Ignore Spelling: Repo
 
+using Community.VisualStudio.Toolkit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -7,18 +8,12 @@ using Octokit;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Data;
 using VisGitCore.Controllers;
 using VisGitCore.Data.Models;
 using VisGitCore.Messages;
-using Microsoft.VisualStudio.Extensibility;
-using Community.VisualStudio.Toolkit;
-using System.Windows.Forms;
 
 namespace VisGitCore.ViewModels
 {
@@ -33,7 +28,7 @@ namespace VisGitCore.ViewModels
         private ObservableCollection<MilestoneViewModel> _repositoryMilestonesVMs = new ObservableCollection<MilestoneViewModel>();
 
         [ObservableProperty]
-        private ICollectionView _repositoryMilestonesView;
+        private ICollectionView _repositoryMilestonesCollectionView;
 
         [ObservableProperty]
         private MilestoneViewModel _selectedMilestoneViewModel;
@@ -58,13 +53,13 @@ namespace VisGitCore.ViewModels
 
         partial void OnRepositoryMilestonesVMsChanged(ObservableCollection<MilestoneViewModel> oldValue, ObservableCollection<MilestoneViewModel> newValue)
         {
-            RepositoryMilestonesView = CollectionViewSource.GetDefaultView(newValue);
+            RepositoryMilestonesCollectionView = CollectionViewSource.GetDefaultView(newValue);
             FilterMilestones(lastFilter);
             SortMilestones(lastSort, lastSortDirection);
             if (RepositoryMilestonesVMs.Count > 0)
             {
-                RepositoryMilestonesView.MoveCurrentToFirst();
-                SelectedMilestoneViewModel = (MilestoneViewModel)RepositoryMilestonesView.CurrentItem;
+                RepositoryMilestonesCollectionView.MoveCurrentToFirst();
+                SelectedMilestoneViewModel = (MilestoneViewModel)RepositoryMilestonesCollectionView.CurrentItem;
             }
         }
 
@@ -98,8 +93,8 @@ namespace VisGitCore.ViewModels
         [RelayCommand]
         private async Task RunTestAsync()
         {
-            RepositoryMilestonesView.SortDescriptions.Clear();
-            RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
+            RepositoryMilestonesCollectionView.SortDescriptions.Clear();
+            RepositoryMilestonesCollectionView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
         }
 
         #endregion End: Commands
@@ -113,7 +108,7 @@ namespace VisGitCore.ViewModels
             this.gitController = gitController;
             this.gitRepositoryVm = gitRepositoryVm;
 
-            RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
+            RepositoryMilestonesCollectionView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
 
             WeakReferenceMessenger.Default.Register<MilestoneTitleChangingMessage>(this);
         }
@@ -124,18 +119,18 @@ namespace VisGitCore.ViewModels
             lastSort = sortType;
             lastSortDirection = sortDirection;
 
-            RepositoryMilestonesView.SortDescriptions.Clear();
+            RepositoryMilestonesCollectionView.SortDescriptions.Clear();
 
             if (sortType == SortType.Alphabetially)
-                RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("Title", sortDirection));
+                RepositoryMilestonesCollectionView.SortDescriptions.Add(new SortDescription("Title", sortDirection));
             if (sortType == SortType.DueDate)
-                RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("DueOn", sortDirection));
+                RepositoryMilestonesCollectionView.SortDescriptions.Add(new SortDescription("DueOn", sortDirection));
             //if (sortType == SortType.Open)
             //    RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("State", sortDirection));
             if (sortType == SortType.RecentlyUpdated)
-                RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("UpdatedAt", sortDirection));
+                RepositoryMilestonesCollectionView.SortDescriptions.Add(new SortDescription("UpdatedAt", sortDirection));
             if (sortType == SortType.OpenIssues)
-                RepositoryMilestonesView.SortDescriptions.Add(new SortDescription("OpenIssues", sortDirection));
+                RepositoryMilestonesCollectionView.SortDescriptions.Add(new SortDescription("OpenIssues", sortDirection));
         }
 
         public void FilterMilestones(FilterType filterType)
@@ -143,11 +138,13 @@ namespace VisGitCore.ViewModels
             lastFilter = filterType;
 
             if (filterType == FilterType.Closed)
-                RepositoryMilestonesView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == false);
+                RepositoryMilestonesCollectionView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == false);
             else if (filterType == FilterType.Open)
-                RepositoryMilestonesView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == true);
+                RepositoryMilestonesCollectionView.Filter = new Predicate<object>(x => ((MilestoneViewModel)x).Open == true);
             else if (filterType == FilterType.None)
-                RepositoryMilestonesView.Filter = null;
+            {
+                RepositoryMilestonesCollectionView.Filter = null;
+            }
         }
 
         // Milestone Operations ==============================================================================================
@@ -172,7 +169,7 @@ namespace VisGitCore.ViewModels
         {
             RepositoryMilestonesVMs.Clear();
             RepositoryMilestonesVMs = await gitController.GetAllMilestonesForRepoAsync(gitRepositoryVm.GitRepository.Id);
-            RepositoryMilestonesView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
+            RepositoryMilestonesCollectionView = CollectionViewSource.GetDefaultView(RepositoryMilestonesVMs);
             //milestonesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
         }
 
