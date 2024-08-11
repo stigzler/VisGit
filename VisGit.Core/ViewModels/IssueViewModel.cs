@@ -76,6 +76,7 @@ namespace VisGitCore.ViewModels
         private User _author;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChanges))]
         private ObservableCollection<User> _assignees = new ObservableCollection<User>();
 
         // View Related ==============================================================================================
@@ -118,7 +119,8 @@ namespace VisGitCore.ViewModels
 
         // Operational ==============================================================================================
 
-        public bool HasChanges => ChangesMade();
+        private bool _hasChanges = false;
+        public bool HasChanges { get => ChangesMade(); set => SetProperty(ref _hasChanges, value); }
 
         public Issue GitIssue;
 
@@ -192,12 +194,26 @@ namespace VisGitCore.ViewModels
             UpdateViewmodelProperties(issue);
 
             Labels.CollectionChanged += (s, e) => OnPropertyChanged(nameof(HasChanges));
-            Assignees.CollectionChanged += (s, e) => OnPropertyChanged(nameof(HasChanges));
+            Assignees.CollectionChanged += (s, e) => AssigneeCollectionChanged();
         }
 
-        private void Assignees_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AssigneeCollectionChanged()
         {
-            throw new NotImplementedException();
+            HasChanges = ChangesMade();
+            OnPropertyChanged(nameof(HasChanges));
+            OnPropertyChanged(nameof(Assignees));
+        }
+
+        public void TryAddAssignee(User user)
+        {
+            if (!Assignees.Any(a => a.Id == user.Id))
+                Assignees.Add(user);
+        }
+
+        public void TryRemoveAssignee(User user)
+        {
+            if (Assignees.Any(a => a.Id == user.Id))
+                Assignees.Remove(user);
         }
 
         #endregion End: Public Methods ---------------------------------------------------------------------------------

@@ -15,7 +15,7 @@ namespace VisGit.Converters
             if (value == null) { return DateTime.Now; }
 
             DateTime convertedDateTime = ((DateTimeOffset)value).DateTime;
-            return convertedDateTime;
+            return convertedDateTime.ToShortDateString() + " " + convertedDateTime.ToShortTimeString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

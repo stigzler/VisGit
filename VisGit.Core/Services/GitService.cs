@@ -7,6 +7,8 @@ using VisGitCore.ViewModels;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.IO;
+using Microsoft.VisualStudio.Shell.Interop;
+using Constants = VisGitCore.Data.Constants;
 
 namespace VisGitCore.Services
 {
@@ -40,6 +42,11 @@ namespace VisGitCore.Services
             return await gitHubClient.User.Current();
         }
 
+        internal async Task<User> GetUserByLoginAsync(string loginname)
+        {
+            return await gitHubClient.User.Get(loginname);
+        }
+
         internal void Logout()
         {
             gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
@@ -57,6 +64,13 @@ namespace VisGitCore.Services
         internal async Task<IReadOnlyList<Repository>> GetAllUserRepositoriesAsync()
         {
             return await gitHubClient.Repository.GetAllForCurrent();
+        }
+
+        internal async Task<IReadOnlyList<Collaborator>> GetAllRepoUsersAsync(long repositoryId)
+        {
+            // var dave = await gitHubClient.Repository.GetAllContributors(repositoryId);
+            var dave = await gitHubClient.Repository.Collaborator.GetAll(repositoryId);
+            return dave;
         }
 
         #region Milestones =========================================================================================

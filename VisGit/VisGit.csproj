@@ -66,6 +66,7 @@
     <Compile Include="Converters\HexRgbToLabelForeground.cs" />
     <Compile Include="Converters\HexRgbToLabelBackground.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
+    <Compile Include="Converters\LabelsToCsvConverter.cs" />
     <Compile Include="Converters\LockStatusToTextConverter.cs" />
     <Compile Include="Converters\IssueStatusResonToTextConverter.cs" />
     <Compile Include="Converters\IssueStatusToIconConverter.cs" />
@@ -249,6 +250,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Media\UiImages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Styles\ToolTip.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

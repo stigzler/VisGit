@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using VisGitCore.Controllers;
@@ -25,6 +26,8 @@ namespace VisGitCore.ViewModels
 
         [ObservableProperty]
         private IssueViewModel _selectedIssueCommentViewModel;
+
+        public int CommentsCount { get => RepositoryIssueCommentsVMs.Count; }
 
         #endregion End: Properties ---------------------------------------------------------------------------------
 

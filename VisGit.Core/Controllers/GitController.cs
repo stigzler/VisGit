@@ -61,6 +61,26 @@ namespace VisGitCore.Controllers
             return null;
         }
 
+        internal async Task<User> GetUserByLoginAsync(string loginname)
+        {
+            try
+            {
+                return await gitService.GetUserByLoginAsync(loginname);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error retrieving user", ex); }
+            return null;
+        }
+
+        internal async Task<IReadOnlyList<Collaborator>> GetRepositoryContributorsAsync(long repositoryId)
+        {
+            try
+            {
+                return await gitService.GetAllRepoUsersAsync(repositoryId);
+            }
+            catch (Exception ex) { SendOperationErrorMessage("Error retrieving Repository Contributors", ex); }
+            return null;
+        }
+
         #endregion End: Users ---------------------------------------------------------------------------------
 
         internal async Task<ObservableCollection<RepositoryViewModel>> GetAllRepositoriesAsync()

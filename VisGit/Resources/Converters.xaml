@@ -36,4 +36,5 @@
     <converters:LockStatusToImageConverter x:Key="LockStatusToImageConverter" />
     <converters:LockStatusToTextConverter x:Key="LockStatusToTextConverter" />
     <converters:GitObjectToVisibilityConverter x:Key="GitObjectToVisibilityConverter" />
+    <converters:LabelsToCsvConverter x:Key="LabelsToCsvConverter" />
 </ResourceDictionary>

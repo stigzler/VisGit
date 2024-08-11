@@ -75,26 +75,18 @@ namespace VisGit.Views
             eventArg.Source = CommentsLV;
 
             CommentsLV.RaiseEvent(eventArg);
-
-            Debug.WriteLine("Scrolled");
-
-            //var parent = ((Control)sender).Parent as UIElement;
-
-            //parent.RaiseEvent(eventArg);
         }
 
         private void CloseIssueLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (OpenCloseIssueLV.SelectedItem == null) return;
             OpenCloseIssuePopup.IsOpen = false;
-            //OpenCloseIssueLV.SelectedItem = null;
         }
 
         private void LockIssueLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (LockIssueLV.SelectedItem == null) return;
             LockIssuePopup.IsOpen = false;
-            //LockIssueLV.SelectedItem = null;
         }
 
         private void LockIssuePopup_Closed(object sender, EventArgs e)
@@ -107,15 +99,8 @@ namespace VisGit.Views
             OpenCloseIssueLV.SelectedItem = null;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void AddCommentBT_Click(object sender, RoutedEventArgs e)
         {
-            //CommentsLV.SelectedIndex = Math.Max(CommentsLV.Items.Count - 1, 0);
-            //CommentsLV.Items.MoveCurrentToLast();
-            //CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
             CommentsLV.Items.MoveCurrentToLast();
             CommentsLV.ScrollIntoView(CommentsLV.Items.CurrentItem);
         }
@@ -137,5 +122,52 @@ namespace VisGit.Views
             try { Process.Start(e.Parameter.ToString()); }
             catch { }
         }
+
+        /// <summary>
+        /// Implements text zoom (CTRL+Mouse Wheel) in comment edit
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommentEditTB_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                TextBox tb = sender as TextBox;
+                if (e.Delta > 0 && tb.FontSize < 100) tb.FontSize += 1;
+                else if (e.Delta < 0 && tb.FontSize > 10) tb.FontSize -= 1;
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Implements Text Zoom (CTRL+Mouse Wheel) in Issue Post Edit
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditIssuePostTB_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                TextBox tb = sender as TextBox;
+                if (e.Delta > 0 && tb.FontSize < 100) tb.FontSize += 1;
+                else if (e.Delta < 0 && tb.FontSize > 10) tb.FontSize -= 1;
+                e.Handled = true;
+            }
+        }
+
+        private void AssignUserLV_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ((ListView)sender).SelectedItem = null;
+            AssignUserPopup.IsOpen = false;
+        }
+
+        //private void CommentEditTB_PreviewKeyUp(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Tab && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+        //    {
+        //        Debug.WriteLine("Shift + Tab");
+        //        e.Handled = true;
+        //    }
+        //}
     }
 }

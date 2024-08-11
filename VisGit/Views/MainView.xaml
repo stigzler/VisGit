@@ -33,6 +33,8 @@
                 <ResourceDictionary Source="../Resources/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/ToggleButton.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/ToolTip.xaml" />
+
                 <!-- MEDIA -->
                 <ResourceDictionary  Source="../Resources/Media/UiImages.xaml" />
                 <!-- OTHER -->
@@ -58,8 +60,9 @@
                                     Visibility="{Binding UserAuthenicated, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                     d:Visibility="Visible">
 
-                    <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}"
-                            d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}" />
+                    <Button x:Name="AuthenticateBT" Content="{DynamicResource UiLogInUserImage}" Width="24"
+                            d:Content="{DynamicResource UILogInUserImageDT}" Command="{Binding AuthenticateUserCommand}"
+                            ToolTip="Log In" />
                 </controls:ToolBar>
 
                 <!-- GENERIC AUTHENTICATED TOOLBAR -->
@@ -132,14 +135,14 @@
 
                     <!--<Separator></Separator>-->
 
-                    <ToggleButton Style="{StaticResource ToggleButtonBorderlessStyle}" Width="24"
+                    <ToggleButton Style="{StaticResource ToggleButtonBorderlessStyle}" Height="22" Width="22"
                                   d:Content="{DynamicResource UiSortImageDT}" ToolTip="Sort Direction"
                                   IsChecked="{Binding SortDirection, Mode=TwoWay, Converter={StaticResource SortToBoolConverter}}">
                         <imaging:CrispImage Moniker="{Binding SortDirection, Converter={StaticResource SortDirectionToIconConverter}}" />
                     </ToggleButton>
 
                     <ComboBox x:Name="SortCB" Style="{DynamicResource ComboBoxStyle}" Width="140" Margin="2,0,2,0"
-                             ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSort}">
+                             ItemsSource="{Binding Sorts, Mode=TwoWay}" SelectedItem="{Binding SelectedSort, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <ItemContainerTemplate>
                                 <DockPanel LastChildFill="True">
@@ -153,8 +156,8 @@
                     <Button x:Name="AddBT" Content="{DynamicResource UiAddImage}" ToolTip="Add new Item"
                             d:Content="{DynamicResource UiAddImageDT}" Command="{Binding AddItemCommand}" />
 
-                    <Button x:Name="TestBT" Content="{DynamicResource UiTestImage}"
-                            d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />
+                    <!--<Button x:Name="TestBT" Content="{DynamicResource UiTestImage}"
+                            d:Content="{DynamicResource UiTestImageDT}" Command="{Binding RunTestCommand}" />-->
                 </controls:ToolBar>
 
                 <!-- MILESTONES TOOLBAR -->

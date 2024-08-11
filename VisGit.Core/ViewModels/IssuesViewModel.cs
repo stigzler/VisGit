@@ -72,6 +72,9 @@ namespace VisGitCore.ViewModels
         [ObservableProperty]
         private IssueCommentsViewModel _issueCommentsVM;
 
+        [ObservableProperty]
+        private IReadOnlyList<Collaborator> _repositoryCollaborators;
+
         // View Related =============================================================================================
 
         [ObservableProperty]
@@ -79,6 +82,9 @@ namespace VisGitCore.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<ItemStateReason?> _openedReasons = new ObservableCollection<ItemStateReason?>() { null, ItemStateReason.Reopened };
+
+        private int _commentsCount = 0;
+        public int CommentsCount { get => _commentsCount; set => SetProperty(ref _commentsCount, value); }
 
         #endregion End: Properties ---------------------------------------------------------------------------------
 
@@ -122,6 +128,8 @@ namespace VisGitCore.ViewModels
 
             IssueCommentsVM.RepositoryIssueCommentsVMs = await gitController.GetAllCommentsForIssueAsync(gitRepositoryVm.GitRepository.Id,
                 issueViewModel.GitIssue.Number, CollapseAllComments);
+
+            CommentsCount = IssueCommentsVM.RepositoryIssueCommentsVMs.Count();
         }
 
         #endregion End: Property Changed Events ---------------------------------------------------------------------------------
@@ -142,20 +150,27 @@ namespace VisGitCore.ViewModels
         }
 
         [RelayCommand]
-        private void AssignUser(User user)
+        private async Task AssignUserAsync(Collaborator collaborator)
         {
-            if (SelectedIssueViewModel.Assignees.Count() < 10
-                && !SelectedIssueViewModel.Assignees.Contains(user)
-                && user != null)
+            User user = await gitController.GetUserByLoginAsync(collaborator.Login);
+
+            if (user != null && SelectedIssueViewModel.Assignees.Count() < 10) // Issues have max of 10 assignees
             {
-                SelectedIssueViewModel.Assignees.Add(user);
+                SelectedIssueViewModel.TryAddAssignee(user);
             }
+
+            var dave = SelectedIssueViewModel;
+            SelectedIssueViewModel = null;
+            SelectedIssueViewModel = dave;
         }
 
         [RelayCommand]
         private void UnassignUser()
         {
-            SelectedIssueViewModel.Assignees.Remove(SelectedAssignee);
+            SelectedIssueViewModel.TryRemoveAssignee(SelectedAssignee);
+            var dave = SelectedIssueViewModel;
+            SelectedIssueViewModel = null;
+            SelectedIssueViewModel = dave;
         }
 
         [RelayCommand]
@@ -234,9 +249,6 @@ namespace VisGitCore.ViewModels
         // Sort and Filter ==============================================================================================
         public void SortIssues(SortType sortType, ListSortDirection sortDirection)
         {
-            //lastSort = sortType;
-            //lastSortDirection = sortDirection;
-
             RepositoryIssuesCollectionView.SortDescriptions.Clear();
 
             if (sortType == SortType.Alphabetially)

@@ -46,7 +46,7 @@
 
     <DockPanel LastChildFill="True">
         <!-- <Button  DockPanel.Dock="Bottom" Content="Home View" Command="{Binding NavigateHomeCommand}" /> -->
-        <Grid x:Name="MilestonesMainLayout" Margin="2">
+        <Grid x:Name="IssuesMainLayout" Margin="2">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
@@ -70,6 +70,33 @@
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Labels, Converter={StaticResource LabelsToCsvConverter}}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Opened: " FontStyle="Italic" />
+                                        <TextBlock Text="{Binding Author.Login}" />
+                                        <TextBlock Padding="4,0,0,0" Text="{Binding DateCreated, Converter={StaticResource DateOffsetToDateConverter}}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Milestone: " FontStyle="Italic" />
+                                        <TextBlock Text="{Binding MilestoneTitle}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Updated: " FontStyle="Italic" />
+                                        <TextBlock Text="{Binding DateUpdated, Converter={StaticResource DateOffsetToDateConverter}}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
 
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
@@ -78,7 +105,7 @@
                           Style="{StaticResource GridSplitterStyle}"></GridSplitter>
 
             <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2" Background="Transparent"
-                  Visibility="{Binding SelectedMilestoneViewModel, Converter={StaticResource NullToVisibilityConverter}}">
+                  Visibility="{Binding  SelectedIssueViewModel, Converter={StaticResource NullToVisibilityConverter}}">
 
                 <!-- TITLE AND DESCRIPTION -->
 
@@ -96,7 +123,6 @@
                            ToolTip="Save Changes">
                         </Button>
 
-                        <!-- Below for debug - shows Milestone Number -->
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Opacity="0.7">
                             <TextBlock Text="# " />
                             <TextBlock Text="{Binding SelectedIssueViewModel.IssueNumber}" />
@@ -195,7 +221,19 @@
                             <Popup x:Name="AssignUserPopup" PlacementTarget="{Binding ElementName=AssignUserDDB}" StaysOpen="False"
                                IsOpen="{Binding ElementName=AssignUserDDB, Path=IsChecked}" MinWidth="150">
                                 <Border BorderThickness="1" BorderBrush="Gray">
-                                    <StackPanel Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
+                                    <ListView x:Name="AssignUserLV" ItemsSource="{Binding RepositoryCollaborators}" DisplayMemberPath="Login"
+                                            MaxHeight="300" BorderThickness="0"
+                                            ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="AssignUserLV_SelectionChanged">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="SelectionChanged" SourceObject="{Binding ElementName=AssignUserLV}">
+                                                <i:InvokeCommandAction Command="{Binding AssignUserCommand}"
+                                                                       CommandParameter="{Binding ElementName=AssignUserLV, Path=SelectedItem}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </ListView>
+
+                                    <!-- Below kept for prosperity - cool user search function, but canot use with assignments as has to be a collaborator -->
+                                    <!--<StackPanel Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}">
                                         <DockPanel LastChildFill="True" Height="26">
                                             <Button DockPanel.Dock="Right" Style="{StaticResource ButtonStyle}" Height="24" Width="24"
                                                 Margin="1" Command="{Binding SearchUsersCommand}"
@@ -221,9 +259,11 @@
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </ListView>
-                                    </StackPanel>
+                                    </StackPanel>-->
                                 </Border>
                             </Popup>
+
+                            <!-- Assignees Avatars List -->
 
                             <ListView x:Name="AssignedUsersLV" ItemsSource="{Binding SelectedIssueViewModel.Assignees}"
                                    BorderThickness="0" SelectedItem="{Binding SelectedAssignee}"
@@ -408,21 +448,26 @@
                             </TabItem.Header>
                             <TabItem.Content>
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="2" Width="auto">
-                                    <TextBox x:Name="MilestoneDescriptionTB"
+                                    <TextBox x:Name="EditIssuePostTB"
                                         TextWrapping="wrap" AcceptsReturn="True" Padding="2"
                                         Text="{Binding SelectedIssueViewModel.Body, UpdateSourceTrigger=PropertyChanged}"
                                         Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
-                                        d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description" />
+                                        d:Background="Transparent" d:Foreground="White" d:Text="Milestone Description"
+                                         PreviewMouseWheel="EditIssuePostTB_PreviewMouseWheel" SpellCheck.IsEnabled="True" />
                                 </ScrollViewer>
                             </TabItem.Content>
                         </TabItem>
 
                         <!-- COMMENTS -->
 
-                        <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="30" Margin="0" Padding="0" ToolTip="Comments">
+                        <TabItem x:Name="CommentsTabItem" Style="{StaticResource TabItemStyle}"  Width="30" Height="Auto"
+                                 Margin="0" Padding="0,0,0,4" ToolTip="Comments" HorizontalAlignment="Center">
 
                             <TabItem.Header>
-                                <ContentControl Width="24" Content="{StaticResource UiCommentsImage}" d:Content="{StaticResource UiCommentsImageDT}" />
+                                <StackPanel Orientation="Vertical">
+                                    <ContentControl Width="24" Height="24" Content="{StaticResource UiCommentsImage}" d:Content="{StaticResource UiCommentsImageDT}" />
+                                    <TextBlock Text="{Binding CommentsCount}" HorizontalAlignment="Center" d:Foreground="White"></TextBlock>
+                                </StackPanel>
                             </TabItem.Header>
 
                             <TabItem.Content>
@@ -506,11 +551,11 @@
                                                     <Grid x:Name="BodyTextGrid" Visibility="{Binding  Collapsed,
                                                         Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
-                                                        <TextBox Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="true" TextWrapping="Wrap"
-                                                                    MaxWidth="{Binding ActualWidth, ElementName=CommentsHeader}"
-                                                                     Visibility="{Binding ElementName=CommentEditBT, Path=IsChecked,
-                                                                        Converter={StaticResource BoolToVisibilityConverter}}"
-                                                             HorizontalScrollBarVisibility="auto" MaxHeight="{Binding ActualHeight, ElementName=CommentsLV}" />
+                                                        <TextBox x:Name="CommentEditTB" Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="true"
+                                                                    TextWrapping="Wrap" MaxWidth="{Binding ActualWidth, ElementName=CommentsHeader}" AcceptsTab="True"
+                                                                    Visibility="{Binding ElementName=CommentEditBT, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                    HorizontalScrollBarVisibility="auto" MaxHeight="{Binding ActualHeight, ElementName=CommentsLV}"
+                                                                 PreviewMouseWheel="CommentEditTB_PreviewMouseWheel" SpellCheck.IsEnabled="true" />
 
                                                         <md:MarkdownViewer Markdown="{Binding Body}" Style="{StaticResource MarkdownViewer}"
                                                                             PreviewMouseWheel="MarkdownViewer_PreviewMouseWheel"

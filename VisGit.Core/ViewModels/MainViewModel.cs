@@ -2,6 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.PlatformUI;
+using Newtonsoft.Json.Linq;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -113,20 +116,46 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedRespositoryVMChanged(RepositoryViewModel value)
         {
+            //milestonesViewModel.gitRepositoryVm = value;
+            //_ = milestonesViewModel.GetAllMilestonesForRepoAsync();
+
+            //// Label Ops
+            //LabelsViewModel.gitRepositoryVm = value;
+            //_ = LabelsViewModel.GetAllLabelsForRepoAsync();
+
+            //// Issue Ops
+            ////issuesViewModel.RepositoryLabels = LabelsViewModel.RepositoryLabelsVMs;
+            ////issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
+            //issuesViewModel.gitRepositoryVm = value;
+            //_ = issuesViewModel.GetAllIssuesForRepoAsync();
+
+            _ = UpdateViewModelsFromRepoAsync(value);
+        }
+
+        private async Task UpdateViewModelsFromRepoAsync(RepositoryViewModel value)
+        {
+            // Milestone Ops
             milestonesViewModel.gitRepositoryVm = value;
-            _ = milestonesViewModel.GetAllMilestonesForRepoAsync();
+            await milestonesViewModel.GetAllMilestonesForRepoAsync();
 
             // Label Ops
             LabelsViewModel.gitRepositoryVm = value;
-            _ = LabelsViewModel.GetAllLabelsForRepoAsync();
+            await LabelsViewModel.GetAllLabelsForRepoAsync();
 
             // Issue Ops
             issuesViewModel.gitRepositoryVm = value;
-            _ = issuesViewModel.GetAllIssuesForRepoAsync();
-            //RepoLabels.Clear();
-            //RepoLabels.Add(new LabelViewModel("All"));
-            //foreach (var item in LabelsViewModel.RepositoryLabelsVMs) RepoLabels.Add(item);
-            //if (RepoLabels.Count > 0) SelectedLabelFilter = RepoLabels.First();
+            await issuesViewModel.GetAllIssuesForRepoAsync();
+
+            issuesViewModel.RepositoryLabels = LabelsViewModel.RepositoryLabelsVMs;
+            issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
+            issuesViewModel.FilterIssues(FilterType.Open);
+            SortDirection = ListSortDirection.Descending;
+
+            // this gets all collaborators for the repo
+            issuesViewModel.RepositoryCollaborators = await gitController.GetRepositoryContributorsAsync(value.GitRepository.Id);
+
+            // put this last as sometimes bombs and run out of patience to bug hunt..
+            SelectedSort = Sorts.Where(s => s.SortType == SortType.DateCreated).First();
         }
 
         private async Task UpdateRepositoryLabelsAsync()
@@ -162,6 +191,7 @@ namespace VisGitCore.ViewModels
                     Sorts = Data.Models.Sort.IssueSorts;
                     issuesViewModel.RepositoryLabels = LabelsViewModel.RepositoryLabelsVMs;
                     issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
+                    SelectedSort = Sorts.Where(s => s.SortType == SortType.DateCreated).FirstOrDefault();
                     break;
             }
             if (Filters.Count > 0) SelectedFilter = Filters[0];
@@ -224,6 +254,11 @@ namespace VisGitCore.ViewModels
             issuesViewModel = new IssuesViewModel(gitController, SelectedRespositoryVM, RepositoryLabelsVMs);
 
             RepositoryDropDownWidth = userSettings.RepositoryDropDownWidth;
+
+            if (String.IsNullOrEmpty(userSettings.PersonalAccessToken))
+                UpdateVsStatusText("Enter Personal Access Token in Tools>Options>VisGit");
+            else
+                await AuthenticateUserAsync();
         }
 
         [RelayCommand]

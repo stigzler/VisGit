@@ -20,6 +20,7 @@ namespace VisGitCore.ViewModels
         // Model Related ==============================================================================================
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(BodyFirstLine))]
         private string _body;
 
         [ObservableProperty]
