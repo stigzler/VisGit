@@ -1,7 +1,7 @@
 # VisGit
 
 ## Intro
-VisGit allows you to view, create and edit Issues, Mielstones and Labels from within Visual Studio.
+VisGit allows you to view, create and edit Github Issues, Mielstones and Labels from within Visual Studio.
 
 
 
