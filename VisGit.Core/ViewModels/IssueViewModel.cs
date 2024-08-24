@@ -45,6 +45,7 @@ namespace VisGitCore.ViewModels
         private StringEnum<ItemStateReason>? _itemStateReason = null;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(LockReason))]
         [NotifyPropertyChangedFor(nameof(HasChanges))]
         private bool _locked;
 

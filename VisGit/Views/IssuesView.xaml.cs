@@ -161,13 +161,18 @@ namespace VisGit.Views
             AssignUserPopup.IsOpen = false;
         }
 
-        //private void CommentEditTB_PreviewKeyUp(object sender, KeyEventArgs e)
-        //{
-        //    if (e.Key == Key.Tab && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
-        //    {
-        //        Debug.WriteLine("Shift + Tab");
-        //        e.Handled = true;
-        //    }
-        //}
+        private void IssuesGridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            Properties.Settings.Default.SplitterWidthIssues = converter.ConvertToString(IssuesListColumn.Width);
+            Properties.Settings.Default.Save();
+        }
+
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // fires twice but meh
+            GridLengthConverter converter = new GridLengthConverter();
+            IssuesListColumn.Width = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterWidthIssues);
+        }
     }
 }

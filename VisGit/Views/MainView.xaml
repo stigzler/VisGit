@@ -76,7 +76,7 @@
                                     d:Content="{StaticResource UiGithubImageDT}" />
 
                     <ComboBox x:Name="RepositoryCB" Style="{DynamicResource ComboBoxStyle}" Margin="2,0,2,0"
-                              Width="{Binding RepositoryDropDownWidth}" d:Width="100"
+                              Width="{Binding RepositoryDropDownWidth}" d:Width="50"
                               ItemsSource="{Binding UserRepositoryVMs}" DisplayMemberPath="Name"
                               SelectedItem="{Binding SelectedRespositoryVM, Mode=TwoWay}"
                               ToolTip="Repository">
@@ -88,7 +88,9 @@
                                   Visibility="{Binding SelectedRespositoryVM, Converter={StaticResource NullToVisibilityConverter}}"
                                   d:Visibility="Visible">
 
-                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}" Width="104" Margin="2,0,2,0"
+                    <!--<Grid HorizontalAlignment="Left">-->
+                    <!--<ItemsControl ItemsSource="{Binding GitObjects}" Height="0" />-->
+                    <ComboBox x:Name="GitObjectCB" Style="{DynamicResource ComboBoxStyle}"  Margin="2,0,2,0" MinWidth="105"
                               SelectedValue="{Binding SelectedGitObject}" ItemsSource="{Binding GitObjects}">
                         <ComboBox.ItemTemplate>
                             <ItemContainerTemplate>
@@ -99,6 +101,7 @@
                             </ItemContainerTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    <!--</Grid>-->
 
                     <!--<Separator></Separator>-->
 
@@ -108,7 +111,7 @@
                     <Button x:Name="ResetFilterBT" Content="{DynamicResource UiResetFilterImage}" ToolTip="Reset Filter"
                             d:Content="{DynamicResource UiResetFilterImageDT}" Command="{Binding ResetFilterCommand}" />
 
-                    <ComboBox x:Name="FilterCB" Style="{DynamicResource ComboBoxStyle}" Width="108" Margin="2,0,2,0"
+                    <ComboBox x:Name="FilterCB" Style="{DynamicResource ComboBoxStyle}" Margin="2,0,2,0"
                               ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" ToolTip="Status Filter">
                         <ComboBox.ItemTemplate>
                             <ItemContainerTemplate>
@@ -120,7 +123,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <ComboBox x:Name="LabelFilterCB" Style="{DynamicResource ComboBoxStyle}" Width="108" Margin="2,0,2,0"
+                    <ComboBox x:Name="LabelFilterCB" Style="{DynamicResource ComboBoxStyle}" MinWidth="108" MaxWidth="200" Margin="2,0,2,0"
                             ItemsSource="{Binding LabelsViewModel.RepositoryLabelsVMs}" SelectedItem="{Binding SelectedLabelFilter}"
                             Visibility="{Binding SelectedGitObject, Converter={StaticResource GitObjectToVisibilityConverter}}"
                             ToolTip="Label Filter">
@@ -141,7 +144,7 @@
                         <imaging:CrispImage Moniker="{Binding SortDirection, Converter={StaticResource SortDirectionToIconConverter}}" />
                     </ToggleButton>
 
-                    <ComboBox x:Name="SortCB" Style="{DynamicResource ComboBoxStyle}" Width="140" Margin="2,0,2,0"
+                    <ComboBox x:Name="SortCB" Style="{DynamicResource ComboBoxStyle}" Margin="2,0,2,0"
                              ItemsSource="{Binding Sorts, Mode=TwoWay}" SelectedItem="{Binding SelectedSort, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <ItemContainerTemplate>

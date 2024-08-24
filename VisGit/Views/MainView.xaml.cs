@@ -13,7 +13,7 @@ namespace VisGit.Views
         public MainView()
         {
             // Fixes
-            CouldNotLoadFileOrAssemblyHack();
+            CouldNotLoadFileOrAssemblyHack(); // must precede InitializeComponent()
 
             InitializeComponent();
         }

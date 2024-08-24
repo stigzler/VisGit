@@ -10,12 +10,13 @@
             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
             xmlns:md="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
             xmlns:viewmodels="clr-namespace:VisGitCore.ViewModels;assembly=VisGitCore"
+            xmlns:properties="clr-namespace:VisGit.Properties"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"
             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
             d:Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
             d:DataContext="{d:DesignInstance Type=viewmodels:IssuesViewModel}"
             mc:Ignorable="d"
-            d:DesignHeight="286" d:DesignWidth="1070">
+            d:DesignHeight="286" d:DesignWidth="1070" IsVisibleChanged="UserControl_IsVisibleChanged">
 
     <FrameworkElement.CommandBindings>
         <CommandBinding Command="{x:Static md:Commands.Hyperlink}" Executed="OpenHyperlink" />
@@ -49,14 +50,14 @@
         <Grid x:Name="IssuesMainLayout" Margin="2">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
+                <ColumnDefinition x:Name="IssuesListColumn" MinWidth="150" MaxWidth="{Binding Width, ElementName=IssuesMainLayout}" d:Width="150" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- LISTVIEW -->
 
-            <ListView x:Name="IssuesLV" Grid.Column="0" Width="auto"
+            <ListView x:Name="IssuesLV" Grid.Column="0"
                       ItemsSource="{Binding RepositoryIssuesVMs}"
                       SelectedItem="{Binding SelectedIssueViewModel}" BorderThickness="0"
                       d:Background="Transparent" SelectionChanged="MiliestonesLV_SelectionChanged">
@@ -99,17 +100,19 @@
                 </ListView.ItemContainerStyle>
             </ListView>
 
-            <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+            <GridSplitter x:Name="IssuesGridSplitter" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                           BorderBrush="Transparent" BorderThickness="2"
                           Background="Gray"
-                          Style="{StaticResource GridSplitterStyle}"></GridSplitter>
+                          Style="{StaticResource GridSplitterStyle}"
+                          DragCompleted="IssuesGridSplitter_DragCompleted">
+            </GridSplitter>
 
             <Grid x:Name="MilestonesDetialsView" Grid.Column="2" Margin="2" Background="Transparent"
                   Visibility="{Binding  SelectedIssueViewModel, Converter={StaticResource NullToVisibilityConverter}}">
 
                 <!-- TITLE AND DESCRIPTION -->
 
-                <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0">
+                <DockPanel x:Name="MilestoneTitleAndDescDP" Grid.Column="0" LastChildFill="True" Margin="0" MinWidth="150">
 
                     <!-- TITLE ROW -->
                     <DockPanel  DockPanel.Dock="Top" LastChildFill="True">
@@ -209,7 +212,7 @@
 
                             <!-- Lock Status Text -->
                             <TextBlock VerticalAlignment="Center" Text="{Binding SelectedIssueViewModel.LockReason,
-                            Converter={StaticResource LockStatusToTextConverter}}"
+                            Converter={StaticResource LockStatusToTextConverter}, Mode=TwoWay}"
                             d:Text="Locked: Off Topic" d:Foreground="White" />
 
                             <!-- Assignees -->

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="VisGit.92e3f0ba-a8d6-4f83-a4da-e0da0d3722bb" Version="1.0" Language="en-US" Publisher="Steve Hall" />
+        <Identity Id="VisGit.92e3f0ba-a8d6-4f83-a4da-e0da0d3722bb" Version="1.0.1" Language="en-US" Publisher="Mago Code" />
         <DisplayName>VisGit</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description xml:space="preserve">VisGit allows you to view, edit and create Github Issues, Labels and Milestones from within Visual Studio</Description>
+        <License>Licence.txt</License>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Icon.png</PreviewImage>
+        <Tags>GitHub,Issues,Bug,Bugs,Milestone,Milestones,Labels</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

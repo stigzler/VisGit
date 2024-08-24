@@ -25,6 +25,7 @@ namespace VisGitCore.ViewModels
         // Model related ----------------------------------------------------------------
         [ObservableProperty]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Name cannot be empty")]
+        [MaxLength(50)]
         [NotifyDataErrorInfo]
         [CustomValidation(typeof(LabelViewModel), nameof(ValidateNameUnique))]
         private string _name;

@@ -33,5 +33,18 @@ namespace VisGit.Views
         {
             ContextPopup.IsOpen = false;
         }
+
+        private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            Properties.Settings.Default.SplitterWidthMilestones = converter.ConvertToString(MilestonesListColumn.Width);
+            Properties.Settings.Default.Save();
+        }
+
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            MilestonesListColumn.Width = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterWidthMilestones);
+        }
     }
 }

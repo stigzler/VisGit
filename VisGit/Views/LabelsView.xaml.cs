@@ -59,5 +59,18 @@ namespace VisGit.Views
             //    Color = dialog.Color;
             //}
         }
+
+        private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            Properties.Settings.Default.SplitterWidthLabels = converter.ConvertToString(LabelsListColumn.Width);
+            Properties.Settings.Default.Save();
+        }
+
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            LabelsListColumn.Width = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterWidthLabels);
+        }
     }
 }
