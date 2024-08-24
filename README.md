@@ -7,7 +7,13 @@ VisGit allows you to view, create and edit Github Issues, Mielstones and Labels 
 
 ## Getting Started
 
-Get a Public Access Token via `Github > Settings > Developer Settings > Personal Access Tokens > Fine-grained Tokens`. Ensure you set `Account Permissions > Gists` under the token to "Read and Write"
+Get a Public Access Token via `Github > Settings > Developer Settings > Personal Access Tokens > Fine-grained Tokens`. 
+
+You'll also need the following Repository Permissions:
+
+`Issues = Read and Write`
+
+`Metadata = Read-only`
 
 In `Visual Studio > Tools > Options > VisGit > Personal Access Token` enter your Personal Access  Token.
 
