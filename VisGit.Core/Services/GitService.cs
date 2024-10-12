@@ -20,7 +20,7 @@ namespace VisGitCore.Services
         {
         }
 
-        // User ==============================================================================================
+        #region User =========================================================================================
 
         internal async Task<Exception> AuthenticateUserAsync(string personalAccessToken)
         {
@@ -59,7 +59,9 @@ namespace VisGitCore.Services
             return await gitHubClient.Search.SearchUsers(searchUsersRequest);
         }
 
-        // Repositories ==============================================================================================
+        #endregion End: User ---------------------------------------------------------------------------------
+
+        #region Repositories =========================================================================================
 
         internal async Task<IReadOnlyList<Repository>> GetAllUserRepositoriesAsync()
         {
@@ -72,6 +74,8 @@ namespace VisGitCore.Services
             var dave = await gitHubClient.Repository.Collaborator.GetAll(repositoryId);
             return dave;
         }
+
+        #endregion End: Repositories ---------------------------------------------------------------------------------
 
         #region Milestones =========================================================================================
 
@@ -156,15 +160,10 @@ namespace VisGitCore.Services
             return await gitHubClient.Issue.GetAllForRepository(repositoryId, new RepositoryIssueRequest() { State = ItemStateFilter.All });
         }
 
-        internal async Task<IReadOnlyList<IssueComment>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
-        {
-            return await gitHubClient.Issue.Comment.GetAllForIssue(repositoryId, issueNumber);
-        }
-
         internal async Task<Issue> SaveIssueAsync(long repositoryId, int issueNumber, string title, string body,
-            bool open, StringEnum<ItemStateReason>? itemStateReason,
-            bool locked, StringEnum<LockReason>? lockReason,
-            Milestone milestone, ObservableCollection<Label> labels, ObservableCollection<User> assignees)
+                bool open, StringEnum<ItemStateReason>? itemStateReason,
+                bool locked, StringEnum<LockReason>? lockReason,
+                Milestone milestone, ObservableCollection<Label> labels, ObservableCollection<User> assignees)
         {
             IssueUpdate issueUpdate = new IssueUpdate();
 
@@ -215,12 +214,15 @@ namespace VisGitCore.Services
             return returnedIssue;
         }
 
-        internal async Task DeleteTaskAsync()
-        {
-            Issue issue = new Issue();
-        }
-
         // Comments ==============================================================================================
+        internal async Task<IReadOnlyList<IssueComment>> GetAllCommentsForIssueAsync(long repositoryId, int issueNumber)
+        {
+            var Events = await gitHubClient.Issue.Events.GetAllForIssue(repositoryId, issueNumber);
+
+            var Dave = await gitHubClient.Issue.Timeline.GetAllForIssue(repositoryId, issueNumber);
+
+            return await gitHubClient.Issue.Comment.GetAllForIssue(repositoryId, issueNumber);
+        }
 
         internal async Task<IssueComment> SaveIssueCommentAsync(long repositoryId, long commentId, string body)
         {
@@ -237,6 +239,8 @@ namespace VisGitCore.Services
         {
             await gitHubClient.Issue.Comment.Delete(repositoryId, commentId);
         }
+
+        // History ==============================================================================================
 
         // Attachments ==============================================================================================
 

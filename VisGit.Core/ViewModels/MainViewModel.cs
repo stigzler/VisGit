@@ -142,7 +142,10 @@ namespace VisGitCore.ViewModels
             issuesViewModel.RepositoryCollaborators = await gitController.GetRepositoryContributorsAsync(value.GitRepository.Id);
 
             // put this last as sometimes bombs and run out of patience to bug hunt..
-            SelectedSort = Sorts.Where(s => s.SortType == SortType.DateCreated).First();
+            if (Sorts != null && Sorts.Count > 0)
+            {
+                SelectedSort = Sorts.First();
+            }
         }
 
         private async Task UpdateRepositoryLabelsAsync()
