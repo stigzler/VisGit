@@ -116,19 +116,6 @@ namespace VisGitCore.ViewModels
 
         partial void OnSelectedRespositoryVMChanged(RepositoryViewModel value)
         {
-            //milestonesViewModel.gitRepositoryVm = value;
-            //_ = milestonesViewModel.GetAllMilestonesForRepoAsync();
-
-            //// Label Ops
-            //LabelsViewModel.gitRepositoryVm = value;
-            //_ = LabelsViewModel.GetAllLabelsForRepoAsync();
-
-            //// Issue Ops
-            ////issuesViewModel.RepositoryLabels = LabelsViewModel.RepositoryLabelsVMs;
-            ////issuesViewModel.RepositoryMilestonesVMs = milestonesViewModel.RepositoryMilestonesVMs;
-            //issuesViewModel.gitRepositoryVm = value;
-            //_ = issuesViewModel.GetAllIssuesForRepoAsync();
-
             _ = UpdateViewModelsFromRepoAsync(value);
         }
 
@@ -165,10 +152,6 @@ namespace VisGitCore.ViewModels
             LabelsViewModel.RepositoryLabelsVMs = RepositoryLabelsVMs;
         }
 
-        //private async Task UpdateRepositoryIssuesAsync()
-        //{
-        //}
-
         partial void OnSelectedGitObjectChanged(GitObject gitObject)
         {
             switch (gitObject.Type)
@@ -202,11 +185,6 @@ namespace VisGitCore.ViewModels
             if (newValue == null) return;
             FilterGitObjectViews();
         }
-
-        //partial void OnSelectedLabelFilterChanged(List<LabelViewModel> oldValue, List<LabelViewModel> newValue)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         partial void OnSelectedLabelFilterChanged(LabelViewModel oldValue, LabelViewModel newValue)
         {
@@ -314,6 +292,21 @@ namespace VisGitCore.ViewModels
             SelectedLabelFilter = null;
             SelectedFilter = Filters.First();
             FilterGitObjectViews();
+        }
+
+        [RelayCommand]
+        private async Task RefreshFromGithubAsync()
+        {
+            if (userSettings.WarnOnRepoRefresh)
+            {
+                var result = await VS.MessageBox.ShowAsync("Refreshing this Repo from GitHub will overwrite any unsaved changes. Continue?", "",
+                                 Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING,
+                                 Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO);
+
+                if (result != Microsoft.VisualStudio.VSConstants.MessageBoxResult.IDYES) return;
+            }
+
+            await UpdateViewModelsFromRepoAsync(SelectedRespositoryVM);
         }
 
         #endregion End: Commands

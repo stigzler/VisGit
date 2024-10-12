@@ -34,5 +34,11 @@ namespace VisGitCore.Services
         [Description("The width of the Repository selector drop-down. Adjust to suit your layout.")]
         [DefaultValue(100)]
         public int RepositoryDropDownWidth { get; set; } = 100;
+
+        [Category("UI Settings")]
+        [DisplayName("Warn on Repository Refresh")]
+        [Description("Issues a 'Are you sure?' warning on Repo refresh to help user avoid loosing any unsaved changes.")]
+        [DefaultValue(true)]
+        public bool WarnOnRepoRefresh { get; set; } = true;
     }
 }

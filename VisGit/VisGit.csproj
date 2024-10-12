@@ -193,6 +193,9 @@
     <Content Include="Resources\Media\Images\NewSmartTag.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Media\Images\Refresh.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Media\Images\RunTest.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

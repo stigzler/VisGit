@@ -113,4 +113,7 @@
 
     <imaging:CrispImage x:Key="UiCollapseAllImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
     <Image              x:Key="UiCollapseAllImageDT" x:Shared="false" Width="16" Height="16" Source="Images/CollapseAll.png" />
+
+    <imaging:CrispImage x:Key="UiRefreshImage" x:Shared="false" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
+    <Image              x:Key="UiRefreshImageDT" x:Shared="false" Width="16" Height="16" Source="Images/Refresh.png" />
 </ResourceDictionary>

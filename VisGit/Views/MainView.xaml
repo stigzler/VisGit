@@ -81,6 +81,10 @@
                               SelectedItem="{Binding SelectedRespositoryVM, Mode=TwoWay}"
                               ToolTip="Repository">
                     </ComboBox>
+
+                    <Button x:Name="RefreshBT" Content="{DynamicResource UiRefreshImage}" ToolTip="Refresh from Github"
+                                d:Content="{DynamicResource UiRefreshImageDT}" Command="{Binding RefreshFromGithubCommand}"
+                                Visibility="{Binding SelectedRespositoryVM, Converter={StaticResource NullToVisibilityConverter}}" />
                 </controls:ToolBar>
 
                 <controls:ToolBar x:Name="RepositoryActionsTB" Style="{StaticResource ToolBarStyle}"
